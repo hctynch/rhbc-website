@@ -1,6 +1,17 @@
 {
  "events": [
   {
+   "id": "emvwxzebb2i5n",
+   "title": "Halloween",
+   "date": "2026-10-31",
+   "cat": "kids",
+   "start": "",
+   "end": "",
+   "loc": "MPB",
+   "desc": "",
+   "url": ""
+  },
+  {
    "id": "ex1",
    "title": "Church league basketball tip-off",
    "date": "2026-11-14",
@@ -369,14 +380,7 @@
    "cat": "music"
   }
  ],
- "alert": {
-  "kind": "cancel",
-  "title": "Canceled due to snow.",
-  "details": "",
-  "url": "",
-  "urlText": "",
-  "until": "2026-10-31T15:26"
- },
+ "alert": null,
  "photos": [
   {
    "id": "phmvukd3sh0",
