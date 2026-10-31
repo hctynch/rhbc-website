@@ -75,6 +75,11 @@
  ],
  "bulletins": [
   {
+   "d": "2026-11-01",
+   "t": "",
+   "a": "bulletins/2026-11-01-bulletin-2.pdf"
+  },
+  {
    "d": "2026-10-25",
    "t": "",
    "a": "bulletins/10-25-26bulletin.pdf"
