@@ -1496,7 +1496,7 @@ const $=id=>document.getElementById(id);
 const readJSON=id=>{try{return JSON.parse($(id).textContent)}catch(e){return null}};
 let SAVED=window.__RHBC_DATA||{events:[]};
 const GH=window.__RHBC_GH;
-const fileUrl=id=>!id?"":id.indexOf("/")>=0?id.split("/").map(encodeURIComponent).join("/"):fileUrl(id);
+const fileUrl=id=>!id?"":(GH&&GH.local[id])?GH.local[id]:id.indexOf("/")>=0?id.split("/").map(encodeURIComponent).join("/"):fileUrl(id);
 const DEFAULT_WEEKLY=[
   {id:"ss",dow:0,start:"09:45",end:"",title:"Sunday School",note:"For all ages",cat:"adults"},
   {id:"worship",dow:0,start:"11:00",end:"",title:"Morning Worship",note:"Children’s Church for age 2 – 5th grade",cat:"worship"},
@@ -2272,8 +2272,8 @@ $("saveBtn").onclick=async()=>{
   $("saveBtn").disabled=true;$("saveMsg").textContent="Saving…";
   const body=JSON.stringify(state,null,1)+"\n";
   try{
-    const r=await GH.put("data/site.json",GH.b64text(body),"Update website content",GH.sha);
-    GH.sha=r.content.sha;SAVED=JSON.parse(JSON.stringify(state));dirty=false;
+    await GH.commit(body);
+    SAVED=JSON.parse(JSON.stringify(state));dirty=false;
     $("saveMsg").textContent="Saved";renderAll();
     toast("Saved. The public site updates in about a minute.");
   }catch(e){
@@ -2330,7 +2330,7 @@ const store={get(){try{return localStorage.getItem(KEY)||sessionStorage.getItem(
 const b64text=s=>{const u=new TextEncoder().encode(s);let b="";for(let i=0;i<u.length;i+=0x8000)b+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(b)};
 const untext=b=>new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g,"")),c=>c.charCodeAt(0)));
 const fileB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(f)});
-const GH={ok:false,sha:null,notice:"",b64text};
+const GH={ok:false,head:null,tree:null,notice:"",b64text,pending:{},local:{}};
 let token=store.get();
 async function api(path,opt={},tk=token){
   const r=await fetch(API+path,{...opt,cache:"no-store",headers:{Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28",...(tk?{Authorization:"Bearer "+tk}:{}),...(opt.body?{"Content-Type":"application/json"}:{})}});
@@ -2341,23 +2341,41 @@ GH.check=async k=>{try{const r=await api("",{},k);return r.permissions&&r.permis
 GH.remember=k=>store.set(k);GH.forget=()=>store.del();
 GH.put=(path,content,message,sha)=>api("/contents/"+path.split("/").map(encodeURIComponent).join("/"),{method:"PUT",body:JSON.stringify({message,content,branch:BRANCH,...(sha?{sha}:{})})});
 const slug=n=>{const m=/\.([a-z0-9]{2,5})$/i.exec(n),ext=m?m[1].toLowerCase():"";let b=(m?n.slice(0,-m[0].length):n).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"file";return b+(ext?"."+ext:"")};
+const exists=async path=>{if(GH.pending[path])return true;try{await api("/contents/"+path.split("/").map(encodeURIComponent).join("/")+"?ref="+BRANCH);return true}catch(e){if(e.status===404)return false;throw e}};
 GH.assets={async upload(file,opt){
   const folder=(opt&&opt.folder)||"files",d=new Date(),day=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
   const content=await fileB64(file);const fixed=opt&&opt.name;let name=fixed?slug(opt.name):slug(file.name);
-  for(let k=0;k<6;k++){
+  for(let k=0;k<8;k++){
     const path=fixed?folder+"/"+(k?name.replace(/(\.[a-z0-9]+)?$/,"-"+(k+1)+"$1"):name):folder+"/"+day+"-"+(k?k+"-":"")+name;
-    try{await GH.put(path,content,"Upload "+path);return{id:path,url:path}}
-    catch(e){if(e.status!==422)throw e}
+    if(await exists(path))continue;
+    GH.pending[path]=content;GH.local[path]=URL.createObjectURL(file);
+    return{id:path,url:GH.local[path]};
   }
   throw new Error("name");
 }};
+/* one commit per save: new files + data/site.json together */
+GH.commit=async body=>{
+  const files=Object.keys(GH.pending).filter(p=>body.indexOf(JSON.stringify(p))>=0);
+  const blob=async(content,encoding)=>(await api("/git/blobs",{method:"POST",body:JSON.stringify({content,encoding})})).sha;
+  const tree=[];
+  for(const p of files)tree.push({path:p,mode:"100644",type:"blob",sha:await blob(GH.pending[p],"base64")});
+  tree.push({path:"data/site.json",mode:"100644",type:"blob",sha:await blob(body,"utf-8")});
+  const t=await api("/git/trees",{method:"POST",body:JSON.stringify({base_tree:GH.tree,tree})});
+  const msg="Update website content"+(files.length?"\n\nAdded:\n"+files.map(f=>"- "+f).join("\n"):"");
+  const c=await api("/git/commits",{method:"POST",body:JSON.stringify({message:msg,tree:t.sha,parents:[GH.head]})});
+  await api("/git/refs/heads/"+BRANCH,{method:"PATCH",body:JSON.stringify({sha:c.sha,force:false})});
+  GH.head=c.sha;GH.tree=t.sha;files.forEach(p=>delete GH.pending[p]);
+  return files.length;
+};
 window.__RHBC_GH=GH;
 const start=d=>{window.__RHBC_DATA=d;const go=()=>window.__rhbcMain();document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go()};
 (async()=>{
   if(token){
     try{
-      const [info,file]=await Promise.all([api(""),api("/contents/data/site.json?ref="+BRANCH)]);
-      if(info.permissions&&info.permissions.push){GH.ok=true;GH.sha=file.sha;return start(JSON.parse(untext(file.content)))}
+      const [info,ref]=await Promise.all([api(""),api("/git/ref/heads/"+BRANCH)]);
+      if(info.permissions&&info.permissions.push){
+        const head=ref.object.sha;const [cm,file]=await Promise.all([api("/git/commits/"+head),api("/contents/data/site.json?ref="+head)]);
+        GH.ok=true;GH.head=head;GH.tree=cm.tree.sha;return start(JSON.parse(untext(file.content)))}
       GH.notice="Your sign-in key can’t edit this site, so you’re seeing the public view.";
     }catch(e){
       if(e.status===401){store.del();GH.notice="Your staff sign-in key has expired. Sign in again with a new key."}
