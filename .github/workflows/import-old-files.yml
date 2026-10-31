@@ -1,0 +1,41 @@
+name: Copy files from the old website
+on:
+  push:
+    paths: ["data/import-list.json", ".github/workflows/import-old-files.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download files
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          items = json.load(open("data/import-list.json"))
+          ok = skip = fail = 0
+          for it in items:
+              p = it["path"]
+              if os.path.exists(p):
+                  skip += 1
+                  continue
+              os.makedirs(os.path.dirname(p), exist_ok=True)
+              try:
+                  req = urllib.request.Request(it["url"], headers={"User-Agent": "Mozilla/5.0 (RHBC site migration)"})
+                  with urllib.request.urlopen(req, timeout=90) as r:
+                      body = r.read()
+                  open(p, "wb").write(body)
+                  ok += 1
+              except Exception as e:
+                  print("FAILED", it["url"], e)
+                  fail += 1
+          print(f"copied {ok}, already there {skip}, failed {fail}")
+          PY
+      - name: Save to the repository
+        run: |
+          git config user.name "rhbc-website"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bulletins newsletters files
+          git diff --cached --quiet || (git commit -m "Copy files from the old website" && git push)

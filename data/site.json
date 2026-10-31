@@ -1,0 +1,463 @@
+{
+ "events": [
+  {
+   "id": "ex1",
+   "title": "Church league basketball tip-off",
+   "date": "2026-11-14",
+   "cat": "fellowship",
+   "start": "10:00",
+   "end": "",
+   "loc": "Multi-Purpose Building",
+   "desc": "Teams for K–2, 3–5, middle school and high school.",
+   "url": "",
+   "sample": true
+  },
+  {
+   "id": "ex2",
+   "title": "Thanksgiving fellowship meal",
+   "date": "2026-11-22",
+   "cat": "fellowship",
+   "start": "12:15",
+   "end": "",
+   "loc": "Fellowship Hall",
+   "desc": "Bring a covered dish after morning worship.",
+   "url": "",
+   "sample": true
+  },
+  {
+   "id": "ex3",
+   "title": "Hanging of the Green",
+   "date": "2026-11-29",
+   "cat": "worship",
+   "start": "18:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "",
+   "url": "",
+   "sample": true
+  },
+  {
+   "id": "ex4",
+   "title": "Lottie Moon Christmas Offering kickoff",
+   "date": "2026-12-06",
+   "cat": "missions",
+   "start": "11:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "",
+   "url": "",
+   "sample": true
+  },
+  {
+   "id": "ex5",
+   "title": "Sanctuary Choir Christmas musical",
+   "date": "2026-12-13",
+   "cat": "music",
+   "start": "18:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "",
+   "url": "",
+   "sample": true
+  },
+  {
+   "id": "ex6",
+   "title": "Christmas Eve candlelight service",
+   "date": "2026-12-24",
+   "cat": "worship",
+   "start": "17:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "",
+   "url": "",
+   "sample": true
+  }
+ ],
+ "bulletins": [
+  {
+   "d": "2026-10-25",
+   "t": "",
+   "a": "bulletins/10-25-26bulletin.pdf"
+  },
+  {
+   "d": "2026-10-18",
+   "t": "",
+   "a": "bulletins/10-18-26bulletin.pdf"
+  },
+  {
+   "d": "2026-10-11",
+   "t": "",
+   "a": "bulletins/10-11-26bulletin.pdf"
+  },
+  {
+   "d": "2026-10-04",
+   "t": "",
+   "a": "bulletins/10-4-26bulletin.pdf"
+  },
+  {
+   "d": "2026-09-27",
+   "t": "",
+   "a": "bulletins/9-27-26bulletin.pdf"
+  },
+  {
+   "d": "2026-09-20",
+   "t": "",
+   "a": "bulletins/9-20-26bulletin.pdf"
+  },
+  {
+   "d": "2026-09-13",
+   "t": "",
+   "a": "bulletins/9-13-26bulletin.pdf"
+  },
+  {
+   "d": "2026-09-06",
+   "t": "",
+   "a": "bulletins/9-6-26bulletin.pdf"
+  },
+  {
+   "d": "2026-08-30",
+   "t": "",
+   "a": "bulletins/8-30-26bulletin.pdf"
+  },
+  {
+   "d": "2026-08-23",
+   "t": "",
+   "a": "bulletins/8-23-26bulletin.pdf"
+  },
+  {
+   "d": "2026-08-16",
+   "t": "",
+   "a": "bulletins/8-16-26bulletin.pdf"
+  },
+  {
+   "d": "2026-08-09",
+   "t": "",
+   "a": "bulletins/8-9-26bulletin.pdf"
+  },
+  {
+   "d": "2026-08-02",
+   "t": "",
+   "a": "bulletins/8-2-26bulletin.pdf"
+  },
+  {
+   "d": "2026-07-26",
+   "t": "",
+   "a": "bulletins/7-26-26bulletin.pdf"
+  },
+  {
+   "d": "2026-07-19",
+   "t": "",
+   "a": "bulletins/7-19-26bulletin.pdf"
+  },
+  {
+   "d": "2026-07-12",
+   "t": "",
+   "a": "bulletins/7-12-26bulletin.pdf"
+  },
+  {
+   "d": "2026-07-05",
+   "t": "",
+   "a": "bulletins/7-5-26bulletin.pdf"
+  },
+  {
+   "d": "2026-06-28",
+   "t": "",
+   "a": "bulletins/6-28-26bulletin.pdf"
+  },
+  {
+   "d": "2026-06-24",
+   "t": "I Love America",
+   "a": "bulletins/ILOVEAMERICABULLETIN2026.pdf"
+  },
+  {
+   "d": "2026-06-21",
+   "t": "",
+   "a": "bulletins/6-21-26bulletin-2.pdf"
+  },
+  {
+   "d": "2026-06-14",
+   "t": "",
+   "a": "bulletins/20260614-RHBC-Church-Bulletin-No-Stewardship.pdf"
+  },
+  {
+   "d": "2026-06-07",
+   "t": "",
+   "a": "bulletins/20260607-RHBC-Church-Bulletin-No-Stewardship.pdf"
+  },
+  {
+   "d": "2026-05-31",
+   "t": "",
+   "a": "bulletins/20260531-RHBC-Church-Bulletin-Edited.pdf"
+  },
+  {
+   "d": "2026-05-24",
+   "t": "",
+   "a": "bulletins/20260524-RHBC-Church-Bulletin-Edited.pdf"
+  }
+ ],
+ "newsletters": [
+  {
+   "d": "2026-10",
+   "t": "",
+   "a": "newsletters/october2026newsletter.pdf"
+  },
+  {
+   "d": "2026-09",
+   "t": "",
+   "a": "newsletters/september2026newsletter.pdf"
+  },
+  {
+   "d": "2026-08",
+   "t": "",
+   "a": "newsletters/august2026newsletter.pdf"
+  },
+  {
+   "d": "2026-07",
+   "t": "",
+   "a": "newsletters/JULY2026NL.pdf"
+  },
+  {
+   "d": "2026-05",
+   "t": "",
+   "a": "newsletters/may2026nl.pdf"
+  },
+  {
+   "d": "2026-04",
+   "t": "",
+   "a": "newsletters/APRIL2026nl.pdf"
+  },
+  {
+   "d": "2026-03",
+   "t": "",
+   "a": "newsletters/march2026nl.pdf"
+  },
+  {
+   "d": "2026-02",
+   "t": "",
+   "a": "newsletters/feb2026nl.pdf"
+  },
+  {
+   "d": "2026-01",
+   "t": "",
+   "a": "newsletters/jan2026nl.pdf"
+  },
+  {
+   "d": "2025-12",
+   "t": "",
+   "a": "newsletters/december2025nl.pdf"
+  },
+  {
+   "d": "2025-11",
+   "t": "",
+   "a": "newsletters/november2025nl.pdf"
+  },
+  {
+   "d": "2025-10",
+   "t": "",
+   "a": "newsletters/october2025nl.pdf"
+  }
+ ],
+ "careers": [
+  {
+   "t": "Associate Pastor of Worship and Discipleship",
+   "n": "",
+   "u": "https://justchurchjobs.com/job/3394/associate-pastor-of-worship-and-discipleship-rocky-hock-baptist-church"
+  },
+  {
+   "t": "Associate Pastor of Student Ministries",
+   "n": "",
+   "u": "https://justchurchjobs.com/job/6284/associate-pastor-of-student-ministries"
+  }
+ ],
+ "notices": [
+  {
+   "text": "Give blood in memory of Chase Bateman at the RHBC Red Cross blood drive.",
+   "url": "https://www.redcrossblood.org/give.html/drive-results?zipSponsor=RHBC",
+   "until": ""
+  },
+  {
+   "text": "Order your RHBC apparel now!",
+   "url": "https://docs.google.com/forms/d/e/1FAIpQLScEtp21mTpJLidJzHSL7LauOgSr9CG39i9Uxy8uhBijSDjxlg/viewform?pli=1",
+   "until": "2026-11-15"
+  }
+ ],
+ "weekly": [
+  {
+   "id": "ss",
+   "dow": 0,
+   "start": "09:45",
+   "end": "",
+   "title": "Sunday School",
+   "note": "For all ages",
+   "cat": "adults"
+  },
+  {
+   "id": "worship",
+   "dow": 0,
+   "start": "11:00",
+   "end": "",
+   "title": "Morning Worship",
+   "note": "Children’s Church for ages 2 – 5th grade",
+   "cat": "worship"
+  },
+  {
+   "id": "deepdive",
+   "dow": 0,
+   "start": "18:00",
+   "end": "",
+   "title": "Deep Dive",
+   "note": "Adult Bible study, children & students",
+   "cat": "adults"
+  },
+  {
+   "id": "yah",
+   "dow": 2,
+   "start": "10:00",
+   "end": "",
+   "title": "Young at Heart Adult Bible Study",
+   "note": "Room 312, Senior Adult Building",
+   "cat": "adults"
+  },
+  {
+   "id": "vertical",
+   "dow": 3,
+   "start": "18:45",
+   "end": "",
+   "title": "Vertical Student Ministries",
+   "note": "Middle & High School Youth · Youth Suite · Meal Provided",
+   "cat": "students"
+  },
+  {
+   "id": "garas",
+   "dow": 3,
+   "start": "18:45",
+   "end": "",
+   "title": "GAs & RAs",
+   "note": "1st – 5th Grade Girls and Boys · Meal in the Special Function Room",
+   "cat": "kids"
+  },
+  {
+   "id": "seeds",
+   "dow": 3,
+   "start": "19:00",
+   "end": "",
+   "title": "Worship Seeds",
+   "note": "Adults · Sanctuary",
+   "cat": "adults"
+  },
+  {
+   "id": "mf",
+   "dow": 3,
+   "start": "19:00",
+   "end": "",
+   "title": "Mission Friends",
+   "note": "Ages 3 – 5",
+   "cat": "kids"
+  },
+  {
+   "id": "choir",
+   "dow": 3,
+   "start": "20:00",
+   "end": "21:00",
+   "title": "Sanctuary Choir Practice",
+   "note": "",
+   "cat": "music"
+  }
+ ],
+ "alert": {
+  "kind": "cancel",
+  "title": "Canceled due to snow.",
+  "details": "",
+  "url": "",
+  "urlText": "",
+  "until": "2026-10-31T15:26"
+ },
+ "photos": [
+  {
+   "id": "phmvukd3sh0",
+   "a": "photos/imported-fabfb8bb.jpg",
+   "cap": "Rocky Hock Baptist Church 2026",
+   "year": "2026"
+  }
+ ],
+ "specials": [
+  {
+   "id": "sp-cf",
+   "title": "CentriFuge Camp",
+   "desc": "For 6th – 12th graders. Every part of camp points back to God’s Word, led by trained staff, with program, meals and lodging provided so leaders can focus on their students.",
+   "reg": {
+    "text": "Register for CentriFuge",
+    "url": "https://app.sharefaith.com/App/Form/83ac6f0f-0d99-419f-b8ad-8d891014149c"
+   },
+   "links": []
+  },
+  {
+   "id": "sp-ck",
+   "title": "CentriKid Camp",
+   "desc": "A high-energy, gospel-centered overnight camp for 2nd – 6th graders, with track times, recreation, worship, Bible study and church group time.",
+   "reg": {
+    "text": "Register for CentriKid",
+    "url": "https://app.sharefaith.com/App/Form/2d4e8e7a-f7b2-402d-bfaf-3a7bf36268f9"
+   },
+   "links": []
+  },
+  {
+   "id": "sp-bb",
+   "title": "Church League Basketball",
+   "desc": "A chance for kids, youth and parents to play basketball in a church setting that honors God, with good Christian fellowship as the main goal. Teams for K–2 co-ed, 3–5 co-ed, middle school boys, middle and high school girls, and high school boys.",
+   "reg": null,
+   "links": [
+    {
+     "text": "League Rules (PDF)",
+     "a": "files/chowan-county-church-basketball-league-playing-rules.pdf"
+    },
+    {
+     "text": "Church Calendar",
+     "url": "#calendar"
+    }
+   ]
+  }
+ ],
+ "staff": [
+  {
+   "id": "str",
+   "name": "James Richard Rogers III (Trey)",
+   "ini": "TR",
+   "role": "Senior Pastor",
+   "phone": "(252) 221-4133",
+   "email": "trogers@rhbce.org",
+   "bio": "Pastor Trey comes from the mountains of Western North Carolina, where faith and ministry were part of his life from an early age. A fourth-generation minister, he sensed God’s call to preach at 14, was licensed in 2011 and ordained in 2016.\n\nHe holds a B.A. in Religious Studies from Young Harris College, where he met his wife, Julianna. They married in 2018. “Mrs. Juli” teaches 3rd grade at D.F. Walker Elementary School.\n\nOver 15 years he has served in pastoral, youth and children’s, and music ministry. He came to Rocky Hock as Associate Pastor of Youth and Children in 2024 and was called as Senior Pastor in March 2026.",
+   "photo": ""
+  },
+  {
+   "id": "sch",
+   "name": "Dr. Cache’ Hapner",
+   "ini": "CH",
+   "role": "Director of Family & Children’s Ministries",
+   "phone": "(252) 221-4133",
+   "email": "chapner@rhbce.org",
+   "bio": "Dr. Hapner is an educator, mentor and retired U.S. Navy Chief Petty Officer with more than 20 years of experience teaching, training and building teams. In the Navy she held leadership roles including Instructor and Senior Training Leader.\n\nShe holds a Doctor of Education in Organizational Leadership and teaches at College of the Albemarle, where she develops curriculum and mentors students. Her community service includes Drug Education for Youth (DEFY), school volunteer programs, GED instruction, and support for senior citizens and homeless veterans, earning her two Military Outstanding Volunteer Service Medals. She and her husband, Dan, have three children, and the family has served at Rocky Hock through Vacation Bible School, Hand Bells and more.\n\nRaised in the Baptist church, she accepted Christ at 13. She joined the staff in October 2026. Her heart is to partner with parents and families so every child comes to know Jesus, grows as His disciple, and feels safe, loved and rooted in the church family.",
+   "photo": ""
+  },
+  {
+   "id": "slb",
+   "name": "Linda Bunch",
+   "ini": "LB",
+   "role": "Administrative Assistant",
+   "phone": "(252) 221-4133",
+   "email": "lbunch@rhbce.org",
+   "bio": "Linda joined the staff in 2007. She grew up in Perquimans County and has lived in Rocky Hock for more than three decades. She sees her work as a calling as much as a job.",
+   "photo": ""
+  },
+  {
+   "id": "sdl",
+   "name": "Deborah Long",
+   "ini": "DL",
+   "role": "Custodian",
+   "phone": "(252) 221-4133",
+   "email": "",
+   "bio": "Deborah has served full-time since 2015. She has lived in Rocky Hock most of her life and has been a member since she was 12.",
+   "photo": ""
+  }
+ ]
+}
