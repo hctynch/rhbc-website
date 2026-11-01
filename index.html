@@ -142,9 +142,11 @@ p{margin:0}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:46%;pointer-events:none;
   background:repeating-linear-gradient(176deg,transparent 0 18px,color-mix(in srgb,var(--brand) 9%,transparent) 18px 20px);
   -webkit-mask-image:linear-gradient(to bottom,transparent,#000 70%);mask-image:linear-gradient(to bottom,transparent,#000 70%)}
-.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px;align-items:center;padding-block:clamp(48px,7vw,96px)}
-.hero-logo{display:block;width:min(400px,100%);height:auto;background:var(--logo-tile);padding:var(--logo-pad);border-radius:8px;box-sizing:content-box;margin-bottom:4px}
-@media (max-width:640px){.hero-logo{width:min(300px,100%)}}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px;align-items:start;padding-block:clamp(48px,7vw,96px)}
+.hero-logo{display:block;width:min(540px,100%);height:auto;margin-bottom:6px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hero-logo{filter:invert(1) brightness(.93)}}
+:root[data-theme="dark"] .hero-logo{filter:invert(1) brightness(.93)}
+@media (max-width:640px){.hero-logo{width:min(340px,100%)}}
 .hero h1{font-size:clamp(2.7rem,1.6rem + 4.6vw,5rem);letter-spacing:-.01em}
 .hero h1 em{font-style:normal;color:var(--brand-hi)}
 .hero-copy{display:grid;gap:22px;min-width:0}
@@ -567,7 +569,7 @@ textarea{min-height:84px;resize:vertical}
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <img class="hero-logo" src="images/logo-wide-hero.png" alt="Rocky Hock Baptist Church, Edenton, North Carolina" width="1200" height="439">
+        <img class="hero-logo" src="images/logo-text.png" alt="Rocky Hock Baptist Church, Edenton, North Carolina" width="1400" height="644">
         <h1>Come grow in <em>God’s Word.</em></h1>
         <p class="lede">A church family nine miles north of Edenton, gathering since 1835. Our mission is to magnify Christ and make disciples of all people, and there’s a seat for you this Sunday.</p>
         <div class="hero-actions">
