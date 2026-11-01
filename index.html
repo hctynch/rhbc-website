@@ -9,7 +9,7 @@
 <meta name="description" content="Rocky Hock Baptist Church, 113 Rocky Hock Church Road, Edenton, NC. Sunday School 9:45 AM, Worship 11:00 AM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Public+Sans:wght@400;500;600;700&family=Open+Sans:wdth,wght@75,600;75,700&display=swap">
 <style>
 /* Layout: sticky header with section menus; each route is a view: hero band, then a main column with a section sidebar. Home keeps the typographic hero; Calendar is a month grid + day agenda. */
 :root{
@@ -143,10 +143,10 @@ p{margin:0}
   background:repeating-linear-gradient(176deg,transparent 0 18px,color-mix(in srgb,var(--brand) 9%,transparent) 18px 20px);
   -webkit-mask-image:linear-gradient(to bottom,transparent,#000 70%);mask-image:linear-gradient(to bottom,transparent,#000 70%)}
 .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px;align-items:start;padding-block:clamp(48px,7vw,96px)}
-.hero-logo{display:block;width:min(540px,100%);height:auto;margin-bottom:6px}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hero-logo{filter:invert(1) brightness(.93)}}
-:root[data-theme="dark"] .hero-logo{filter:invert(1) brightness(.93)}
-@media (max-width:640px){.hero-logo{width:min(340px,100%)}}
+.hero-logo{display:block;width:min(480px,100%);height:auto;margin-bottom:6px;overflow:visible}
+.hero-logo .hl-name{fill:var(--ink)}
+.hero-logo .hl-sub{fill:var(--brand-hi)}
+@media (max-width:640px){.hero-logo{width:min(310px,100%)}}
 .hero h1{font-size:clamp(2.7rem,1.6rem + 4.6vw,5rem);letter-spacing:-.01em}
 .hero h1 em{font-style:normal;color:var(--brand-hi)}
 .hero-copy{display:grid;gap:22px;min-width:0}
@@ -569,7 +569,7 @@ textarea{min-height:84px;resize:vertical}
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <img class="hero-logo" src="images/logo-text.png" alt="Rocky Hock Baptist Church, Edenton, North Carolina" width="1400" height="644">
+        <svg class="hero-logo" viewBox="0 0 1544 699" role="img" aria-label="Rocky Hock Baptist Church, Edenton, North Carolina" xmlns="http://www.w3.org/2000/svg"><g font-family="'Open Sans',sans-serif" style="font-stretch:75%"><text x="0" y="207" font-size="273" font-weight="700" class="hl-name">Rocky Hock</text><text x="0" y="511" font-size="273" font-weight="700" class="hl-name">Baptist Church</text><text x="0.0 65.9 142.0 207.9 288.7 353.7 432.7 513.6 602.2 683.0 762.0 833.8 898.8 1013.9 1083.9 1155.8 1227.6 1306.6 1370.2 1421.9 1502.8" y="696" font-size="84" font-weight="600" class="hl-sub">EDENTON,NORTHCAROLINA</text></g></svg>
         <h1>Come grow in <em>God’s Word.</em></h1>
         <p class="lede">A church family nine miles north of Edenton, gathering since 1835. Our mission is to magnify Christ and make disciples of all people, and there’s a seat for you this Sunday.</p>
         <div class="hero-actions">
