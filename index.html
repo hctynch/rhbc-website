@@ -157,6 +157,9 @@ p{margin:0}
 .times time{white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums}
 .times span small{display:block;color:var(--muted);font-size:.85rem;line-height:1.4}
 .addr{font-size:.93rem;color:var(--muted)}
+.addr-row{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap}
+.addr-row .addr{margin:0}
+.dir-btn{white-space:nowrap;flex:none}
 .addr strong{color:var(--ink);font-weight:600}
 @media (max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:32px}}
 
@@ -555,7 +558,7 @@ textarea{min-height:84px;resize:vertical}
       <aside class="sunday" aria-labelledby="sundayHead">
         <div><p class="eyebrow">Every Sunday</p><h2 id="sundayHead">Join us this week</h2></div>
         <ul class="times" id="sundayTimes"></ul>
-        <p class="addr"><strong>113 Rocky Hock Church Road</strong><br><strong>Edenton, NC 27932</strong></p>
+        <div class="addr-row"><p class="addr"><strong>113 Rocky Hock Church Road</strong><br><strong>Edenton, NC 27932</strong></p><a class="btn ghost small dir-btn" id="dirBtn" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rocky+Hock+Baptist+Church,+113+Rocky+Hock+Church+Road,+Edenton,+NC+27932" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Get directions</a></div>
         <button class="btn ghost small wk-edit" type="button" hidden style="justify-self:start">Edit weekly schedule</button>
       </aside>
     </div>
@@ -2305,6 +2308,10 @@ $("lsForm").addEventListener("submit",ev=>{ev.preventDefault();
   const cl=(v,a,b,d)=>{v=parseInt(v,10);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
   state.live={mode,before:cl($("ls-before").value,0,120,10),after:cl($("ls-after").value,15,240,90)};
   dirty=true;editing=true;closeDlg();renderAll();toast("Live stream settings updated. Press “Save changes” to publish.")});
+
+/* directions: Apple Maps on Apple devices, Google Maps elsewhere */
+(function(){const ua=navigator.userAgent||"";const apple=/iPhone|iPad|iPod|Macintosh/.test(ua);
+  if(apple){const b=$("dirBtn");b.href="https://maps.apple.com/?daddr=113+Rocky+Hock+Church+Road,+Edenton,+NC+27932&q=Rocky+Hock+Baptist+Church";b.title="Opens Apple Maps"}else $("dirBtn").title="Opens Google Maps"})();
 
 /* banners */
 let nRowId=0;
