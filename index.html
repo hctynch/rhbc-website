@@ -342,7 +342,6 @@ a.card:hover{border-color:var(--muted)}
 .lp-head b{color:#B3261E;letter-spacing:.12em;font-size:.82rem}
 .lp-frame{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
 .lp-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.lpwrap{padding-top:clamp(28px,4vw,48px)}
 .lp-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .lp-sermon{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--brand-hi);border-radius:10px;padding:16px 20px;display:grid;gap:8px}
 .lp-sermon .eyebrow{margin:0}
@@ -351,6 +350,9 @@ a.card:hover{border-color:var(--muted)}
 .lp-sermon dl>div{display:flex;gap:8px;align-items:baseline}
 .lp-sermon dt{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .lp-sermon dd{margin:0;font-weight:600}
+.lp-sermon .bref{font:600 .95rem/1.4 var(--body);color:var(--brand-hi);background:color-mix(in srgb,var(--brand-hi) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--brand-hi) 22%,transparent);border-radius:999px;padding:3px 12px;cursor:pointer}
+.lp-sermon .bref:hover,.lp-sermon .bref[aria-expanded="true"]{background:var(--brand-hi);color:var(--surface);border-color:var(--brand-hi)}
+.lp-sermon dl>div{align-items:center}
 .lp-sermon .series{font-size:.88rem;color:var(--muted);font-style:italic}
 .lp-sermon a{font-size:.92rem;font-weight:600}
 .serm-box{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
@@ -1190,16 +1192,16 @@ textarea{min-height:84px;resize:vertical}
 
 <div class="view" data-route="worship" data-sec="resources" data-title="Worship Services" hidden>
   <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>Worship Services</h1><p class="lede">Our Sunday worship service streams live every week at <span data-wk="worship" data-fmt="time">11:00 AM</span>. Join us from wherever you are.</p></div></section>
-  <div class="wrap lpwrap liveplayer" id="livePlayer" hidden>
-    <div class="lp-head"><span class="ldot" aria-hidden="true"></span><b>LIVE NOW</b><span id="lpTitle">Sunday worship</span></div>
-    <div class="lp-grid" id="lpGrid">
-      <section class="lp-sermon" id="lpSermon" aria-label="Today’s sermon" hidden></section>
-      <div class="lp-frame" id="lpFrame"></div>
-    </div>
-    <p class="note">Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.</p>
-  </div>
   <div class="wrap pbody"><div class="prose">
     <div class="linkrow"><button class="btn ghost small ls-edit" type="button" hidden>Live stream settings</button></div>
+      <div class="liveplayer" id="livePlayer" hidden>
+      <div class="lp-head"><span class="ldot" aria-hidden="true"></span><b>LIVE NOW</b><span id="lpTitle">Sunday worship</span></div>
+      <div class="lp-grid" id="lpGrid">
+        <section class="lp-sermon" id="lpSermon" aria-label="Today’s sermon" hidden></section>
+        <div class="lp-frame" id="lpFrame"></div>
+      </div>
+      <p class="note">Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.</p>
+    </div>
     <p class="offnote" id="liveOff"></p>
     <div class="linkrow">
       <a class="btn primary" href="https://www.youtube.com/channel/UCNcU2BuMTbw6eIVW7TTb0tQ" target="_blank" rel="noopener">Watch on YouTube</a>
@@ -2149,6 +2151,28 @@ $("sForm").addEventListener("submit",async ev=>{
 
 /* verse pop-ups (KJV, public domain) */
 const VERSES={"2 Timothy 3:16": [[16, "All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness:"]], "Revelation 22:18–19": [[18, "For I testify unto every man that heareth the words of the prophecy of this book, If any man shall add unto these things, God shall add unto him the plagues that are written in this book:"], [19, "And if any man shall take away from the words of the book of this prophecy, God shall take away his part out of the book of life, and out of the holy city, and from the things which are written in this book."]], "2 Corinthians 13:14": [[14, "The grace of the Lord Jesus Christ, and the love of God, and the communion of the Holy Ghost, be with you all. Amen."]], "Matthew 1:18": [[18, "Now the birth of Jesus Christ was on this wise: When as his mother Mary was espoused to Joseph, before they came together, she was found with child of the Holy Ghost."]], "John 1:14": [[14, "And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth."]], "1 Peter 2:24": [[24, "Who his own self bare our sins in his own body on the tree, that we, being dead to sins, should live unto righteousness: by whose stripes ye were healed."]], "1 Corinthians 15:3–4": [[3, "For I delivered unto you first of all that which I also received, how that Christ died for our sins according to the scriptures;"], [4, "And that he was buried, and that he rose again the third day according to the scriptures:"]], "Hebrews 4:14–16": [[14, "Seeing then that we have a great high priest, that is passed into the heavens, Jesus the Son of God, let us hold fast our profession."], [15, "For we have not an high priest which cannot be touched with the feeling of our infirmities; but was in all points tempted like as we are, yet without sin."], [16, "Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need."]], "Acts 1:11": [[11, "Which also said, Ye men of Galilee, why stand ye gazing up into heaven? this same Jesus, which is taken up from you into heaven, shall so come in like manner as ye have seen him go into heaven."]], "Romans 3:23": [[23, "For all have sinned, and come short of the glory of God;"]], "Ephesians 1:7": [[7, "In whom we have redemption through his blood, the forgiveness of sins, according to the riches of his grace;"]], "Ephesians 2:8–9": [[8, "For by grace are ye saved through faith; and that not of yourselves: it is the gift of God:"], [9, "Not of works, lest any man should boast."]], "1 John 5:11–13": [[11, "And this is the record, that God hath given to us eternal life, and this life is in his Son."], [12, "He that hath the Son hath life; and he that hath not the Son of God hath not life."], [13, "These things have I written unto you that believe on the name of the Son of God; that ye may know that ye have eternal life, and that ye may believe on the name of the Son of God."]], "Hebrews 9:27": [[27, "And as it is appointed unto men once to die, but after this the judgment:"]], "2 Thessalonians 1:8": [[8, "In flaming fire taking vengeance on them that know not God, and that obey not the gospel of our Lord Jesus Christ:"]]};
+function parseRef(ref){
+  const m=/^\s*((?:[1-3]|I{1,3})\s*)?([A-Za-z][A-Za-z ]*?)\s+(\d+)(?:\s*:\s*(\d+)(?:\s*[-–—]\s*(\d+)(?:\s*:\s*(\d+))?)?)?((?:\s*,\s*\d+(?:\s*[-–—]\s*\d+)?)*)\s*$/.exec(ref||"");
+  if(!m)return null;
+  const num={I:"1",II:"2",III:"3"}[(m[1]||"").trim()]||(m[1]||"").trim();
+  let book=m[2].trim().replace(/^Psalm$/i,"Psalms").replace(/^Song of Songs$/i,"Song of Solomon").replace(/^Revelations$/i,"Revelation");
+  const slug=((num?num+" ":"")+book).toLowerCase().replace(/[^a-z0-9]+/g,"-");
+  const c1=+m[3],v1=m[4]?+m[4]:0;let c2=c1,v2=v1;
+  if(m[6]){c2=+m[5];v2=+m[6]}else if(m[5])v2=+m[5];
+  const extra=(m[7]||"").split(",").map(x=>x.trim()).filter(Boolean).map(x=>{const r=x.split(/\s*[-–—]\s*/).map(Number);return[c2,r[0],r[1]||r[0]]});
+  return{slug,c1,v1,c2,v2,extra};
+}
+const kjvCache={};
+async function passage(ref){
+  if(VERSES[ref])return VERSES[ref];
+  const r=parseRef(ref);if(!r)throw 0;
+  const bk=await(kjvCache[r.slug]||(kjvCache[r.slug]=fetch("data/kjv/"+r.slug+".json").then(x=>{if(!x.ok)throw 0;return x.json()})));
+  const out=[],add=(c,v)=>{const t=(bk[c-1]||[])[v-1];if(t&&out.length<60)out.push([(r.c2>r.c1&&(v===1||!out.length)?c+":":"")+v,t])};
+  if(!r.v1){(bk[r.c1-1]||[]).forEach((_,i)=>add(r.c1,i+1))}
+  else for(let c=r.c1;c<=r.c2;c++){const a=c===r.c1?r.v1:1,z=c===r.c2?r.v2:(bk[c-1]||[]).length;for(let v=a;v<=z;v++)add(c,v)}
+  r.extra.forEach(([c,a,z])=>{for(let v=a;v<=z;v++)add(c,v)});
+  if(!out.length)throw 0;return out;
+}
 (function(){
   const pop=$("vpop");let cur=null,hideT=null,pinned=false;
   const fine=matchMedia("(hover:hover) and (pointer:fine)").matches;
@@ -2156,16 +2180,19 @@ const VERSES={"2 Timothy 3:16": [[16, "All scripture is given by inspiration of 
     let left=Math.min(Math.max(16,r.right-w),vw-w-16);let top=r.bottom+8;if(top+h>innerHeight&&r.top-h-8>0)top=r.top-h-8;
     pop.style.left=(left+scrollX)+"px";pop.style.top=(top+scrollY)+"px"}
   function open(b,pin){clearTimeout(hideT);if(cur&&cur!==b)cur.setAttribute("aria-expanded","false");cur=b;pinned=pin;
-    const ref=b.dataset.ref,vs=VERSES[ref]||[];
+    const ref=b.dataset.ref;
     const h=el("h4",{id:"vpopH"},ref,el("span",{textContent:"KJV"}));
-    const p=el("p");vs.forEach(([n,t],i)=>{if(vs.length>1)p.append(el("sup",{textContent:n}));p.append(t+(i<vs.length-1?" ":""))});
+    const p=el("p",{textContent:"Loading…"});
     const c=el("button",{type:"button",className:"vclose",textContent:"Close"});c.onclick=()=>{close();b.focus()};
-    pop.replaceChildren(h,p,c);pop.hidden=false;b.setAttribute("aria-expanded","true");place(b)}
+    pop.replaceChildren(h,p,c);pop.hidden=false;b.setAttribute("aria-expanded","true");place(b);
+    passage(ref).then(vs=>{if(cur!==b)return;p.replaceChildren();
+      vs.forEach(([n,t],i)=>{if(vs.length>1)p.append(el("sup",{textContent:n}));p.append(t+(i<vs.length-1?" ":""))});place(b)},
+      ()=>{if(cur===b){p.textContent="This passage couldn’t be loaded right now.";place(b)}})}
   function close(){pop.hidden=true;pinned=false;if(cur)cur.setAttribute("aria-expanded","false");cur=null}
-  document.querySelectorAll(".bref").forEach(b=>{
-    b.addEventListener("click",e=>{e.stopPropagation();(cur===b&&pinned)?close():open(b,true)});
-    if(fine){b.addEventListener("mouseenter",()=>{if(!pinned)open(b,false)});b.addEventListener("mouseleave",()=>{if(!pinned)hideT=setTimeout(close,250)})}
-  });
+  /* delegated, so references added later (like the sermon) work too */
+  document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".bref");if(!b)return;e.stopPropagation();(cur===b&&pinned)?close():open(b,true)},true);
+  if(fine){document.addEventListener("mouseover",e=>{const b=e.target.closest&&e.target.closest(".bref");if(b&&b!==cur&&!pinned)open(b,false);else if(b===cur)clearTimeout(hideT)});
+    document.addEventListener("mouseout",e=>{const b=e.target.closest&&e.target.closest(".bref");if(b&&!pinned&&!(e.relatedTarget&&b.contains(e.relatedTarget)))hideT=setTimeout(close,250)})}
   pop.addEventListener("mouseenter",()=>clearTimeout(hideT));
   pop.addEventListener("mouseleave",()=>{if(!pinned)hideT=setTimeout(close,250)});
   pop.addEventListener("click",e=>e.stopPropagation());
@@ -2356,18 +2383,17 @@ $("d-file").addEventListener("change",async()=>{
 });
 const nyKey=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 function curSermon(){
-  const t=nyKey(),b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)<=t);
-  if(!b||!b.s||!(b.s.title||b.s.scr||b.s.by))return null;
-  if((fromKey(t)-fromKey(b.d.slice(0,10)))/864e5>6)return null;
-  return b;
+  const t=nyKey(),b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===t);
+  return b&&b.s&&(b.s.title||b.s.scr||b.s.by)?b:null;
 }
+function refBtn(r){const b=el("button",{type:"button",className:"bref",textContent:r,title:"Read "+r});b.dataset.ref=r;b.setAttribute("aria-haspopup","dialog");b.setAttribute("aria-expanded","false");return b}
 function renderSermon(){
   const box=$("lpSermon"),b=curSermon();
   box.hidden=!b;if(!b){box.replaceChildren();return}
   const s=b.s,dl=el("dl");
-  if(s.scr)dl.append(el("div",{},el("dt",{textContent:"Scripture"}),el("dd",{textContent:s.scr})));
+  if(s.scr)dl.append(el("div",{},el("dt",{textContent:"Scripture"}),el("dd",{},parseRef(s.scr)?refBtn(s.scr):s.scr)));
   if(s.by)dl.append(el("div",{},el("dt",{textContent:"Preaching"}),el("dd",{textContent:s.by})));
-  box.replaceChildren(el("p",{className:"eyebrow",textContent:b.d.slice(0,10)===nyKey()?"Today’s Sermon":"This Week’s Sermon"}));
+  box.replaceChildren(el("p",{className:"eyebrow",textContent:"Today’s Sermon"}));
   if(s.title)box.append(el("h3",{textContent:"“"+s.title+"”"}));
   if(s.series)box.append(el("p",{className:"series",textContent:"Series: "+s.series}));
   if(dl.children.length)box.append(dl);
