@@ -478,8 +478,14 @@ footer .faddr strong{font-weight:700}
 .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .form .full{grid-column:1/-1}
 @media (max-width:480px){.form{grid-template-columns:1fr}}
-label{display:grid;gap:6px;font-size:.85rem;font-weight:600}
-input,select,textarea{font:400 1rem/1.4 var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;min-width:0}
+label{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;font-size:.85rem;font-weight:600;min-width:0}
+input,select,textarea{font:400 1rem/1.4 var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%;min-width:0;max-width:100%;box-sizing:border-box;display:block}
+input[type=date],input[type=time],input[type=month],input[type=datetime-local]{-webkit-appearance:none;appearance:none;min-height:44px;text-align:left}
+input::-webkit-date-and-time-value{text-align:left;margin:0}
+input::-webkit-datetime-edit{padding:0}
+input[type=checkbox],input[type=radio]{display:inline-block;width:auto;min-height:0}
+.dialog form,.dialog .form,.nrow,.lrow{min-width:0}
+.dialog fieldset{min-width:0}
 textarea{min-height:84px;resize:vertical}
 .dialog-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;align-items:center}
 .dialog-actions .danger{margin-right:auto;color:var(--c-music);border-color:var(--line);background:var(--surface)}
