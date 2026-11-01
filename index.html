@@ -1468,6 +1468,7 @@ textarea{min-height:84px;resize:vertical}
       </div>
       <label>Start showing (minutes before worship)<input id="ls-before" type="number" min="0" max="120" step="5"></label>
       <label>Keep showing (minutes after it starts)<input id="ls-after" type="number" min="15" max="240" step="5"></label>
+      <label class="full">Video link <span class="hint">Optional. Paste your Vimeo live event link (best), or a YouTube video link. Leave empty to use the YouTube channel’s live stream.</span><input id="ls-url" type="url" placeholder="https://vimeo.com/event/1234567"></label>
       <p class="hint full" id="ls-hint"></p>
       <div class="dialog-actions full">
         <button class="btn ghost" type="button" id="ls-cancel">Cancel</button>
@@ -2275,6 +2276,14 @@ $("peForm").addEventListener("submit",ev=>{ev.preventDefault();const p=state.pho
 
 /* live stream (shown by service time, or forced on/off) */
 const YT_CHANNEL="UCNcU2BuMTbw6eIVW7TTb0tQ";
+function liveEmbed(u){
+  u=(u||"").trim();let m;
+  if((m=/vimeo\.com\/event\/(\d+)/.exec(u)))return "https://vimeo.com/event/"+m[1]+"/embed";
+  if((m=/player\.vimeo\.com\/video\/(\d+)/.exec(u))||(m=/vimeo\.com\/(?:video\/)?(\d+)/.exec(u)))return "https://player.vimeo.com/video/"+m[1];
+  if((m=/(?:youtu\.be\/|[?&]v=|\/live\/|\/embed\/)([\w-]{11})/.exec(u)))return "https://www.youtube.com/embed/"+m[1]+"?rel=0";
+  return "https://www.youtube.com/embed/live_stream?channel="+YT_CHANNEL+"&rel=0";
+}
+const validLive=u=>!u||/vimeo\.com\/(event\/)?\d+|player\.vimeo\.com\/video\/\d+|youtu\.be\/[\w-]{11}|youtube\.com.*([?&]v=|\/live\/|\/embed\/)[\w-]{11}/.test(u);
 const nyNow=()=>{const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));return{dow:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(p.weekday),min:(+p.hour)*60+(+p.minute)}};
 const liveService=()=>{const w=(state.weekly||[]);return w.find(x=>x.id==="worship")||w.find(x=>x.dow===0&&x.start>="10:00"&&x.start<"13:00")||null};
 function liveState(){
@@ -2289,7 +2298,7 @@ function renderLive(){
   const name=ls.svc?ls.svc.title:"Worship";
   $("liveText").textContent=name+" is streaming";$("lpTitle").textContent=name;
   bar.hidden=!ls.on;pl.hidden=!ls.on;
-  if(ls.on&&liveShown!==true){$("lpFrame").replaceChildren(el("iframe",{src:"https://www.youtube.com/embed/live_stream?channel="+YT_CHANNEL+"&rel=0",title:"Live worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
+  if(ls.on&&liveShown!==true){$("lpFrame").replaceChildren(el("iframe",{src:liveEmbed((state.live||{}).url),title:"Live worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
   if(!ls.on&&liveShown!==false)$("lpFrame").replaceChildren();
   liveShown=ls.on;
   const svc=liveService(),L=state.live||{};
@@ -2298,7 +2307,7 @@ function renderLive(){
 setInterval(renderLive,30000);
 function openLive(){const L=state.live||{mode:"auto",before:10,after:90};
   document.querySelector('input[name="ls-mode"][value="'+(L.mode||"auto")+'"]').checked=true;
-  $("ls-before").value=L.before??10;$("ls-after").value=L.after??90;
+  $("ls-before").value=L.before??10;$("ls-after").value=L.after??90;$("ls-url").value=L.url||"";
   const svc=liveService();$("ls-hint").textContent=svc?"Automatic uses “"+svc.title+"” ("+DAYNAMES[svc.dow]+" "+fmtTime(svc.start)+") from the weekly schedule. “Show now” stays on until you switch back to Automatic.":"Add a Sunday morning worship time to the weekly schedule for Automatic to work.";
   $("overlay11").hidden=false}
 document.querySelectorAll(".ls-edit").forEach(b=>b.onclick=openLive);
@@ -2306,7 +2315,9 @@ $("ls-cancel").onclick=closeDlg;
 $("lsForm").addEventListener("submit",ev=>{ev.preventDefault();
   const mode=document.querySelector('input[name="ls-mode"]:checked').value;
   const cl=(v,a,b,d)=>{v=parseInt(v,10);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
-  state.live={mode,before:cl($("ls-before").value,0,120,10),after:cl($("ls-after").value,15,240,90)};
+  const url=$("ls-url").value.trim();
+  if(!validLive(url)){toast("That video link wasn’t recognized. Paste a Vimeo event link (vimeo.com/event/…) or a YouTube video link.");return}
+  state.live={mode,before:cl($("ls-before").value,0,120,10),after:cl($("ls-after").value,15,240,90),url};liveShown=null;
   dirty=true;editing=true;closeDlg();renderAll();toast("Live stream settings updated. Press “Save changes” to publish.")});
 
 /* directions: Apple Maps on Apple devices, Google Maps elsewhere */
