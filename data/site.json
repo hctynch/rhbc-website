@@ -490,6 +490,7 @@
  "live": {
   "mode": "auto",
   "before": 10,
-  "after": 90
+  "after": 90,
+  "url": "https://vimeo.com/event/1270700"
  }
 }
