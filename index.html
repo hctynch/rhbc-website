@@ -507,6 +507,7 @@ textarea{min-height:84px;resize:vertical}
       <span>Menu</span>
     </label>
     <nav class="nav" id="nav" aria-label="Main">
+      <a href="#home" data-sec="home">Home</a>
       <details class="dd" data-sec="about"><summary>About</summary><div class="menu">
         <a href="#about">About RHBC</a><hr>
         <a href="#welcome">Welcome</a><a href="#beliefs">Our Beliefs</a><a href="#mission">Our Mission</a><a href="#history">Our History</a><a href="#photos">Photos</a><a href="#staff">Our Staff</a><a href="#schedule">Our Schedule</a><a href="#directions">Directions</a>
@@ -1604,7 +1605,7 @@ function show(){
   if(!ROUTES.has(r))r="home";
   let cur=null;
   for(const v of views){const on=v.dataset.route===r;v.hidden=!on;if(on)cur=v}
-  const sec=cur.dataset.sec||(r==="calendar"?"calendar":"");
+  const sec=cur.dataset.sec||(r==="calendar"?"calendar":r==="home"?"home":"");
   document.querySelectorAll(".nav [data-sec]").forEach(n=>{const s=n.getAttribute("data-sec")===sec;(n.tagName==="DETAILS"?n.querySelector("summary"):n).classList.toggle("cur",s)});
   document.querySelectorAll(".dd .menu a").forEach(a=>a.classList.toggle("cur",a.getAttribute("href")==="#"+r));
   document.title=(r==="home"?"":(cur.dataset.title+" · "))+"Rocky Hock Baptist Church";
