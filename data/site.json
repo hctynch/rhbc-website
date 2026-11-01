@@ -304,7 +304,7 @@
    "start": "09:45",
    "end": "",
    "title": "Sunday School",
-   "note": "For all ages",
+   "note": "All Ages",
    "cat": "adults"
   },
   {
@@ -313,7 +313,7 @@
    "start": "11:00",
    "end": "",
    "title": "Morning Worship",
-   "note": "Children’s Church for ages 2 – 5th grade",
+   "note": "Children’s Church for Ages 2 – 5th Grade",
    "cat": "worship"
   },
   {
@@ -322,8 +322,26 @@
    "start": "18:00",
    "end": "",
    "title": "Deep Dive",
-   "note": "Adult Bible study, children & students",
+   "note": "Adult Bible Study",
    "cat": "adults"
+  },
+  {
+   "id": "wmvxceknqwzwr",
+   "dow": 0,
+   "start": "18:00",
+   "end": "19:00",
+   "title": "Vertical Student Ministry",
+   "note": "Middle & High School Youth - Youth Suite",
+   "cat": "students"
+  },
+  {
+   "id": "wmvxceknqecrq",
+   "dow": 0,
+   "start": "18:00",
+   "end": "19:00",
+   "title": "Foundations Kid's Ministry",
+   "note": "1st – 5th Grade Girls and Boys",
+   "cat": "kids"
   },
   {
    "id": "yah",
@@ -331,7 +349,7 @@
    "start": "10:00",
    "end": "",
    "title": "Young at Heart Adult Bible Study",
-   "note": "Room 312, Senior Adult Building",
+   "note": "Senior Adult Building - Room 312",
    "cat": "adults"
   },
   {
@@ -339,8 +357,8 @@
    "dow": 3,
    "start": "18:45",
    "end": "",
-   "title": "Vertical Student Ministries",
-   "note": "Middle & High School Youth · Youth Suite · Meal Provided",
+   "title": "Vertical Student Ministry",
+   "note": "Middle & High School Youth - Youth Suite (Meal Provided)",
    "cat": "students"
   },
   {
@@ -349,7 +367,7 @@
    "start": "18:45",
    "end": "",
    "title": "GAs & RAs",
-   "note": "1st – 5th Grade Girls and Boys · Meal in the Special Function Room",
+   "note": "1st – 5th Grade Girls and Boys (Meal in the Special Function Room)",
    "cat": "kids"
   },
   {
@@ -358,7 +376,7 @@
    "start": "19:00",
    "end": "",
    "title": "Worship Seeds",
-   "note": "Adults · Sanctuary",
+   "note": "Adults - Sanctuary",
    "cat": "adults"
   },
   {
