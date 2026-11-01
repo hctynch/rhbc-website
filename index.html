@@ -1861,7 +1861,7 @@ $("dForm").addEventListener("submit",async ev=>{
       if(file.size>20*1024*1024)return err("That PDF is over 20 MB. Save a smaller copy and try again.");
       if(!assetsApi)return err("Uploading isn’t available here. Paste a link instead.");
       docBusy=true;$("d-apply").disabled=true;$("d-apply").textContent="Uploading…";
-      try{const r=await assetsApi.upload(file,{type:"application/pdf",folder:docKind,name:d+(isB?"-bulletin":"-newsletter")+".pdf"});rec.a=r.id}
+      try{const r=await assetsApi.upload(file,{type:"application/pdf",...(isB?{folder:"bulletins/"+d.slice(0,4),name:d.replace(/-/g,"")+" RHBC Bulletin.pdf",raw:true}:{folder:docKind,name:d+"-newsletter.pdf"})});rec.a=r.id}
       catch(e){const c=e&&e.code;docBusy=false;$("d-apply").disabled=false;$("d-apply").textContent=old?"Apply":"Add";
         return err(c==="too_large"?"That PDF is too large. The limit is 20 MB.":c==="unsupported_type"?"That file isn’t a PDF.":c==="quota_or_state"?"Storage for this site is full. Remove old uploads or paste a link instead.":c==="rate_limited"?"Too many uploads at once. Wait a moment and try again.":"The upload didn’t go through. Try again, or paste a link instead.")}
       docBusy=false;$("d-apply").disabled=false;
@@ -2344,9 +2344,9 @@ const slug=n=>{const m=/\.([a-z0-9]{2,5})$/i.exec(n),ext=m?m[1].toLowerCase():""
 const exists=async path=>{if(GH.pending[path])return true;try{await api("/contents/"+path.split("/").map(encodeURIComponent).join("/")+"?ref="+BRANCH);return true}catch(e){if(e.status===404)return false;throw e}};
 GH.assets={async upload(file,opt){
   const folder=(opt&&opt.folder)||"files",d=new Date(),day=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-  const content=await fileB64(file);const fixed=opt&&opt.name;let name=fixed?slug(opt.name):slug(file.name);
+  const content=await fileB64(file);const fixed=opt&&opt.name;let name=fixed?(opt.raw?opt.name:slug(opt.name)):slug(file.name);
   for(let k=0;k<8;k++){
-    const path=fixed?folder+"/"+(k?name.replace(/(\.[a-z0-9]+)?$/,"-"+(k+1)+"$1"):name):folder+"/"+day+"-"+(k?k+"-":"")+name;
+    const path=fixed?folder+"/"+(k?name.replace(/(\.[a-z0-9]+)?$/,(opt.raw?" ("+(k+1)+")":"-"+(k+1))+"$1"):name):folder+"/"+day+"-"+(k?k+"-":"")+name;
     if(await exists(path))continue;
     GH.pending[path]=content;GH.local[path]=URL.createObjectURL(file);
     return{id:path,url:GH.local[path]};
