@@ -345,6 +345,11 @@ a.card:hover{border-color:var(--muted)}
 .lp-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .lp-sermon{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--brand-hi);border-radius:10px;padding:16px 20px;display:grid;gap:8px}
 .lp-sermon .eyebrow{margin:0}
+.ls-row:not(:has(.ls-edit:not([hidden]))){display:none}
+.lp-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.lp-live{display:inline-flex;align-items:center;gap:8px}
+.lp-live b{color:#B3261E;letter-spacing:.12em;font-size:.78rem}
+.lp-live .ldot{background:#B3261E;box-shadow:0 0 0 0 rgb(179 38 30 / .6)}
 .lp-sermon h3{font-size:clamp(1.15rem,2.2vw,1.45rem);line-height:1.3;margin:0}
 .lp-sermon dl{display:flex;flex-wrap:wrap;gap:6px 28px;margin:0}
 .lp-sermon dl>div{display:flex;gap:8px;align-items:baseline}
@@ -1193,9 +1198,9 @@ textarea{min-height:84px;resize:vertical}
 <div class="view" data-route="worship" data-sec="resources" data-title="Worship Services" hidden>
   <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>Worship Services</h1><p class="lede">Our Sunday worship service streams live every week at <span data-wk="worship" data-fmt="time">11:00 AM</span>. Join us from wherever you are.</p></div></section>
   <div class="wrap pbody"><div class="prose">
-    <div class="linkrow"><button class="btn ghost small ls-edit" type="button" hidden>Live stream settings</button></div>
+    <div class="linkrow ls-row"><button class="btn ghost small ls-edit" type="button" hidden>Live stream settings</button></div>
       <div class="liveplayer" id="livePlayer" hidden>
-      <div class="lp-head"><span class="ldot" aria-hidden="true"></span><b>LIVE NOW</b><span id="lpTitle">Sunday worship</span></div>
+      <div class="lp-head" id="lpHead"><span class="ldot" aria-hidden="true"></span><b>LIVE NOW</b><span id="lpTitle">Sunday worship</span></div>
       <div class="lp-grid" id="lpGrid">
         <section class="lp-sermon" id="lpSermon" aria-label="Today’s sermon" hidden></section>
         <div class="lp-frame" id="lpFrame"></div>
@@ -2389,11 +2394,11 @@ function curSermon(){
 function refBtn(r){const b=el("button",{type:"button",className:"bref",textContent:r,title:"Read "+r});b.dataset.ref=r;b.setAttribute("aria-haspopup","dialog");b.setAttribute("aria-expanded","false");return b}
 function renderSermon(){
   const box=$("lpSermon"),b=curSermon();
-  box.hidden=!b;if(!b){box.replaceChildren();return}
+  box.hidden=!b;$("lpHead").hidden=!!b;if(!b){box.replaceChildren();return}
   const s=b.s,dl=el("dl");
   if(s.scr)dl.append(el("div",{},el("dt",{textContent:"Scripture"}),el("dd",{},parseRef(s.scr)?refBtn(s.scr):s.scr)));
   if(s.by)dl.append(el("div",{},el("dt",{textContent:"Preaching"}),el("dd",{textContent:s.by})));
-  box.replaceChildren(el("p",{className:"eyebrow",textContent:"Today’s Sermon"}));
+  box.replaceChildren(el("div",{className:"lp-top"},el("p",{className:"eyebrow",textContent:"Today’s Sermon"}),el("span",{className:"lp-live"},el("span",{className:"ldot",ariaHidden:"true"}),el("b",{textContent:"LIVE NOW"}))));
   if(s.title)box.append(el("h3",{textContent:"“"+s.title+"”"}));
   if(s.series)box.append(el("p",{className:"series",textContent:"Series: "+s.series}));
   if(dl.children.length)box.append(dl);
