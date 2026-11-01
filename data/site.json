@@ -313,7 +313,7 @@
    "start": "11:00",
    "end": "",
    "title": "Morning Worship",
-   "note": "Children’s Church for Ages 2 – 5th Grade",
+   "note": "Nursery and Children’s Church Provided",
    "cat": "worship"
   },
   {
@@ -486,5 +486,10 @@
    "bio": "Deborah has served full-time since 2015. She has lived in Rocky Hock most of her life and has been a member since she was 12.",
    "photo": ""
   }
- ]
+ ],
+ "live": {
+  "mode": "auto",
+  "before": 10,
+  "after": 90
+ }
 }
