@@ -397,14 +397,14 @@
  ],
  "notices": [
   {
-   "text": "Give blood in memory of Chase Bateman at the RHBC Red Cross blood drive.",
-   "url": "https://www.redcrossblood.org/give.html/drive-results?zipSponsor=RHBC",
-   "until": "2026-11-18"
-  },
-  {
    "text": "Order your RHBC apparel now!",
    "url": "https://docs.google.com/forms/d/e/1FAIpQLScEtp21mTpJLidJzHSL7LauOgSr9CG39i9Uxy8uhBijSDjxlg/viewform?pli=1",
    "until": "2026-11-15"
+  },
+  {
+   "text": "Give blood in memory of Chase Bateman at the RHBC Red Cross blood drive.",
+   "url": "https://www.redcrossblood.org/give.html/drive-results?zipSponsor=RHBC",
+   "until": "2026-11-18"
   }
  ],
  "weekly": [
