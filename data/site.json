@@ -508,14 +508,7 @@
    "cat": "music"
   }
  ],
- "alert": {
-  "kind": "cancel",
-  "title": "Closed",
-  "details": "",
-  "url": "",
-  "urlText": "",
-  "until": ""
- },
+ "alert": null,
  "photos": [
   {
    "id": "phmvukd3sh0",
