@@ -9,7 +9,7 @@
 <meta name="description" content="Rocky Hock Baptist Church, 113 Rocky Hock Church Road, Edenton, NC. Sunday School 9:45 AM, Worship 11:00 AM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Public+Sans:wght@400;500;600;700&family=Open+Sans:wdth,wght@75,700&display=swap">
 <style>
 /* Layout: sticky header with section menus; each route is a view: hero band, then a main column with a section sidebar. Home keeps the typographic hero; Calendar is a month grid + day agenda. */
 :root{
@@ -63,6 +63,11 @@ p{margin:0}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:16px;min-height:80px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);margin-right:auto;min-width:0}
+.brand-text{display:none;font-family:"Open Sans",var(--body);font-stretch:75%;font-weight:700;font-size:clamp(1.3rem,5.4vw,2.05rem);line-height:1;letter-spacing:.005em;white-space:nowrap}
+.brand .brand-text b{display:inline;font:inherit;line-height:inherit;color:var(--brand-hi)}
+.brand .brand-text span{font:inherit;color:color-mix(in srgb,var(--ink) 66%,var(--bg))}
+body.at-home .brand img{display:none}
+body.at-home .brand-text{display:block}
 .brand img{height:64px;width:auto;flex:none;display:block;background:var(--logo-tile);padding:var(--logo-pad);border-radius:6px;box-sizing:content-box}
 .brand .bt{min-width:0}
 .brand b{font-family:var(--display);font-weight:400;font-size:1.12rem;line-height:1.1;display:block}
@@ -523,6 +528,7 @@ textarea{min-height:84px;resize:vertical}
   <div class="wrap">
     <a class="brand" href="#home" aria-label="Rocky Hock Baptist Church home">
       <img src="images/logo-wide.png" alt="Rocky Hock Baptist Church" width="590" height="216">
+      <span class="brand-text" aria-hidden="true"><b>Rocky Hock</b> <span>Baptist Church</span></span>
     </a>
     <input type="checkbox" id="navToggle" class="nav-toggle" aria-controls="nav" aria-label="Show menu">
     <label for="navToggle" class="menu-btn" id="menuBtn" aria-hidden="true">
@@ -1641,6 +1647,7 @@ function show(){
   let cur=null;
   for(const v of views){const on=v.dataset.route===r;v.hidden=!on;if(on)cur=v}
   const sec=cur.dataset.sec||(r==="calendar"?"calendar":r==="home"?"home":"");
+  document.body.classList.toggle("at-home",r==="home");
   document.querySelectorAll(".nav [data-sec]").forEach(n=>{const s=n.getAttribute("data-sec")===sec;(n.tagName==="DETAILS"?n.querySelector("summary"):n).classList.toggle("cur",s)});
   document.querySelectorAll(".dd .menu a").forEach(a=>a.classList.toggle("cur",a.getAttribute("href")==="#"+r));
   document.title=(r==="home"?"":(cur.dataset.title+" · "))+"Rocky Hock Baptist Church";
