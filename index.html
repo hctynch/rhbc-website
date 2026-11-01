@@ -1861,7 +1861,7 @@ $("dForm").addEventListener("submit",async ev=>{
       if(file.size>20*1024*1024)return err("That PDF is over 20 MB. Save a smaller copy and try again.");
       if(!assetsApi)return err("Uploading isn’t available here. Paste a link instead.");
       docBusy=true;$("d-apply").disabled=true;$("d-apply").textContent="Uploading…";
-      try{const r=await assetsApi.upload(file,{type:"application/pdf",...(isB?{folder:"bulletins/"+d.slice(0,4),name:d.replace(/-/g,"")+" RHBC Bulletin.pdf",raw:true}:{folder:docKind,name:d+"-newsletter.pdf"})});rec.a=r.id}
+      try{const r=await assetsApi.upload(file,{type:"application/pdf",...(isB?{folder:"bulletins/"+d.slice(0,4),name:d.replace(/-/g,"")+" RHBC Bulletin.pdf",raw:true}:{folder:"newsletters/"+d.slice(0,4),name:d.replace(/-/g,"")+" RHBC Newsletter.pdf",raw:true})});rec.a=r.id}
       catch(e){const c=e&&e.code;docBusy=false;$("d-apply").disabled=false;$("d-apply").textContent=old?"Apply":"Add";
         return err(c==="too_large"?"That PDF is too large. The limit is 20 MB.":c==="unsupported_type"?"That file isn’t a PDF.":c==="quota_or_state"?"Storage for this site is full. Remove old uploads or paste a link instead.":c==="rate_limited"?"Too many uploads at once. Wait a moment and try again.":"The upload didn’t go through. Try again, or paste a link instead.")}
       docBusy=false;$("d-apply").disabled=false;
