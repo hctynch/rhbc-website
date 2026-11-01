@@ -324,6 +324,22 @@ a.card:hover{border-color:var(--muted)}
 .lb-close{background:none;border:1px solid rgb(255 255 255 / .35);color:#fff;border-radius:6px;padding:7px 12px;font:600 .85rem/1 var(--body);cursor:pointer}
 @media (max-width:600px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lb-stage{grid-template-columns:1fr}.lb-stage .lb-btn{display:none}}
 
+/* live stream */
+.livebar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;padding:11px 20px;background:#B3261E;color:#fff;text-decoration:none;font-size:.98rem}
+.livebar b{letter-spacing:.12em;font-size:.82rem}
+.livebar .lgo{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.livebar:hover .lgo{text-decoration-thickness:2px}
+.ldot{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgb(255 255 255 / .7);animation:lpulse 1.6s infinite}
+.liveplayer .ldot{background:#B3261E;box-shadow:0 0 0 0 rgb(179 38 30 / .6)}
+@keyframes lpulse{0%{box-shadow:0 0 0 0 rgb(255 255 255 / .7)}70%{box-shadow:0 0 0 9px rgb(255 255 255 / 0)}100%{box-shadow:0 0 0 0 rgb(255 255 255 / 0)}}
+.liveplayer{display:grid;gap:10px}
+.lp-head{display:flex;align-items:center;gap:10px;font-size:.95rem}
+.lp-head b{color:#B3261E;letter-spacing:.12em;font-size:.82rem}
+.lp-frame{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.lp-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.offnote{font-weight:600}
+.offnote:empty{display:none}
+
 /* next up */
 .nextup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 @media (max-width:860px){.nextup{grid-template-columns:1fr}}
@@ -510,6 +526,7 @@ textarea{min-height:84px;resize:vertical}
 </header>
 
 <section class="alert" id="alert" hidden aria-live="polite"></section>
+<a class="livebar" id="livebar" href="#worship" hidden><span class="ldot" aria-hidden="true"></span><b>LIVE NOW</b><span class="lt" id="liveText">Sunday worship is streaming</span><span class="lgo">Watch on our website →</span></a>
 <div class="notice" id="notice" hidden></div>
 
 <main>
@@ -1149,6 +1166,13 @@ textarea{min-height:84px;resize:vertical}
 <div class="view" data-route="worship" data-sec="resources" data-title="Worship Services" hidden>
   <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>Worship Services</h1><p class="lede">Our Sunday worship service streams live every week at <span data-wk="worship" data-fmt="time">11:00 AM</span>. Join us from wherever you are.</p></div></section>
   <div class="wrap pbody"><div class="prose">
+    <div class="linkrow"><button class="btn ghost small ls-edit" type="button" hidden>Live stream settings</button></div>
+    <div class="liveplayer" id="livePlayer" hidden>
+      <div class="lp-head"><span class="ldot" aria-hidden="true"></span><b>LIVE NOW</b><span id="lpTitle">Sunday worship</span></div>
+      <div class="lp-frame" id="lpFrame"></div>
+      <p class="note">Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.</p>
+    </div>
+    <p class="offnote" id="liveOff"></p>
     <div class="linkrow">
       <a class="btn primary" href="https://www.youtube.com/channel/UCNcU2BuMTbw6eIVW7TTb0tQ" target="_blank" rel="noopener">Watch on YouTube</a>
       <a class="btn ghost" href="https://www.facebook.com/pages/Rocky-Hock-Baptist-Church/247245175582" target="_blank" rel="noopener">Facebook</a>
@@ -1420,6 +1444,27 @@ textarea{min-height:84px;resize:vertical}
   </div>
 </div>
 
+<div id="overlay11" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg11Title">
+    <h3 id="dlg11Title">Live stream settings</h3>
+    <p class="meta">Controls the “Live Now” notice on the home page and the video player on the Worship Services page.</p>
+    <form id="lsForm" class="form" novalidate>
+      <div class="full srcpick" role="radiogroup" aria-label="When to show">
+        <label><input type="radio" name="ls-mode" value="auto"> Automatic (by service time)</label>
+        <label><input type="radio" name="ls-mode" value="on"> Show now</label>
+        <label><input type="radio" name="ls-mode" value="off"> Hide</label>
+      </div>
+      <label>Start showing (minutes before worship)<input id="ls-before" type="number" min="0" max="120" step="5"></label>
+      <label>Keep showing (minutes after it starts)<input id="ls-after" type="number" min="15" max="240" step="5"></label>
+      <p class="hint full" id="ls-hint"></p>
+      <div class="dialog-actions full">
+        <button class="btn ghost" type="button" id="ls-cancel">Cancel</button>
+        <button class="btn primary" type="submit">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="overlay10" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg10Title">
     <h3 id="dlg10Title">Staff sign in</h3>
@@ -1512,6 +1557,7 @@ const sortWk=a=>a.map((w,i)=>[w,i]).sort((x,y)=>(x[0].dow-y[0].dow)||(x[0].start
 const DEFAULT_STAFF=[{"id": "str", "name": "James Richard Rogers III (Trey)", "ini": "TR", "role": "Senior Pastor", "phone": "(252) 221-4133", "email": "trogers@rhbce.org", "bio": "Pastor Trey comes from the mountains of Western North Carolina, where faith and ministry were part of his life from an early age. A fourth-generation minister, he sensed God’s call to preach at 14, was licensed in 2011 and ordained in 2016.\n\nHe holds a B.A. in Religious Studies from Young Harris College, where he met his wife, Julianna. They married in 2018. “Mrs. Juli” teaches 3rd grade at D.F. Walker Elementary School.\n\nOver 15 years he has served in pastoral, youth and children’s, and music ministry. He came to Rocky Hock as Associate Pastor of Youth and Children in 2024 and was called as Senior Pastor in March 2026.", "photo": ""}, {"id": "sch", "name": "Dr. Cache’ Hapner", "ini": "CH", "role": "Director of Family & Children’s Ministries", "phone": "(252) 221-4133", "email": "chapner@rhbce.org", "bio": "Dr. Hapner is an educator, mentor and retired U.S. Navy Chief Petty Officer with more than 20 years of experience teaching, training and building teams. In the Navy she held leadership roles including Instructor and Senior Training Leader.\n\nShe holds a Doctor of Education in Organizational Leadership and teaches at College of the Albemarle, where she develops curriculum and mentors students. Her community service includes Drug Education for Youth (DEFY), school volunteer programs, GED instruction, and support for senior citizens and homeless veterans, earning her two Military Outstanding Volunteer Service Medals. She and her husband, Dan, have three children, and the family has served at Rocky Hock through Vacation Bible School, Hand Bells and more.\n\nRaised in the Baptist church, she accepted Christ at 13. She joined the staff in October 2026. Her heart is to partner with parents and families so every child comes to know Jesus, grows as His disciple, and feels safe, loved and rooted in the church family.", "photo": ""}, {"id": "slb", "name": "Linda Bunch", "ini": "LB", "role": "Administrative Assistant", "phone": "(252) 221-4133", "email": "lbunch@rhbce.org", "bio": "Linda joined the staff in 2007. She grew up in Perquimans County and has lived in Rocky Hock for more than three decades. She sees her work as a calling as much as a job.", "photo": ""}, {"id": "sdl", "name": "Deborah Long", "ini": "DL", "role": "Custodian", "phone": "(252) 221-4133", "email": "", "bio": "Deborah has served full-time since 2015. She has lived in Rocky Hock most of her life and has been a member since she was 12.", "photo": ""}];
 const DEFAULT_SPECIALS=[{"id": "sp-cf", "title": "CentriFuge Camp", "desc": "For 6th – 12th graders. Every part of camp points back to God’s Word, led by trained staff, with program, meals and lodging provided so leaders can focus on their students.", "reg": {"text": "Register for CentriFuge", "url": "https://app.sharefaith.com/App/Form/83ac6f0f-0d99-419f-b8ad-8d891014149c"}, "links": []}, {"id": "sp-ck", "title": "CentriKid Camp", "desc": "A high-energy, gospel-centered overnight camp for 2nd – 6th graders, with track times, recreation, worship, Bible study and church group time.", "reg": {"text": "Register for CentriKid", "url": "https://app.sharefaith.com/App/Form/2d4e8e7a-f7b2-402d-bfaf-3a7bf36268f9"}, "links": []}, {"id": "sp-bb", "title": "Church League Basketball", "desc": "A chance for kids, youth and parents to play basketball in a church setting that honors God, with good Christian fellowship as the main goal. Teams for K–2 co-ed, 3–5 co-ed, middle school boys, middle and high school girls, and high school boys.", "reg": null, "links": [{"text": "League Rules (PDF)", "url": "https://rockyhockbaptistchurch.org/wp-content/uploads/2022/04/chowan-county-church-basketball-league-playing-rules.pdf"}, {"text": "Church Calendar", "url": "#calendar"}]}];
 function normalize(st){
+  if(!st.live||typeof st.live!=="object")st.live={mode:"auto",before:10,after:90};
   if(!Array.isArray(st.photos))st.photos=[];
   if(!Array.isArray(st.specials))st.specials=JSON.parse(JSON.stringify(DEFAULT_SPECIALS));
   if(!Array.isArray(st.staff))st.staff=JSON.parse(JSON.stringify(DEFAULT_STAFF));
@@ -1765,7 +1811,7 @@ function renderUp(){
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"No special events in the next eight weeks."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
-function renderAll(){renderWeekly();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();
+function renderAll(){renderWeekly();renderLive();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();
   $("savebar").hidden=!editing;$("saveMsg").textContent=dirty?"You have unsaved changes":"Editing is on";
   toggles.forEach(t=>t.textContent=editing?"Editing…":t.dataset.label);
   $("saveBtn").disabled=!dirty;$("discardBtn").disabled=!dirty;document.body.classList.toggle("editing",editing);
@@ -1797,9 +1843,9 @@ function openEvent(id){
   $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
-function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay10"].forEach(i=>$(i).hidden=true)}
+function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay10"].forEach(i=>$(i).hidden=true)}
 $("cancelBtn").onclick=closeDlg;$("nCancel").onclick=closeDlg;
-[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
+[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
 $("evForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const t=f.title.value.trim(),d=f.date.value,err=m=>{$("f-err").textContent=m;$("f-err").hidden=false};
@@ -2215,6 +2261,42 @@ $("peForm").addEventListener("submit",ev=>{ev.preventDefault();const p=state.pho
   state.photos[peIdx]={...p,cap:$("pe-cap").value.replace(/\r/g,"").trim(),year:$("pe-year").value.trim()};
   dirty=true;editing=true;closeDlg();renderAll();toast("Caption saved. Press “Save changes” to publish.")});
 
+/* live stream (shown by service time, or forced on/off) */
+const YT_CHANNEL="UCNcU2BuMTbw6eIVW7TTb0tQ";
+const nyNow=()=>{const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));return{dow:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(p.weekday),min:(+p.hour)*60+(+p.minute)}};
+const liveService=()=>{const w=(state.weekly||[]);return w.find(x=>x.id==="worship")||w.find(x=>x.dow===0&&x.start>="10:00"&&x.start<"13:00")||null};
+function liveState(){
+  const L=state.live||{mode:"auto"};if(L.mode==="on")return{on:true,svc:liveService()};if(L.mode==="off")return{on:false};
+  const svc=liveService();if(!svc)return{on:false};
+  const [h,m]=svc.start.split(":").map(Number),st=h*60+m,n=nyNow();
+  return{on:n.dow===svc.dow&&n.min>=st-(+L.before||0)&&n.min<st+(+L.after||90),svc};
+}
+let liveShown=null;
+function renderLive(){
+  const ls=liveState(),bar=$("livebar"),pl=$("livePlayer");
+  const name=ls.svc?ls.svc.title:"Worship";
+  $("liveText").textContent=name+" is streaming";$("lpTitle").textContent=name;
+  bar.hidden=!ls.on;pl.hidden=!ls.on;
+  if(ls.on&&liveShown!==true){$("lpFrame").replaceChildren(el("iframe",{src:"https://www.youtube.com/embed/live_stream?channel="+YT_CHANNEL+"&rel=0",title:"Live worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
+  if(!ls.on&&liveShown!==false)$("lpFrame").replaceChildren();
+  liveShown=ls.on;
+  const svc=liveService(),L=state.live||{};
+  $("liveOff").textContent=ls.on?"":(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");
+}
+setInterval(renderLive,30000);
+function openLive(){const L=state.live||{mode:"auto",before:10,after:90};
+  document.querySelector('input[name="ls-mode"][value="'+(L.mode||"auto")+'"]').checked=true;
+  $("ls-before").value=L.before??10;$("ls-after").value=L.after??90;
+  const svc=liveService();$("ls-hint").textContent=svc?"Automatic uses “"+svc.title+"” ("+DAYNAMES[svc.dow]+" "+fmtTime(svc.start)+") from the weekly schedule. “Show now” stays on until you switch back to Automatic.":"Add a Sunday morning worship time to the weekly schedule for Automatic to work.";
+  $("overlay11").hidden=false}
+document.querySelectorAll(".ls-edit").forEach(b=>b.onclick=openLive);
+$("ls-cancel").onclick=closeDlg;
+$("lsForm").addEventListener("submit",ev=>{ev.preventDefault();
+  const mode=document.querySelector('input[name="ls-mode"]:checked').value;
+  const cl=(v,a,b,d)=>{v=parseInt(v,10);return isNaN(v)?d:Math.min(b,Math.max(a,v))};
+  state.live={mode,before:cl($("ls-before").value,0,120,10),after:cl($("ls-after").value,15,240,90)};
+  dirty=true;editing=true;closeDlg();renderAll();toast("Live stream settings updated. Press “Save changes” to publish.")});
+
 /* banners */
 let nRowId=0;
 function bannerRow(n){
@@ -2301,7 +2383,7 @@ $("saveBtn").onclick=async()=>{
 renderAll();show();
 
 /* staff sign-in (GitHub key) */
-if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".wk-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
+if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".wk-edit,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
 $("staffLink").textContent=GH.ok?"Staff sign out":"Staff sign in";
 $("staffLink").onclick=e=>{e.preventDefault();
   if(GH.ok){if(dirty&&!confirm("You have unsaved changes. Sign out anyway?"))return;GH.forget();location.reload();return}
