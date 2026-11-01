@@ -508,7 +508,14 @@
    "cat": "music"
   }
  ],
- "alert": null,
+ "alert": {
+  "kind": "cancel",
+  "title": "Canceled due to snow.",
+  "details": "",
+  "url": "",
+  "urlText": "",
+  "until": "2026-11-01T17:25"
+ },
  "photos": [
   {
    "id": "phmvukd3sh0",
