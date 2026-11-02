@@ -425,8 +425,8 @@ a.card:hover{border-color:var(--muted)}
 .staffcard .role{font-size:.85rem;font-weight:600;color:var(--brand-hi);letter-spacing:.04em}
 
 /* calendar */
-.cal{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr);gap:24px;align-items:start}
-@media (max-width:960px){.cal{grid-template-columns:1fr}}
+.cal{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+@media (min-width:961px){.cal .cell{min-height:112px}}
 .cal-main{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0}
 .cal-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
 .cal-bar h3{margin-right:auto;font-size:1.45rem;min-width:9ch}
@@ -456,7 +456,8 @@ a.card:hover{border-color:var(--muted)}
   .pill,.more{display:none}
   .dots{display:flex;padding:0;justify-content:center}
 }
-.agenda{display:grid;gap:16px;min-width:0}
+.agenda{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start;min-width:0}
+@media (max-width:860px){.agenda{grid-template-columns:minmax(0,1fr);gap:16px}}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
 .panel h3{font-size:1.15rem;margin-bottom:4px}
 .panel-head{display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap}
