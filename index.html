@@ -465,11 +465,10 @@ a.card:hover{border-color:var(--muted)}
 .ag-day{display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
 .ag-day:last-child{border-bottom:0}
 .ag-date{display:grid;justify-items:center;align-content:start;gap:2px;padding-top:10px;text-align:center}
-.ag-date small{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ag-date{color:var(--brand-hi)}
+.ag-date small{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .ag-date b{font-family:var(--display);font-weight:400;font-size:2rem;line-height:1}
-.ag-day.today .ag-date b{color:var(--brand-hi)}
-.ag-day.today .ag-date small{color:var(--brand-hi)}
-.ag-day.past{opacity:.6}
+.ag-day.today .ag-date{background:color-mix(in srgb,var(--brand-hi) 10%,transparent);border-radius:10px;padding:10px 0 8px;align-self:start;margin-top:4px}
 .ag-day .ev-list{margin:0}
 .ag-day .ev:first-child{border-top:0}
 .ag-empty{padding:28px 0;color:var(--muted)}
@@ -1871,7 +1870,7 @@ function renderAgenda(){
     const dt=fromKey(k);
     const date=el("div",{className:"ag-date"},el("small",{textContent:DOWS[dt.getDay()]}),el("b",{textContent:String(d)}),el("small",{textContent:MONTHS[m].slice(0,3)}));
     const ul=el("ul",{className:"ev-list"});for(const e of evs)ul.append(evRow(e,false));
-    const row=el("div",{className:"ag-day"+(k===TODAY?" today":k<TODAY?" past":"")},date,ul);row.setAttribute("aria-label",longDate(k));
+    const row=el("div",{className:"ag-day"+(k===TODAY?" today":"")},date,ul);row.setAttribute("aria-label",longDate(k));
     if(k===TODAY)row.id="agToday";
     box.append(row);
   }
