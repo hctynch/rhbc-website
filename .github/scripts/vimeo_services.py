@@ -49,6 +49,9 @@ def when(v):
     ends, so created_time is a week early for recordings. Prefer the live
     stream's own times, then the release time.
     """
+    vid = (v.get("uri") or "").rsplit("/", 1)[-1]
+    if vid in END:
+        return END[vid], "next_slot"
     live = v.get("live") or {}
     for src, val in (("live.ended_time", live.get("ended_time")),
                      ("live.started_time", live.get("started_time") or live.get("start_time")),
@@ -61,6 +64,27 @@ def when(v):
             except ValueError:
                 pass
     return None, None
+
+
+END = {}
+
+
+def ts(val):
+    return datetime.datetime.fromisoformat(str(val).replace("Z", "+00:00")).astimezone(NY)
+
+
+def chain_end_times(vids):
+    """A recurring event makes the next video slot when a stream ends, and that
+    slot receives the following stream. So a recording ended when the slot
+    after it was created."""
+    live = sorted((v for v in vids if v.get("type") == "live" and v.get("created_time")),
+                  key=lambda v: v["created_time"])
+    for a, b in zip(live, live[1:]):
+        vid = (a.get("uri") or "").rsplit("/", 1)[-1]
+        try:
+            END[vid] = ts(b["created_time"])
+        except ValueError:
+            pass
 
 
 def is_service(v):
@@ -76,16 +100,16 @@ def is_service(v):
 def from_library():
     """The account's video library, newest first, filtered by name."""
     out, path = [], f"/me/videos?sort=date&direction=desc&per_page=100&fields={FIELDS}"
-    while path and len(out) < 300:
+    while path and len(out) < 600:
         page = get(path)
-        out += [v for v in page.get("data", []) if is_service(v)]
+        out += page.get("data", [])
         path = (page.get("paging") or {}).get("next")
     return out
 
 
 def tidy(v):
     vid = (v.get("uri") or "").rsplit("/", 1)[-1]
-    if not vid.isdigit() or v.get("status") not in (None, "available"):
+    if not vid.isdigit() or v.get("status") not in (None, "available") or int(v.get("duration") or 0) < 120:
         return None
     h = ""
     emb = v.get("player_embed_url") or ""
@@ -117,6 +141,8 @@ def main():
     except Exception as e:  # Live API needs an Enterprise plan; fall back to the library
         print("Event clips unavailable (%s); using the video library." % e)
         vids, source = from_library(), "library"
+    chain_end_times(vids)
+    vids = [v for v in vids if is_service(v)]
     if os.environ.get("VIMEO_DEBUG"):
         for v in vids[:10]:
             print("DEBUG", (v.get("uri") or "").rsplit("/", 1)[-1], "created", v.get("created_time"), "release", v.get("release_time"),
