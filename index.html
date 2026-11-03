@@ -2660,17 +2660,17 @@ $("d-file").addEventListener("change",async()=>{
 const nyKey=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 function curSermon(t){
   t=t||nyKey();const b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===t);
-  return b&&b.s&&(b.s.title||b.s.scr||b.s.by)?b:null;
+  return b&&(b.s&&(b.s.title||b.s.scr||b.s.by)||b.t)?b:null;
 }
 function refBtn(r){const b=el("button",{type:"button",className:"bref",textContent:r,title:"Read "+r});b.dataset.ref=r;b.setAttribute("aria-haspopup","dialog");b.setAttribute("aria-expanded","false");return b}
 function renderSermon(dk,live,label){
   const box=$("lpSermon"),b=curSermon(dk);
   box.hidden=!b;$("lpHead").hidden=!!b;if(!b){box.replaceChildren();return}
-  const s=b.s,dl=el("dl");
+  const s=b.s||{},dl=el("dl");
   if(s.scr)dl.append(el("div",{},el("dt",{textContent:"Scripture"}),el("dd",{},parseRef(s.scr)?refBtn(s.scr):s.scr)));
   if(s.by)dl.append(el("div",{},el("dt",{textContent:"Preaching"}),el("dd",{textContent:s.by})));
   const tag=live?el("span",{className:"lp-live"},el("span",{className:"ldot",ariaHidden:"true"}),el("b",{textContent:"LIVE NOW"})):el("span",{className:"lp-live lp-rec"},el("b",{textContent:(label||"Most Recent Service")+" · "+shortDate(dk)}));
-  box.replaceChildren(el("div",{className:"lp-top"},el("p",{className:"eyebrow",textContent:live?"Today’s Sermon":"Sermon"}),tag));
+  box.replaceChildren(el("div",{className:"lp-top"},el("p",{className:"eyebrow",textContent:(s.title||s.scr||s.by)?(live?"Today’s Sermon":"Sermon"):(live?"Today’s Service":"Service")}),tag));
   if(b.t)box.append(el("p",{className:"lp-day",textContent:b.t}));
   if(s.title)box.append(el("h3",{textContent:"“"+s.title+"”"}));
   if(s.series)box.append(el("p",{className:"series",textContent:"Series: "+s.series}));
@@ -2719,7 +2719,7 @@ function renderServices(){
   wrap.hidden=!list.length;ul.replaceChildren();if(!list.length)return;
   const showingRecent=!picked&&/^r/.test(liveShown||"");
   list.slice(0,svcLimit).forEach(v=>{
-    const b=svcSermon(v),s=b?b.s:{},dt=fromKey(v.date);
+    const b=svcSermon(v),s=(b&&b.s)||{},dt=fromKey(v.date);
     const date=el("span",{className:"svc-date"},el("small",{textContent:MONTHS[dt.getMonth()].slice(0,3)}),el("b",{textContent:String(dt.getDate())}),el("small",{textContent:String(dt.getFullYear())}));
     const body=el("span",{className:"svc-body"});
     const cur=picked?picked.id===v.id:(showingRecent&&latest&&v.id===latest.id);
