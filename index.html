@@ -192,6 +192,17 @@ body:not(.editing) .phero .linkrow:not(:has(> :not([hidden]):not(.editor-tools))
 .fact span{font-weight:600;line-height:1.4}
 .fact small{color:var(--muted);font-size:.87rem;line-height:1.4}
 .note{font-size:.88rem;color:var(--muted)}
+.kverses{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.kverses .fact{gap:6px}
+.kverses .fact span{font-family:var(--display);font-weight:400;font-size:1.1rem}
+.kverses .refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.kdrills{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.kdrills .fact small{color:var(--ink);opacity:.8;margin-top:4px}
+.remind-card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--brand-hi);border-radius:10px;padding:22px 24px;display:grid;gap:12px;justify-items:start}
+.remind-card .eyebrow{margin:0}
+.remind-how{font-family:var(--display);font-size:clamp(1.5rem,1.1rem + 1.6vw,2.1rem);line-height:1.25;margin:0}
+.remind-how b{color:var(--brand-hi);font-weight:400;white-space:nowrap}
+.remind-card small{color:var(--muted);font-size:.85rem}
 .side{display:grid;gap:16px;position:sticky;top:calc(88px + env(safe-area-inset-top,0px))}
 @media (max-width:900px){.side{position:static}}
 .side-nav{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;display:grid}
@@ -265,9 +276,9 @@ a.card:hover{border-color:var(--muted)}
 .bel-group li:first-child{border-top:0}
 .bel-group .refs{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;flex:none}
 .bel-group li span{font-size:1.04rem;line-height:1.5}
-.bel-group .bref{flex:none;text-decoration:none;font-style:normal;font-size:.86rem;font-weight:600;color:var(--brand-hi);background:color-mix(in srgb,var(--brand-hi) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--brand-hi) 22%,transparent);padding:3px 10px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
-.bel-group .bref:hover{background:var(--brand-hi);color:var(--surface);border-color:var(--brand-hi)}
-.bel-group .bref{cursor:pointer;font-family:var(--body);line-height:1.4}
+.kverses .bref,.bel-group .bref{flex:none;text-decoration:none;font-style:normal;font-size:.86rem;font-weight:600;color:var(--brand-hi);background:color-mix(in srgb,var(--brand-hi) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--brand-hi) 22%,transparent);padding:3px 10px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.kverses .bref:hover,.bel-group .bref:hover{background:var(--brand-hi);color:var(--surface);border-color:var(--brand-hi)}
+.kverses .bref,.bel-group .bref{cursor:pointer;font-family:var(--body);line-height:1.4}
 .bel-group .bref[aria-expanded="true"]{background:var(--brand-hi);color:var(--surface);border-color:var(--brand-hi)}
 .vpop{position:absolute;z-index:25;width:min(380px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-top:4px solid var(--brand-hi);border-radius:10px;box-shadow:0 12px 32px rgb(0 0 0 / .18);padding:16px 18px 14px;display:grid;gap:8px}
 .vpop h4{margin:0;font:600 .8rem/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--brand-hi);display:flex;justify-content:space-between;gap:12px;align-items:center}
@@ -977,14 +988,120 @@ textarea{min-height:84px;resize:vertical}
       <div class="fact"><b>GAs & RAs</b><span>Wednesday</span><small>Girls in Action and Royal Ambassadors, grades 1–5</small></div>
       <div class="fact"><b>Mission Friends</b><span>Wednesday</span><small>Ages 3–4, Room 406</small></div>
     </div>
-    <h2>More for kids</h2>
-    <div class="linkrow">
-      <a class="btn ghost small" href="https://rockyhockbaptistchurch.org/girls-in-action/" target="_blank" rel="noopener">Girls in Action</a>
-      <a class="btn ghost small" href="https://rockyhockbaptistchurch.org/royal-ambassadors/" target="_blank" rel="noopener">Royal Ambassadors</a>
-      <a class="btn ghost small" href="https://rockyhockbaptistchurch.org/mission-friends/" target="_blank" rel="noopener">Mission Friends</a>
-      <a class="btn ghost small" href="https://rockyhockbaptistchurch.org/bible-drill/" target="_blank" rel="noopener">Bible Drill</a>
-      <a class="btn ghost small" href="https://rockyhockbaptistchurch.org/children-remind-notifications/" target="_blank" rel="noopener">Remind text alerts</a>
+    <h2>More for Kids</h2>
+    <div class="cards">
+      <a class="card" href="#kids-ga"><b>Girls in Action</b><span>Missions for girls, grades 1–5.</span></a>
+      <a class="card" href="#kids-ra"><b>Royal Ambassadors</b><span>Missions for boys, grades 1–5.</span></a>
+      <a class="card" href="#kids-mf"><b>Mission Friends</b><span>Preschoolers, ages 3–4.</span></a>
+      <a class="card" href="#kids-bible-drill"><b>Bible Drill</b><span>Learning God’s Word, grades 3–6.</span></a>
+      <a class="card" href="#kids-remind"><b>Remind Text Alerts</b><span>Children’s Ministry updates by text.</span></a>
     </div>
+  </div><aside class="side"></aside></div>
+</div>
+
+<div class="view" data-route="kids-ga" data-sec="ministries" data-parent="kids" data-title="Girls in Action" hidden>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Foundations Kids</p><h1>Girls in Action</h1><p class="lede">A missions group for girls in 1st through 5th grade.</p></div></section>
+  <div class="wrap pbody"><div class="prose">
+    <div class="facts">
+      <div class="fact"><b>When</b><span data-wk="garas" data-fmt="days">Wednesdays, 6:45 PM</span><small>Meal provided</small></div>
+      <div class="fact"><b>Who</b><span>Girls, grades 1–5</span></div>
+      <div class="fact"><b>Where</b><span>Special Function Room</span></div>
+    </div>
+    <blockquote>Go Forward!<cite>GA Motto</cite></blockquote>
+    <h2>GA Pledge</h2>
+    <p>As a GA, I will do my best to live a missions lifestyle that honors God by learning about missions, praying for missions, giving to missions, doing missions, and participating in the work of the church.</p>
+    <h2>Our Verses</h2>
+    <div class="kverses">
+      <div class="fact"><b>GA Scripture Verse</b><span>Declare His doings among the people.</span><div class="refs"><button type="button" class="bref" data-ref="Isaiah 12:4" aria-haspopup="dialog" aria-expanded="false">Isaiah 12:4</button></div></div>
+      <div class="fact"><b>GA Lifestyle Verse</b><span>Do justly, love mercy, and walk humbly with your God.</span><div class="refs"><button type="button" class="bref" data-ref="Micah 6:8" aria-haspopup="dialog" aria-expanded="false">Micah 6:8</button></div></div>
+    </div>
+    <p class="note">Hover over or tap a verse to read it.</p>
+    <div class="linkrow"><a class="btn ghost" href="#kids">← Foundations Kids</a><a class="btn ghost" href="#kids-ra">Royal Ambassadors</a><a class="btn ghost" href="#calendar">See the calendar</a></div>
+  </div><aside class="side"></aside></div>
+</div>
+
+<div class="view" data-route="kids-ra" data-sec="ministries" data-parent="kids" data-title="Royal Ambassadors" hidden>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Foundations Kids</p><h1>Royal Ambassadors</h1><p class="lede">A missions group for boys in 1st through 5th grade.</p></div></section>
+  <div class="wrap pbody"><div class="prose">
+    <div class="facts">
+      <div class="fact"><b>When</b><span data-wk="garas" data-fmt="days">Wednesdays, 6:45 PM</span><small>Meal provided</small></div>
+      <div class="fact"><b>Who</b><span>Boys, grades 1–5</span></div>
+      <div class="fact"><b>Where</b><span>Special Function Room</span></div>
+    </div>
+    <blockquote>We are Ambassadors for Christ.<cite>RA Motto, 2 Corinthians 5:20</cite></blockquote>
+    <h2>What Is Royal Ambassadors?</h2>
+    <p>Royal Ambassadors (RAs) is a Bible-centered, church-based, Southern Baptist missions education organization for boys. A Royal Ambassador is a boy committed to living out the RA Pledge, which is part of both personal and chapter (group) accountability.</p>
+    <h2>Why the Name Royal Ambassadors?</h2>
+    <p>The RA Motto, “We are Ambassadors for Christ,” gives the organization its name and gives the boys and their leaders a lifestyle goal. It comes from 2 Corinthians 5:20. The full passage, 2 Corinthians 5:17–20, describes the purpose of Royal Ambassadors: Paul’s declaration of why we need to be ambassadors for Christ.</p>
+    <div class="kverses">
+      <div class="fact"><b>RA Passage</b><span>We are ambassadors for Christ.</span><div class="refs"><button type="button" class="bref" data-ref="2 Corinthians 5:17–20" aria-haspopup="dialog" aria-expanded="false">2 Corinthians 5:17–20</button></div></div>
+    </div>
+    <p class="note">Hover over or tap the verse to read it.</p>
+    <div class="linkrow"><a class="btn ghost" href="#kids">← Foundations Kids</a><a class="btn ghost" href="#kids-ga">Girls in Action</a><a class="btn ghost" href="#calendar">See the calendar</a></div>
+  </div><aside class="side"></aside></div>
+</div>
+
+<div class="view" data-route="kids-mf" data-sec="ministries" data-parent="kids" data-title="Mission Friends" hidden>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Foundations Kids</p><h1>Mission Friends</h1><p class="lede">Building blocks of faith for our preschoolers.</p></div></section>
+  <div class="wrap pbody"><div class="prose">
+    <div class="facts">
+      <div class="fact"><b>When</b><span data-wk="mf" data-fmt="days">Wednesdays, 7:00 PM</span></div>
+      <div class="fact"><b>Who</b><span>Ages 3–4</span></div>
+      <div class="fact"><b>Where</b><span>Room 406</span></div>
+    </div>
+    <p>In Mission Friends, children learn the building blocks of faith and a basic awareness of God’s love for all people. We read, play games, make crafts and, most importantly, talk about Jesus.</p>
+    <p>At this age, it is vital that children begin a solid foundation built on the Word of God. We look forward to teaching your child its truths as God intended.</p>
+    <div class="linkrow"><a class="btn ghost" href="#kids">← Foundations Kids</a><a class="btn ghost" href="#calendar">See the calendar</a></div>
+  </div><aside class="side"></aside></div>
+</div>
+
+<div class="view" data-route="kids-bible-drill" data-sec="ministries" data-parent="kids" data-title="Bible Drill" hidden>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Foundations Kids</p><h1>Bible Drill</h1><p class="lede">Helping kids in 3rd through 6th grade learn God’s Word.</p></div></section>
+  <div class="wrap pbody"><div class="prose">
+    <div class="facts">
+      <div class="fact"><b>Who</b><span>Grades 3–6</span></div>
+      <div class="fact"><b>When</b><span>Sundays, 5:00 PM</span><small>See the bulletin for any changes</small></div>
+      <div class="fact"><b>Contact</b><span>Donna Peele</span><small><a href="mailto:dbpeele2014@gmail.com">dbpeele2014@gmail.com</a></small></div>
+    </div>
+    <p>Bible Drill Team members and their families grow in their knowledge of the Bible and develop skills in handling God’s Word. Together they:</p>
+    <ul>
+      <li>Memorize the 66 books of the Bible, in order</li>
+      <li>Learn ten key passages of Scripture</li>
+      <li>Memorize 25 selected verses</li>
+      <li>Learn how to apply the Bible to everyday life</li>
+    </ul>
+    <h2>The Four Drills</h2>
+    <div class="facts kdrills">
+      <div class="fact"><b>Quotation Drill</b><span>6 calls, from memory</span><small>Bibles are held at the side. The driller quotes the verse from memory and gives the reference.</small></div>
+      <div class="fact"><b>Completion Drill</b><span>6 calls, from memory</span><small>Bibles are held at the side. Part of a verse is read, and the driller quotes the entire verse and gives the reference.</small></div>
+      <div class="fact"><b>Book Drill</b><span>6 calls, Bible used</span><small>A book is named. The driller finds any page in it, places a finger on the page, and names the book before it, the book itself and the book after it.</small></div>
+      <div class="fact"><b>Key Passage Drill</b><span>6 calls, Bible used</span><small>A key passage is named (such as The Twelve Apostles). The driller finds it, places a finger on it, states its title and reference, and reads one or more verses aloud.</small></div>
+    </div>
+    <p class="note">Each call in all four drills must be completed within 10 seconds.</p>
+    <h2>Join the Team</h2>
+    <p>If your child would like to be part of the Bible Drill Team, email Donna Peele.</p>
+    <div class="linkrow"><a class="btn primary" href="mailto:dbpeele2014@gmail.com?subject=Bible%20Drill%20Team">Email Donna Peele</a><a class="btn ghost" href="#kids">← Foundations Kids</a></div>
+  </div><aside class="side"></aside></div>
+</div>
+
+<div class="view" data-route="kids-remind" data-sec="ministries" data-parent="kids" data-title="Remind Text Alerts" hidden>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Foundations Kids</p><h1>Remind Text Alerts</h1><p class="lede">Get Children’s Ministry updates by text message.</p></div></section>
+  <div class="wrap pbody"><div class="prose">
+    <div class="remind-card">
+      <p class="eyebrow">Join in one text</p>
+      <p class="remind-how">Text <b>@rockyhock</b> to <b>81010</b></p>
+      <a class="btn primary" href="sms:81010?&amp;body=%40rockyhock">Text to join</a>
+      <small>The button opens your phone’s messaging app with the text ready to send. Standard message rates may apply.</small>
+    </div>
+    <p>We want to keep you informed. Once you join the group, you’ll receive reminders and updates about:</p>
+    <ul>
+      <li>Upcoming events</li>
+      <li>Parent resources</li>
+      <li>Bible studies and meetings</li>
+      <li>Payments that are coming due</li>
+    </ul>
+    <p>Please add yourself to the group so you don’t miss any important updates.</p>
+    <div class="linkrow"><a class="btn ghost" href="#kids">← Foundations Kids</a><a class="btn ghost" href="#calendar">See the calendar</a></div>
   </div><aside class="side"></aside></div>
 </div>
 
@@ -1654,7 +1771,7 @@ const SECTIONS={
 };
 function el(tag,props,...kids){const n=document.createElement(tag);if(props)for(const k in props){if(k==="style")n.setAttribute("style",props[k]);else n[k]=props[k]}for(const c of kids){if(c==null)continue;n.append(c)}return n}
 document.querySelectorAll(".view[data-sec] .side").forEach(side=>{
-  const v=side.closest(".view"),sec=SECTIONS[v.dataset.sec],route=v.dataset.route;if(!sec)return;
+  const v=side.closest(".view"),sec=SECTIONS[v.dataset.sec],route=v.dataset.parent||v.dataset.route;if(!sec)return;
   const nav=el("nav",{className:"side-nav"},el("p",{className:"eyebrow",textContent:sec.label}));
   nav.setAttribute("aria-label",sec.label);
   for(const [r,l] of sec.items){const a=el("a",{href:"#"+r,textContent:l});if(r===route){a.className="cur";a.setAttribute("aria-current","page")}nav.append(a)}
@@ -2209,7 +2326,7 @@ $("sForm").addEventListener("submit",async ev=>{
 /* verse pop-ups (KJV, public domain) */
 const VERSES={"2 Timothy 3:16": [[16, "All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness:"]], "Revelation 22:18–19": [[18, "For I testify unto every man that heareth the words of the prophecy of this book, If any man shall add unto these things, God shall add unto him the plagues that are written in this book:"], [19, "And if any man shall take away from the words of the book of this prophecy, God shall take away his part out of the book of life, and out of the holy city, and from the things which are written in this book."]], "2 Corinthians 13:14": [[14, "The grace of the Lord Jesus Christ, and the love of God, and the communion of the Holy Ghost, be with you all. Amen."]], "Matthew 1:18": [[18, "Now the birth of Jesus Christ was on this wise: When as his mother Mary was espoused to Joseph, before they came together, she was found with child of the Holy Ghost."]], "John 1:14": [[14, "And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth."]], "1 Peter 2:24": [[24, "Who his own self bare our sins in his own body on the tree, that we, being dead to sins, should live unto righteousness: by whose stripes ye were healed."]], "1 Corinthians 15:3–4": [[3, "For I delivered unto you first of all that which I also received, how that Christ died for our sins according to the scriptures;"], [4, "And that he was buried, and that he rose again the third day according to the scriptures:"]], "Hebrews 4:14–16": [[14, "Seeing then that we have a great high priest, that is passed into the heavens, Jesus the Son of God, let us hold fast our profession."], [15, "For we have not an high priest which cannot be touched with the feeling of our infirmities; but was in all points tempted like as we are, yet without sin."], [16, "Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need."]], "Acts 1:11": [[11, "Which also said, Ye men of Galilee, why stand ye gazing up into heaven? this same Jesus, which is taken up from you into heaven, shall so come in like manner as ye have seen him go into heaven."]], "Romans 3:23": [[23, "For all have sinned, and come short of the glory of God;"]], "Ephesians 1:7": [[7, "In whom we have redemption through his blood, the forgiveness of sins, according to the riches of his grace;"]], "Ephesians 2:8–9": [[8, "For by grace are ye saved through faith; and that not of yourselves: it is the gift of God:"], [9, "Not of works, lest any man should boast."]], "1 John 5:11–13": [[11, "And this is the record, that God hath given to us eternal life, and this life is in his Son."], [12, "He that hath the Son hath life; and he that hath not the Son of God hath not life."], [13, "These things have I written unto you that believe on the name of the Son of God; that ye may know that ye have eternal life, and that ye may believe on the name of the Son of God."]], "Hebrews 9:27": [[27, "And as it is appointed unto men once to die, but after this the judgment:"]], "2 Thessalonians 1:8": [[8, "In flaming fire taking vengeance on them that know not God, and that obey not the gospel of our Lord Jesus Christ:"]]};
 function parseRef(ref){
-  const m=/^\s*((?:[1-3]|I{1,3})\s*)?([A-Za-z][A-Za-z ]*?)\s+(\d+)(?:\s*:\s*(\d+)(?:\s*[-–—]\s*(\d+)(?:\s*:\s*(\d+))?)?)?((?:\s*,\s*\d+(?:\s*[-–—]\s*\d+)?)*)\s*$/.exec(ref||"");
+  const m=/^\s*((?:[1-3]\s*|I{1,3}\s+))?([A-Za-z][A-Za-z ]*?)\s+(\d+)(?:\s*:\s*(\d+)(?:\s*[-–—]\s*(\d+)(?:\s*:\s*(\d+))?)?)?((?:\s*,\s*\d+(?:\s*[-–—]\s*\d+)?)*)\s*$/.exec(ref||"");
   if(!m)return null;
   const num={I:"1",II:"2",III:"3"}[(m[1]||"").trim()]||(m[1]||"").trim();
   let book=m[2].trim().replace(/^Psalm$/i,"Psalms").replace(/^Song of Songs$/i,"Song of Solomon").replace(/^Revelations$/i,"Revelation");
