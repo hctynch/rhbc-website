@@ -411,6 +411,8 @@ a.card:hover{border-color:var(--muted)}
 .svc-list{list-style:none;margin:0;padding:0;display:grid;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .prose .svc-list{padding:0;margin:0}
 .svc-list li{margin:0}
+.svc-list li.has-ed{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+.svc-list .svc-ed{margin-right:14px}
 .svc-list li+li{border-top:1px solid var(--line)}
 .svc-item{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:16px;align-items:center;width:100%;padding:14px 18px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .svc-item:hover{background:var(--wash)}
@@ -1701,6 +1703,25 @@ textarea{min-height:84px;resize:vertical}
   </div>
 </div>
 
+<div id="overlay12" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg12Title">
+    <h3 id="dlg12Title">Edit service details</h3>
+    <p class="meta" id="sv-when"></p>
+    <form id="svForm" class="form" novalidate>
+      <label class="full">Special day <span class="hint">Optional, e.g. “Revival” or “Senior Adults Sunday”</span><input id="sv-t" maxlength="80"></label>
+      <label class="full">Sermon title<input id="sv-title" maxlength="200"></label>
+      <label>Scripture<input id="sv-scr" maxlength="80" placeholder="Jonah 3:3–10"></label>
+      <label>Speaker<input id="sv-by" maxlength="80" list="sv-by-list" placeholder="Pastor Trey Rogers"><datalist id="sv-by-list"></datalist></label>
+      <p class="hint full" id="sv-hint">Details from that Sunday’s bulletin fill in on their own. Anything you change here is shown instead.</p>
+      <div class="dialog-actions full">
+        <button class="btn danger" type="button" id="sv-clear">Clear my changes</button>
+        <button class="btn ghost" type="button" id="sv-cancel">Cancel</button>
+        <button class="btn primary" type="submit">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="overlay11" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg11Title">
     <h3 id="dlg11Title">Live stream settings</h3>
@@ -2125,7 +2146,7 @@ function renderUp(){
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"No special events in the next eight weeks."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
-function renderAll(){renderWeekly();renderLive();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();
+function renderAll(){renderWeekly();renderLive();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();if(typeof renderServices==="function")renderServices();
   $("savebar").hidden=!editing;$("saveMsg").textContent=dirty?"You have unsaved changes":"Editing is on";
   toggles.forEach(t=>t.textContent=editing?"Editing…":t.dataset.label);
   $("saveBtn").disabled=!dirty;$("discardBtn").disabled=!dirty;document.body.classList.toggle("editing",editing);
@@ -2158,9 +2179,9 @@ function openEvent(id){
   $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
-function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay10"].forEach(i=>$(i).hidden=true)}
+function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay10"].forEach(i=>$(i).hidden=true)}
 $("cancelBtn").onclick=closeDlg;$("nCancel").onclick=closeDlg;
-[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
+[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
 $("evForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const t=f.title.value.trim(),d=f.date.value,err=m=>{$("f-err").textContent=m;$("f-err").hidden=false};
@@ -2753,7 +2774,7 @@ const latestSvc=()=>SERVICES.find(validSvc)||null;
 const fmtDur=d=>{d=Math.round((+d||0)/60);return d<60?d+" min":Math.floor(d/60)+" hr"+(d%60?" "+(d%60)+" min":"")};
 const PLAY_ICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>';
 function renderServices(){
-  const wrap=$("svcWrap"),ul=$("svcList");if(!wrap)return;
+  const wrap=$("svcWrap"),ul=$("svcList");if(!wrap||!SERVICES)return;
   const all=SERVICES.filter(validSvc),latest=latestSvc();
   wrap.hidden=!all.length;ul.replaceChildren();if(!all.length)return;
   fillSvcFilters(all);
@@ -2777,12 +2798,33 @@ function renderServices(){
     btn.setAttribute("aria-label","Watch the "+longDate(v.date)+" service"+(s.title?": "+s.title:""));
     if(cur)btn.setAttribute("aria-current","true");
     btn.onclick=()=>{picked=v;setDateBtn(v);renderLive();renderServices();const p=$("livePlayer");if(p&&p.scrollIntoView)p.scrollIntoView({behavior:"smooth",block:"start"})};
-    ul.append(el("li",{},btn));
+    const li=el("li",{},btn);
+    if(canEditFlag){const eb=el("button",{type:"button",className:"btn ghost small svc-ed",textContent:"Edit"});eb.setAttribute("aria-label","Edit details for the "+longDate(v.date)+" service");eb.onclick=e=>{e.stopPropagation();openSvcEdit(v)};li.classList.add("has-ed");li.append(eb)}
+    ul.append(li);
   });
   const more=$("svcMore");more.hidden=list.length<=svcLimit;more.textContent="Show more ("+(list.length-svcLimit)+" earlier)";
 }
 $("svcMore").onclick=()=>{svcLimit+=12;renderServices()};
-let svcFilled="",svcAll=[],dp={step:"y",y:"",m:-1};
+let svcFilled="",svcAll=[],dp={step:"y",y:"",m:-1},svEditing=null;
+function openSvcEdit(v){
+  svEditing=v;const b=svcSermon(v),s=(b&&b.s)||{};
+  $("sv-when").textContent=longDate(v.date)+", "+fromKey(v.date).getFullYear()+(isMorning(v)?"":" (evening)")+(v.dur?" · "+fmtDur(v.dur):"");
+  $("sv-t").value=(b&&b.t)||"";$("sv-title").value=s.title||"";$("sv-scr").value=s.scr||"";$("sv-by").value=s.by||"";
+  const names=new Set(["Pastor Trey Rogers"]);svcAll.forEach(x=>{const y=svcSermon(x);if(y&&y.s&&y.s.by)names.add(y.s.by)});
+  $("sv-by-list").replaceChildren(...[...names].sort().map(n=>el("option",{value:n})));
+  $("sv-clear").hidden=!((state.svcNotes||{})[v.id]);
+  $("overlay12").hidden=false;setTimeout(()=>$("sv-title").focus(),30);
+}
+$("sv-cancel").onclick=closeDlg;
+$("sv-clear").onclick=()=>{if(!svEditing)return;const n=state.svcNotes||{};delete n[svEditing.id];state.svcNotes=n;svcFilled="";
+  dirty=true;editing=true;closeDlg();renderAll();toast("Changes cleared. Press “Save changes” to publish.")};
+$("svForm").addEventListener("submit",ev=>{ev.preventDefault();if(!svEditing)return;
+  const v=svEditing,base=isMorning(v)?curSermon(v.date):null,bs=(base&&base.s)||{};
+  const val={t:$("sv-t").value.trim(),title:$("sv-title").value.trim().replace(/^[“"]|[”"]$/g,""),scr:$("sv-scr").value.trim(),by:$("sv-by").value.trim()};
+  const from={t:(base&&base.t)||"",title:bs.title||"",scr:bs.scr||"",by:bs.by||""};
+  const note={};for(const k in val)if(val[k]&&val[k]!==from[k])note[k]=val[k];
+  const n=state.svcNotes||(state.svcNotes={});if(Object.keys(note).length)n[v.id]=note;else delete n[v.id];
+  svcFilled="";dirty=true;editing=true;closeDlg();renderAll();toast("Service details updated. Press “Save changes” to publish.")});
 function svcLabel(v){const d=fromKey(v.date),b=svcSermon(v);
   return d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"})+(isMorning(v)?"":" · Evening")+(b&&b.t?" · "+b.t:"")}
 function setDateBtn(v){$("svcDateBtn").textContent=v?svcLabel(v):"Choose a date…"}
