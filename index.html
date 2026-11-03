@@ -1424,8 +1424,8 @@ textarea{min-height:84px;resize:vertical}
       <h2 id="svcHead">Earlier Services</h2>
       <div class="svc-filters" role="search" aria-label="Find a service">
         <div class="svc-dp"><span class="svc-lab" id="svcDateLab">Date of service</span><button type="button" class="svc-dpbtn" id="svcDateBtn" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="svcDateLab svcDateBtn">Choose a Date…</button><div class="svc-pop" id="svcPop" role="dialog" aria-label="Choose a service date" hidden></div></div>
-        <label>Speaker<select id="svcBy"><option value="">All speakers</option></select></label>
-        <label>Special service<select id="svcDay"><option value="">All services</option></select></label>
+        <label>Speaker<select id="svcBy"><option value="">All Speakers</option></select></label>
+        <label>Special service<select id="svcDay"><option value="">All Services</option></select></label>
       </div>
       <p class="svc-count" id="svcCount" aria-live="polite"></p>
       <ul class="svc-list" id="svcList"></ul>
@@ -1609,7 +1609,7 @@ textarea{min-height:84px;resize:vertical}
     <form id="aForm" class="form" novalidate>
       <label class="full">Type
         <select id="a-kind"><option value="cancel">Canceled / Closed</option><option value="delay">Delayed / Weather</option><option value="info">Schedule Change / Other</option></select></label>
-      <label class="full">Headline<input id="a-title" maxlength="120" placeholder="All services canceled Sunday, Jan. 18 due to ice"></label>
+      <label class="full">Headline<input id="a-title" maxlength="120" placeholder="All Services canceled Sunday, Jan. 18 due to ice"></label>
       <label class="full">Details (optional)<textarea id="a-details" maxlength="800" placeholder="Roads in Rocky Hock are icy. Join us online at 11:00 AM. Wednesday activities will be decided by noon Wednesday."></textarea></label>
       <label class="full">Link (optional)<input id="a-url" type="url" placeholder="https://"></label>
       <label class="full">Link button text (optional)<input id="a-urltext" maxlength="40" placeholder="Watch Online"></label>
@@ -2873,7 +2873,7 @@ function fillSvcFilters(all){
     [...vals.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).forEach(([n,c])=>sel.append(el("option",{value:n,textContent:n+" ("+c+")"})));sel.value=vals.has(k)?k:""};
   const by=new Map(),day=new Map();
   all.forEach(v=>{const b=svcSermon(v);if(!b)return;if(b.s&&b.s.by)by.set(b.s.by,(by.get(b.s.by)||0)+1);if(b.t)day.set(b.t,(day.get(b.t)||0)+1)});
-  fill($("svcBy"),"All speakers",by);fill($("svcDay"),"All services",day);
+  fill($("svcBy"),"All Speakers",by);fill($("svcDay"),"All Services",day);
   $("svcBy").closest("label").hidden=!by.size;$("svcDay").closest("label").hidden=!day.size;
 }
 $("svcBy").onchange=$("svcDay").onchange=()=>{svcLimit=8;renderServices()};
