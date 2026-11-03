@@ -2641,8 +2641,8 @@ function liveEmbed(u){
   u=(u||"").trim();let m;
   if((m=/vimeo\.com\/event\/(\d+)/.exec(u)))return "https://vimeo.com/event/"+m[1]+"/embed";
   if((m=/player\.vimeo\.com\/video\/(\d+)/.exec(u))||(m=/vimeo\.com\/(?:video\/)?(\d+)/.exec(u)))return "https://player.vimeo.com/video/"+m[1];
-  if((m=/(?:youtu\.be\/|[?&]v=|\/live\/|\/embed\/)([\w-]{11})/.exec(u)))return "https://www.youtube.com/embed/"+m[1]+"?rel=0";
-  return "https://www.youtube.com/embed/live_stream?channel="+YT_CHANNEL+"&rel=0";
+  if((m=/(?:youtu\.be\/|[?&]v=|\/live\/|\/embed\/)([\w-]{11})/.exec(u)))return "https://www.youtube.com/embed/"+m[1]+"?rel=0&enablejsapi=1";
+  return "https://www.youtube.com/embed/live_stream?channel="+YT_CHANNEL+"&rel=0&enablejsapi=1";
 }
 const validLive=u=>!u||/vimeo\.com\/(event\/)?\d+|player\.vimeo\.com\/video\/\d+|youtu\.be\/[\w-]{11}|youtube\.com.*([?&]v=|\/live\/|\/embed\/)[\w-]{11}/.test(u);
 const nyNow=()=>{const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));return{dow:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(p.weekday),min:(+p.hour)*60+(+p.minute)}};
@@ -2724,6 +2724,16 @@ function renderLive(){
   $("liveOff").textContent=ls.on?"":(mode==="recent"||mode==="picked")?(svc?"Join us live every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":""):(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");
 }
 setInterval(renderLive,30000);
+/* pause the video when leaving the Worship Services page (pages switch without reloading) */
+function pauseWorshipVideo(){
+  const f=document.querySelector("#lpFrame iframe");if(!f||!f.contentWindow)return;
+  try{const o=new URL(f.src).origin;
+    if(/vimeo\.com$/.test(new URL(f.src).hostname))f.contentWindow.postMessage(JSON.stringify({method:"pause"}),o);
+    else if(/youtube\.com$/.test(new URL(f.src).hostname))f.contentWindow.postMessage(JSON.stringify({event:"command",func:"pauseVideo",args:""}),o);
+    else{const src=f.src;f.src="about:blank";f.src=src}
+  }catch(e){}
+}
+addEventListener("hashchange",()=>{if(((location.hash||"").slice(1)||"home")!=="worship")pauseWorshipVideo()});
 function openLive(){const L=state.live||{mode:"auto",before:10,after:90};
   document.querySelector('input[name="ls-mode"][value="'+(L.mode||"auto")+'"]').checked=true;
   $("ls-before").value=L.before??10;$("ls-after").value=L.after??90;$("ls-url").value=L.url||"";
