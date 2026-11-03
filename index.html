@@ -261,6 +261,8 @@ a.card:hover{border-color:var(--muted)}
 .arch-body{display:grid;gap:8px;padding:0 12px 12px}
 .arch-month{background:var(--bg)!important}
 .arch-month .doclist{padding:0 12px 12px}
+.doclist .dl-text{display:grid;gap:2px;min-width:0}
+.doclist .dl-sub{font-size:.8rem;font-weight:500;color:var(--brand-hi);line-height:1.3}
 .doclist .tagline{font-size:.78rem;color:var(--muted);font-weight:500}
 .srcpick{display:flex;flex-wrap:wrap;gap:8px}
 .srcpick label{display:flex;align-items:center;gap:8px;font-weight:500;padding:8px 12px;border:1px solid var(--line);border-radius:6px;cursor:pointer}
@@ -397,6 +399,7 @@ a.card:hover{border-color:var(--muted)}
 .lp-head.recent b{color:var(--muted)}
 .lp-rec b{color:var(--muted)!important;font-weight:700;text-transform:uppercase}
 .lp-live .ldot{background:#B3261E;box-shadow:0 0 0 0 rgb(179 38 30 / .6)}
+.lp-sermon .lp-day{margin:0;font-weight:700;color:var(--brand-hi);font-size:.95rem}
 .lp-sermon h3{font-size:clamp(1.15rem,2.2vw,1.45rem);line-height:1.3;margin:0}
 .lp-sermon dl{display:flex;flex-wrap:wrap;gap:6px 28px;margin:0}
 .lp-sermon dl>div{display:flex;gap:8px;align-items:baseline}
@@ -1704,7 +1707,7 @@ textarea{min-height:84px;resize:vertical}
     <h3 id="dlg3Title">Add bulletin</h3>
     <form id="dForm" class="form" novalidate>
       <label class="full" id="d-date-wrap"><span id="d-date-label">Sunday date</span><input id="d-date" type="date"><input id="d-month" type="month" hidden></label>
-      <label class="full">Special title <span class="hint">Optional, e.g. “Easter Sunday” or “I Love America”</span><input id="d-title" maxlength="80"></label>
+      <label class="full"><span id="d-title-label">Special title</span> <span class="hint" id="d-title-hint">Optional, e.g. “Easter Sunday” or “I Love America”</span><input id="d-title" maxlength="80"></label>
       <div class="full" style="display:grid;gap:8px">
         <span style="font-size:.85rem;font-weight:600">PDF</span>
         <div class="srcpick" id="d-srcpick">
@@ -1847,10 +1850,12 @@ const docTitle=(kind,it)=>{if(it.t)return it.t;if(!it.d)return "Untitled";if(kin
 function docLi(kind,it,i){
   const href=docHref(it);
   const a=el("a",{href:href||"#"+kind,target:"_blank",rel:"noopener"});a.innerHTML=PDF;
-  const lab=el("span",{textContent:docTitle(kind,it)});
-  if(it.t&&it.d&&kind==="bulletins"&&fromKey(it.d.slice(0,10)).getDay()===0)lab.append(el("span",{className:"tagline",textContent:" · "+fromKey(it.d.slice(0,10)).toLocaleDateString("en-US",{month:"short",day:"numeric"})}));
+  const isB=kind==="bulletins"&&it.d;
+  const lab=el("span",{className:"dl-name"},isB?docTitle(kind,{d:it.d}):docTitle(kind,it));
   if(i===0){a.className="latest";lab.append(el("span",{className:"tagline",textContent:" · latest"}))}
-  a.append(lab);
+  const wrap=el("span",{className:"dl-text"},lab);
+  if(isB&&it.t)wrap.append(el("small",{className:"dl-sub",textContent:it.t}));
+  a.append(wrap);
   const eb=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});eb.onclick=()=>openDoc(kind,i);
   return el("li",{},a,eb);
 }
@@ -2154,7 +2159,9 @@ function openDoc(kind,i){
   const today=keyOf(now);
   if(isB){let d=it&&it.d?it.d.slice(0,10):"";if(!d){const n=new Date(now);n.setDate(n.getDate()+((7-n.getDay())%7));d=keyOf(n)}$("d-date").value=d}
   else{$("d-month").value=it&&it.d?it.d.slice(0,7):today.slice(0,7)}
-  $("d-title").value=it?(it.t||""):"";
+  $("d-title").value=it?(it.t||""):"";dayAuto=false;
+  $("d-title-label").textContent=isB?"Special day":"Special title";
+  $("d-title-hint").textContent=isB?"Optional, e.g. “Senior Adults Sunday.” Filled in from the PDF and shown under the date.":"Optional, e.g. “Christmas Issue”";
   $("d-file").value="";$("d-url").value=it&&it.u?it.u:"";
   const canUp=!!assetsApi;$("d-up-opt").hidden=!canUp;
   document.querySelector('input[name="d-src"][value="'+(canUp&&!(it&&it.u)?"upload":"link")+'"]').checked=true;syncSrc();
@@ -2596,7 +2603,38 @@ function parseSermon(L){
   if(!res.title&&!res.scr&&!res.by)return null;
   return res;
 }
-let pdfjsP=null,sermAuto=false;
+function parseSpecial(L){
+  const MON=/^\s*(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}(?!\d)/i;
+  const MW=/^\s*MORNING\s+WORSHIP\b/i;
+  const GENERIC=/^(sunday\s+)?(morning|evening)?\s*worship(\s+service)?$|^(sunday\s+)?morning\s+service$|^order\s+of\s+worship$/i;
+  const TIME=/^\s*[-–—]?\s*\d{1,2}(:\d{2})?\s*(AM|PM)\b/i;
+  const tidy=x=>{x=x.replace(/\s+/g," ").trim().replace(/^[-–—:]\s*/,"").replace(/[-–—:]$/,"").trim();
+    if(x&&x===x.toUpperCase())x=x.toLowerCase().replace(/\b([a-z])/g,c=>c.toUpperCase()).replace(/’S\b/g,"’s").replace(/'S\b/g,"'s");return x};
+  const ok=x=>x&&x.length>=3&&x.length<=60&&!GENERIC.test(x)&&!TIME.test(x)&&!MON.test(x)&&!/\b(AM|PM)\b/.test(x)&&!/^(prelude|welcome|call to worship)\b/i.test(x);
+  const mws=[];L.forEach((l,i)=>{if(MW.test(l))mws.push(i)});
+  for(const m of mws){
+    // a heading like "MORNING WORSHIP - REVIVAL"
+    const suf=/^\s*MORNING\s+WORSHIP\s*[-–—:]\s*(.+)$/i.exec(L[m]);
+    if(suf){const x=tidy(suf[1]);if(ok(x))return x}
+    // the date line near the heading, then the line(s) right after it
+    for(let d=Math.max(0,m-3);d<=Math.min(L.length-1,m+3);d++){
+      if(!MON.test(L[d]))continue;
+      for(let j=d+1;j<=d+3&&j<L.length;j++){
+        const s=L[j].trim();if(!s)continue;
+        if(/^(prelude|welcome)\b/i.test(s))break;
+        if(MW.test(s)||TIME.test(s)||/^\d{1,2}(:\d{2})?\s*(AM|PM)$/i.test(s))continue;
+        const x=tidy(s);return ok(x)?x:"";
+      }
+      return "";
+    }
+  }
+  // older layout: "Rocky Hock / Baptist Church / <special day> / May 31, 2026 Prelude …"
+  if(!mws.length){for(let d=0;d<Math.min(L.length,15);d++){if(!MON.test(L[d]))continue;
+    const p=(L[d-1]||"").trim();if(p&&!/baptist church|rocky hock|order of (service|worship)/i.test(p)){const x=tidy(p);if(ok(x))return x}
+    break}}
+  return "";
+}
+let pdfjsP=null,sermAuto=false,dayAuto=false;
 const PDFJS="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/legacy/build/";
 async function pdfLines(file){
   if(!pdfjsP)pdfjsP=import(PDFJS+"pdf.min.mjs").then(m=>{m.GlobalWorkerOptions.workerSrc=PDFJS+"pdf.worker.min.mjs";return m});
@@ -2608,9 +2646,12 @@ async function pdfLines(file){
 $("d-file").addEventListener("change",async()=>{
   const f=$("d-file").files[0];if(!f||docKind!=="bulletins")return;
   const ids=["d-s-title","d-s-scr","d-s-by","d-s-series"];
-  if(!sermAuto&&ids.some(i=>$(i).value.trim()))return; /* don't overwrite what someone typed */
-  const hint=$("d-s-hint");hint.textContent="Reading the sermon from the PDF…";
-  try{const r=parseSermon(await pdfLines(f));
+  const keepSerm=!sermAuto&&ids.some(i=>$(i).value.trim()); /* don't overwrite what someone typed */
+  const hint=$("d-s-hint");if(!keepSerm)hint.textContent="Reading the sermon from the PDF…";
+  try{const lines=await pdfLines(f);
+    if(dayAuto||!$("d-title").value.trim()){$("d-title").value=parseSpecial(lines);dayAuto=true}
+    if(keepSerm)return;
+    const r=parseSermon(lines);
     if(r){$("d-s-title").value=r.title;$("d-s-scr").value=r.scr;$("d-s-by").value=r.by;$("d-s-series").value=r.series;sermAuto=true;
       hint.textContent="Filled in from the bulletin. Please check it before adding."+(r.title&&r.scr&&r.by?"":" Some parts weren’t found, so type those in.")}
     else hint.textContent="The sermon wasn’t found in this PDF. Type it in if you’d like it shown."}
@@ -2630,6 +2671,7 @@ function renderSermon(dk,live,label){
   if(s.by)dl.append(el("div",{},el("dt",{textContent:"Preaching"}),el("dd",{textContent:s.by})));
   const tag=live?el("span",{className:"lp-live"},el("span",{className:"ldot",ariaHidden:"true"}),el("b",{textContent:"LIVE NOW"})):el("span",{className:"lp-live lp-rec"},el("b",{textContent:(label||"Most Recent Service")+" · "+shortDate(dk)}));
   box.replaceChildren(el("div",{className:"lp-top"},el("p",{className:"eyebrow",textContent:live?"Today’s Sermon":"Sermon"}),tag));
+  if(b.t)box.append(el("p",{className:"lp-day",textContent:b.t}));
   if(s.title)box.append(el("h3",{textContent:"“"+s.title+"”"}));
   if(s.series)box.append(el("p",{className:"series",textContent:"Series: "+s.series}));
   if(dl.children.length)box.append(dl);
@@ -2681,7 +2723,7 @@ function renderServices(){
     const date=el("span",{className:"svc-date"},el("small",{textContent:MONTHS[dt.getMonth()].slice(0,3)}),el("b",{textContent:String(dt.getDate())}),el("small",{textContent:String(dt.getFullYear())}));
     const body=el("span",{className:"svc-body"});
     const cur=picked?picked.id===v.id:(showingRecent&&latest&&v.id===latest.id);
-    if(cur)body.append(el("span",{className:"now",textContent:"Now showing"}));
+    if(cur||b&&b.t)body.append(el("span",{className:"now"},[cur?"Now showing":"",b&&b.t?b.t:""].filter(Boolean).join(" · ")));
     body.append(el("span",{className:"t",textContent:s.title?"“"+s.title+"”":svcName(v)}));
     const meta=[s.scr,s.by].filter(Boolean).join(" · ");if(meta)body.append(el("span",{className:"m",textContent:meta}));
     const side=el("span",{className:"svc-side"});if(v.dur)side.append(fmtDur(v.dur));side.insertAdjacentHTML("beforeend",PLAY_ICON);
