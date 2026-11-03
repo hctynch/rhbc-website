@@ -170,8 +170,10 @@ p{margin:0}
 .phero::after{content:"";position:absolute;right:-40px;bottom:-20px;width:min(420px,60%);height:140%;pointer-events:none;
   background:repeating-linear-gradient(176deg,transparent 0 16px,color-mix(in srgb,var(--brand) 10%,transparent) 16px 18px);
   -webkit-mask-image:linear-gradient(to left,#000,transparent);mask-image:linear-gradient(to left,#000,transparent)}
-.phero .wrap{position:relative;z-index:1;display:grid;gap:14px;padding-block:clamp(40px,6vw,72px)}
+.phero .wrap{position:relative;z-index:1;display:grid;gap:14px;padding-block:clamp(32px,4.5vw,54px)}
 .phero h1{font-size:clamp(2.2rem,1.5rem + 3vw,3.6rem)}
+body:not(.editing) .phero .linkrow:not(:has(> :not([hidden]):not(.editor-tools))){display:none}
+.phero .linkrow:not(:has(> :not([hidden]))){display:none}
 .crumbs{font-size:.85rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px}
 .crumbs a{color:var(--muted)}
 
