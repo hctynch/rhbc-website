@@ -21,12 +21,12 @@
   --shadow:0 1px 2px rgb(34 20 18 / .06), 0 8px 24px rgb(34 20 18 / .08);
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  /*@@PALETTE_DARK@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:#FFFFFF; --logo-pad:4px 8px;
+  /*@@PALETTE_DARK@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:transparent; --logo-pad:0;
   --bg:#151314; --surface:#1E1B1C; --wash:#252122; --ink:#EDEAE9; --muted:#A9A4A4; --line:#38302F;/*@@END@@*/
   --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25); color-scheme:dark }}
 :root[data-theme="dark"]{
-  /*@@PALETTE_DARK2@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:#FFFFFF; --logo-pad:4px 8px;
+  /*@@PALETTE_DARK2@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:transparent; --logo-pad:0;
   --bg:#151314; --surface:#1E1B1C; --wash:#252122; --ink:#EDEAE9; --muted:#A9A4A4; --line:#38302F;/*@@END@@*/
   --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25); color-scheme:dark }
@@ -63,6 +63,10 @@ p{margin:0}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:16px;min-height:80px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);margin-right:auto;min-width:0}
+.brand img.lg-dark{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand img.lg-light{display:none}:root:not([data-theme="light"]) .brand img.lg-dark{display:block}}
+:root[data-theme="dark"] .brand img.lg-light{display:none}
+:root[data-theme="dark"] .brand img.lg-dark{display:block}
 .brand img{height:64px;width:auto;flex:none;display:block;background:var(--logo-tile);padding:var(--logo-pad);border-radius:6px;box-sizing:content-box}
 .brand .bt{min-width:0}
 .brand b{font-family:var(--display);font-weight:400;font-size:1.12rem;line-height:1.1;display:block}
@@ -626,7 +630,7 @@ textarea{min-height:84px;resize:vertical}
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#home" aria-label="Rocky Hock Baptist Church home">
-      <img src="images/logo-wide.png" alt="Rocky Hock Baptist Church" width="590" height="216">
+      <img class="lg-light" src="images/logo-wide.png" alt="Rocky Hock Baptist Church" width="590" height="216"><img class="lg-dark" src="images/logo-wide-dark.png" alt="Rocky Hock Baptist Church" width="590" height="216">
     </a>
     <input type="checkbox" id="navToggle" class="nav-toggle" aria-controls="nav" aria-label="Show menu">
     <label for="navToggle" class="menu-btn" id="menuBtn" aria-hidden="true">
