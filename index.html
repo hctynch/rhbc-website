@@ -378,6 +378,13 @@ a.card:hover{border-color:var(--muted)}
 .lp-head.recent .ldot{display:none}
 .svc-wrap{display:grid;gap:14px;justify-items:start}
 .svc-wrap h2{margin:8px 0 0}
+.svc-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;width:100%}
+.svc-filters label{display:grid;gap:6px;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:0}
+.svc-filters select{font:500 .95rem/1.3 var(--body);letter-spacing:0;text-transform:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 34px 10px 12px;width:100%;max-width:100%;min-width:0;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;cursor:pointer}
+.svc-filters select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.svc-count{margin:0;font-size:.88rem;color:var(--muted)}
+.svc-count button{font:600 .88rem/1 var(--body);color:var(--brand-hi);background:none;border:0;padding:0 0 0 6px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.svc-count:empty{display:none}
 .svc-list{list-style:none;margin:0;padding:0;display:grid;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .prose .svc-list{padding:0;margin:0}
 .svc-list li{margin:0}
@@ -1390,6 +1397,12 @@ textarea{min-height:84px;resize:vertical}
     <p class="offnote" id="liveOff"></p>
     <section class="svc-wrap" id="svcWrap" aria-labelledby="svcHead" hidden>
       <h2 id="svcHead">Earlier Services</h2>
+      <div class="svc-filters" role="search" aria-label="Find a service">
+        <label>Date of service<select id="svcDate"><option value="">Choose a date…</option></select></label>
+        <label>Speaker<select id="svcBy"><option value="">All speakers</option></select></label>
+        <label>Special service<select id="svcDay"><option value="">All services</option></select></label>
+      </div>
+      <p class="svc-count" id="svcCount" aria-live="polite"></p>
       <ul class="svc-list" id="svcList"></ul>
       <button class="btn ghost small" type="button" id="svcMore" hidden>Show more</button>
     </section>
@@ -2715,8 +2728,15 @@ const fmtDur=d=>{d=Math.round((+d||0)/60);return d<60?d+" min":Math.floor(d/60)+
 const PLAY_ICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>';
 function renderServices(){
   const wrap=$("svcWrap"),ul=$("svcList");if(!wrap)return;
-  const list=SERVICES.filter(validSvc),latest=latestSvc();
-  wrap.hidden=!list.length;ul.replaceChildren();if(!list.length)return;
+  const all=SERVICES.filter(validSvc),latest=latestSvc();
+  wrap.hidden=!all.length;ul.replaceChildren();if(!all.length)return;
+  fillSvcFilters(all);
+  const fBy=$("svcBy").value,fDay=$("svcDay").value;
+  const list=all.filter(v=>{const b=svcSermon(v);return(!fBy||(b&&b.s&&b.s.by===fBy))&&(!fDay||(b&&b.t===fDay))});
+  const cnt=$("svcCount");cnt.replaceChildren();
+  if(fBy||fDay){cnt.append(list.length+(list.length===1?" service":" services")+(fBy?" with "+fBy:"")+(fDay?(fBy?", ":" for ")+fDay:"")+".");
+    const c=el("button",{type:"button",textContent:"Show all services"});c.onclick=()=>{$("svcBy").value="";$("svcDay").value="";svcLimit=8;renderServices()};cnt.append(c)}
+  if(!list.length){ul.append(el("li",{className:"meta",style:"padding:16px 18px",textContent:"No services match. Try another speaker or special service."}))}
   const showingRecent=!picked&&/^r/.test(liveShown||"");
   list.slice(0,svcLimit).forEach(v=>{
     const b=svcSermon(v),s=(b&&b.s)||{},dt=fromKey(v.date);
@@ -2730,12 +2750,36 @@ function renderServices(){
     const btn=el("button",{type:"button",className:"svc-item"},date,body,side);
     btn.setAttribute("aria-label","Watch the "+longDate(v.date)+" service"+(s.title?": "+s.title:""));
     if(cur)btn.setAttribute("aria-current","true");
-    btn.onclick=()=>{picked=v;renderLive();renderServices();const p=$("livePlayer");if(p&&p.scrollIntoView)p.scrollIntoView({behavior:"smooth",block:"start"})};
+    btn.onclick=()=>{picked=v;$("svcDate").value=v.id;renderLive();renderServices();const p=$("livePlayer");if(p&&p.scrollIntoView)p.scrollIntoView({behavior:"smooth",block:"start"})};
     ul.append(el("li",{},btn));
   });
   const more=$("svcMore");more.hidden=list.length<=svcLimit;more.textContent="Show more ("+(list.length-svcLimit)+" earlier)";
 }
 $("svcMore").onclick=()=>{svcLimit+=12;renderServices()};
+let svcFilled="";
+function fillSvcFilters(all){
+  const sig=all.length+"|"+all[0].id+"|"+(state.bulletins||[]).length;if(sig===svcFilled)return;svcFilled=sig;
+  /* date: grouped by year, newest first */
+  const ds=$("svcDate"),keep=ds.value;ds.replaceChildren(el("option",{value:"",textContent:"Choose a date…"}));
+  const years={};for(const v of all){const y=v.date.slice(0,4);(years[y]||(years[y]=[])).push(v)}
+  const sameDay={};all.forEach(v=>sameDay[v.date]=(sameDay[v.date]||0)+1);
+  Object.keys(years).sort().reverse().forEach(y=>{const g=el("optgroup",{label:y});
+    years[y].forEach(v=>{const b=svcSermon(v),d=fromKey(v.date);
+      let t=d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
+      if(!isMorning(v))t+=" (Evening)";else if(sameDay[v.date]>1)t+=" (Morning)";
+      if(b&&b.t)t+=" · "+b.t;
+      g.append(el("option",{value:v.id,textContent:t}))});ds.append(g)});
+  ds.value=keep;
+  /* speakers and special services from the matching bulletins */
+  const fill=(sel,first,vals)=>{const k=sel.value;sel.replaceChildren(el("option",{value:"",textContent:first}));
+    [...vals.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).forEach(([n,c])=>sel.append(el("option",{value:n,textContent:n+" ("+c+")"})));sel.value=vals.has(k)?k:""};
+  const by=new Map(),day=new Map();
+  all.forEach(v=>{const b=svcSermon(v);if(!b)return;if(b.s&&b.s.by)by.set(b.s.by,(by.get(b.s.by)||0)+1);if(b.t)day.set(b.t,(day.get(b.t)||0)+1)});
+  fill($("svcBy"),"All speakers",by);fill($("svcDay"),"All services",day);
+  $("svcBy").closest("label").hidden=!by.size;$("svcDay").closest("label").hidden=!day.size;
+}
+$("svcDate").onchange=()=>{const v=SERVICES.find(x=>x.id===$("svcDate").value);if(!v)return;picked=v;renderLive();renderServices();const p=$("livePlayer");if(p&&p.scrollIntoView)p.scrollIntoView({behavior:"smooth",block:"start"})};
+$("svcBy").onchange=$("svcDay").onchange=()=>{svcLimit=8;renderServices()};
 fetch("data/services.json?v="+Math.floor(Date.now()/3e5),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&Array.isArray(d.videos)){SERVICES=d.videos;liveShown=null;renderLive();renderServices()}}).catch(()=>{});
 let liveShown=null;
 function renderLive(){
@@ -2752,7 +2796,7 @@ function renderLive(){
   head.querySelector("b").textContent=mode==="recent"?"MOST RECENT SERVICE":mode==="picked"?"EARLIER SERVICE":"LIVE NOW";
   $("lpTitle").textContent=mode==="recent"?longDate(recent):mode==="picked"?longDate(picked.date):name;
   const note=$("lpNote");
-  if(mode==="picked"){const back=el("button",{type:"button",className:"lp-note-btn",textContent:ls.on?"Return to the live stream":"Back to the most recent service"});back.onclick=()=>{picked=null;renderLive();renderServices()};note.replaceChildren("You’re watching an earlier service.",back)}
+  if(mode==="picked"){const back=el("button",{type:"button",className:"lp-note-btn",textContent:ls.on?"Return to the live stream":"Back to the most recent service"});back.onclick=()=>{picked=null;$("svcDate").value="";renderLive();renderServices()};note.replaceChildren("You’re watching an earlier service.",back)}
   else note.textContent=mode==="recent"?"Press play to watch. Earlier services are listed below.":"Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.";
   const key=mode==="picked"?"p"+picked.id:mode==="recent"?"r"+(latest?latest.id:""):mode;
   if(mode!=="none"&&liveShown!==key){$("lpFrame").replaceChildren(el("iframe",{src:mode==="picked"?vimeoSrc(picked,true):(mode==="recent"&&latest)?vimeoSrc(latest,false):liveEmbed(L.url),title:mode==="live"?"Live worship service":mode==="picked"?"Worship service, "+longDate(picked.date):"Most recent worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
