@@ -2663,20 +2663,26 @@ function lastServiceKey(){
 /* earlier services: data/services.json is written by a scheduled GitHub job that reads Vimeo */
 var SERVICES=[],picked=null,svcLimit=8;
 const vimeoSrc=(v,auto)=>"https://player.vimeo.com/video/"+encodeURIComponent(v.id)+"?"+(v.h?"h="+encodeURIComponent(v.h)+"&":"")+(auto?"autoplay=1&":"")+"title=0&byline=0&portrait=0";
+const validSvc=v=>v&&/^\d+$/.test(v.id||"")&&/^\d{4}-\d{2}-\d{2}$/.test(v.date||"");
+/* recordings are saved when the stream ends, so a morning service is saved before about 3 PM */
+const isMorning=v=>!v.time||+v.time.slice(0,2)<15;
+const svcSermon=v=>isMorning(v)?curSermon(v.date):null;
+const svcName=v=>DAYNAMES[fromKey(v.date).getDay()]+(isMorning(v)?" Worship Service":" Evening Service");
+const latestSvc=()=>SERVICES.find(validSvc)||null;
 const fmtDur=d=>{d=Math.round((+d||0)/60);return d<60?d+" min":Math.floor(d/60)+" hr"+(d%60?" "+(d%60)+" min":"")};
 const PLAY_ICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>';
 function renderServices(){
   const wrap=$("svcWrap"),ul=$("svcList");if(!wrap)return;
-  const list=SERVICES.filter(v=>v&&/^\d+$/.test(v.id||"")&&/^\d{4}-\d{2}-\d{2}$/.test(v.date||""));
+  const list=SERVICES.filter(validSvc),latest=latestSvc();
   wrap.hidden=!list.length;ul.replaceChildren();if(!list.length)return;
-  const recentKey=lastServiceKey(),showingRecent=!picked&&liveShown==="recent";
+  const showingRecent=!picked&&/^r/.test(liveShown||"");
   list.slice(0,svcLimit).forEach(v=>{
-    const b=curSermon(v.date),s=b?b.s:{},dt=fromKey(v.date);
+    const b=svcSermon(v),s=b?b.s:{},dt=fromKey(v.date);
     const date=el("span",{className:"svc-date"},el("small",{textContent:MONTHS[dt.getMonth()].slice(0,3)}),el("b",{textContent:String(dt.getDate())}),el("small",{textContent:String(dt.getFullYear())}));
     const body=el("span",{className:"svc-body"});
-    const cur=picked?picked.id===v.id:(showingRecent&&v.date===recentKey);
+    const cur=picked?picked.id===v.id:(showingRecent&&latest&&v.id===latest.id);
     if(cur)body.append(el("span",{className:"now",textContent:"Now showing"}));
-    body.append(el("span",{className:"t",textContent:s.title?"“"+s.title+"”":DAYNAMES[dt.getDay()]+" Worship Service"}));
+    body.append(el("span",{className:"t",textContent:s.title?"“"+s.title+"”":svcName(v)}));
     const meta=[s.scr,s.by].filter(Boolean).join(" · ");if(meta)body.append(el("span",{className:"m",textContent:meta}));
     const side=el("span",{className:"svc-side"});if(v.dur)side.append(fmtDur(v.dur));side.insertAdjacentHTML("beforeend",PLAY_ICON);
     const btn=el("button",{type:"button",className:"svc-item"},date,body,side);
@@ -2688,14 +2694,15 @@ function renderServices(){
   const more=$("svcMore");more.hidden=list.length<=svcLimit;more.textContent="Show more ("+(list.length-svcLimit)+" earlier)";
 }
 $("svcMore").onclick=()=>{svcLimit+=12;renderServices()};
-fetch("data/services.json?v="+Math.floor(Date.now()/3e5),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&Array.isArray(d.videos)){SERVICES=d.videos;renderServices()}}).catch(()=>{});
+fetch("data/services.json?v="+Math.floor(Date.now()/3e5),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d&&Array.isArray(d.videos)){SERVICES=d.videos;liveShown=null;renderLive();renderServices()}}).catch(()=>{});
 let liveShown=null;
 function renderLive(){
   const ls=liveState(),bar=$("livebar"),pl=$("livePlayer"),L=state.live||{};
   const name=ls.svc?ls.svc.title:"Worship";
   $("liveText").textContent=name+" is streaming";
   /* between streams, a Vimeo event player shows its latest recording, so keep the box up */
-  const recent=!ls.on&&L.mode!=="off"&&/vimeo\.com\/event\/\d+/.test(L.url||"")&&lastServiceKey();
+  const latest=latestSvc();
+  const recent=!ls.on&&L.mode!=="off"&&(latest?latest.date:/vimeo\.com\/event\/\d+/.test(L.url||"")&&lastServiceKey());
   const mode=picked?"picked":ls.on?"live":recent?"recent":"none";
   bar.hidden=!ls.on;pl.hidden=mode==="none";
   const head=$("lpHead");head.classList.toggle("recent",mode==="recent");
@@ -2705,10 +2712,14 @@ function renderLive(){
   const note=$("lpNote");
   if(mode==="picked"){const back=el("button",{type:"button",className:"lp-note-btn",textContent:ls.on?"Return to the live stream":"Back to the most recent service"});back.onclick=()=>{picked=null;renderLive();renderServices()};note.replaceChildren("You’re watching an earlier service.",back)}
   else note.textContent=mode==="recent"?"Press play to watch. Earlier services are listed below.":"Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.";
-  const key=mode==="picked"?"p"+picked.id:mode;
-  if(mode!=="none"&&liveShown!==key){$("lpFrame").replaceChildren(el("iframe",{src:mode==="picked"?vimeoSrc(picked,true):liveEmbed(L.url),title:mode==="live"?"Live worship service":mode==="picked"?"Worship service, "+longDate(picked.date):"Most recent worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
+  const key=mode==="picked"?"p"+picked.id:mode==="recent"?"r"+(latest?latest.id:""):mode;
+  if(mode!=="none"&&liveShown!==key){$("lpFrame").replaceChildren(el("iframe",{src:mode==="picked"?vimeoSrc(picked,true):(mode==="recent"&&latest)?vimeoSrc(latest,false):liveEmbed(L.url),title:mode==="live"?"Live worship service":mode==="picked"?"Worship service, "+longDate(picked.date):"Most recent worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
   if(mode==="none"&&liveShown!=="none")$("lpFrame").replaceChildren();
-  if(liveShown!==key){liveShown=key;if(typeof renderServices==="function")setTimeout(renderServices,0)}if(mode!=="none")renderSermon(mode==="live"?nyKey():mode==="picked"?picked.date:recent,mode==="live",mode==="picked"?"Earlier Service":"");
+  if(liveShown!==key){liveShown=key;if(typeof renderServices==="function")setTimeout(renderServices,0)}if(mode==="none"){}
+  else if(mode==="live")renderSermon(nyKey(),true);
+  else{const v=mode==="picked"?picked:latest,dk=v?v.date:recent,lab=mode==="picked"?"Earlier Service":"Most Recent Service";
+    if(v&&!isMorning(v)){$("lpSermon").hidden=true;$("lpHead").hidden=false}else renderSermon(dk,false,lab);
+    if(v)$("lpTitle").textContent=longDate(v.date)+(isMorning(v)?"":" · Evening")}
   const svc=liveService();
   $("liveOff").textContent=ls.on?"":(mode==="recent"||mode==="picked")?(svc?"Join us live every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":""):(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");
 }
