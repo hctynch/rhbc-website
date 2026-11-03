@@ -373,6 +373,9 @@ a.card:hover{border-color:var(--muted)}
 .lp-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .lp-live{display:inline-flex;align-items:center;gap:8px}
 .lp-live b{color:#B3261E;letter-spacing:.12em;font-size:.78rem}
+.lp-head.recent .ldot{display:none}
+.lp-head.recent b{color:var(--muted)}
+.lp-rec b{color:var(--muted)!important;font-weight:700;text-transform:uppercase}
 .lp-live .ldot{background:#B3261E;box-shadow:0 0 0 0 rgb(179 38 30 / .6)}
 .lp-sermon h3{font-size:clamp(1.15rem,2.2vw,1.45rem);line-height:1.3;margin:0}
 .lp-sermon dl{display:flex;flex-wrap:wrap;gap:6px 28px;margin:0}
@@ -1359,7 +1362,7 @@ textarea{min-height:84px;resize:vertical}
         <section class="lp-sermon" id="lpSermon" aria-label="Today’s sermon" hidden></section>
         <div class="lp-frame" id="lpFrame"></div>
       </div>
-      <p class="note">Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.</p>
+      <p class="note" id="lpNote">Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.</p>
     </div>
     <p class="offnote" id="liveOff"></p>
     <div class="linkrow">
@@ -2589,18 +2592,19 @@ $("d-file").addEventListener("change",async()=>{
   catch(e){hint.textContent="This PDF couldn’t be read. Type the sermon in if you’d like it shown."}
 });
 const nyKey=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
-function curSermon(){
-  const t=nyKey(),b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===t);
+function curSermon(t){
+  t=t||nyKey();const b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===t);
   return b&&b.s&&(b.s.title||b.s.scr||b.s.by)?b:null;
 }
 function refBtn(r){const b=el("button",{type:"button",className:"bref",textContent:r,title:"Read "+r});b.dataset.ref=r;b.setAttribute("aria-haspopup","dialog");b.setAttribute("aria-expanded","false");return b}
-function renderSermon(){
-  const box=$("lpSermon"),b=curSermon();
+function renderSermon(dk,live){
+  const box=$("lpSermon"),b=curSermon(dk);
   box.hidden=!b;$("lpHead").hidden=!!b;if(!b){box.replaceChildren();return}
   const s=b.s,dl=el("dl");
   if(s.scr)dl.append(el("div",{},el("dt",{textContent:"Scripture"}),el("dd",{},parseRef(s.scr)?refBtn(s.scr):s.scr)));
   if(s.by)dl.append(el("div",{},el("dt",{textContent:"Preaching"}),el("dd",{textContent:s.by})));
-  box.replaceChildren(el("div",{className:"lp-top"},el("p",{className:"eyebrow",textContent:"Today’s Sermon"}),el("span",{className:"lp-live"},el("span",{className:"ldot",ariaHidden:"true"}),el("b",{textContent:"LIVE NOW"}))));
+  const tag=live?el("span",{className:"lp-live"},el("span",{className:"ldot",ariaHidden:"true"}),el("b",{textContent:"LIVE NOW"})):el("span",{className:"lp-live lp-rec"},el("b",{textContent:"Most Recent Service · "+shortDate(dk)}));
+  box.replaceChildren(el("div",{className:"lp-top"},el("p",{className:"eyebrow",textContent:live?"Today’s Sermon":"Sermon"}),tag));
   if(s.title)box.append(el("h3",{textContent:"“"+s.title+"”"}));
   if(s.series)box.append(el("p",{className:"series",textContent:"Series: "+s.series}));
   if(dl.children.length)box.append(dl);
@@ -2624,17 +2628,31 @@ function liveState(){
   const [h,m]=svc.start.split(":").map(Number),st=h*60+m,n=nyNow();
   return{on:n.dow===svc.dow&&n.min>=st-(+L.before||0)&&n.min<st+(+L.after||90),svc};
 }
+/* the most recent service date: the last time the worship service started (New York time) */
+function lastServiceKey(){
+  const svc=liveService();if(!svc)return null;
+  const [h,m]=svc.start.split(":").map(Number),n=nyNow();
+  let back=(n.dow-svc.dow+7)%7;if(back===0&&n.min<h*60+m)back=7;
+  const d=fromKey(nyKey());d.setDate(d.getDate()-back);return keyOf(d);
+}
 let liveShown=null;
 function renderLive(){
-  const ls=liveState(),bar=$("livebar"),pl=$("livePlayer");
+  const ls=liveState(),bar=$("livebar"),pl=$("livePlayer"),L=state.live||{};
   const name=ls.svc?ls.svc.title:"Worship";
-  $("liveText").textContent=name+" is streaming";$("lpTitle").textContent=name;
-  bar.hidden=!ls.on;pl.hidden=!ls.on;
-  if(ls.on&&liveShown!==true){$("lpFrame").replaceChildren(el("iframe",{src:liveEmbed((state.live||{}).url),title:"Live worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
-  if(!ls.on&&liveShown!==false)$("lpFrame").replaceChildren();
-  liveShown=ls.on;if(ls.on)renderSermon();
-  const svc=liveService(),L=state.live||{};
-  $("liveOff").textContent=ls.on?"":(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");
+  $("liveText").textContent=name+" is streaming";
+  /* between streams, a Vimeo event player shows its latest recording, so keep the box up */
+  const recent=!ls.on&&L.mode!=="off"&&/vimeo\.com\/event\/\d+/.test(L.url||"")&&lastServiceKey();
+  const mode=ls.on?"live":recent?"recent":"none";
+  bar.hidden=!ls.on;pl.hidden=mode==="none";
+  const head=$("lpHead");head.classList.toggle("recent",mode==="recent");
+  head.querySelector("b").textContent=mode==="recent"?"MOST RECENT SERVICE":"LIVE NOW";
+  $("lpTitle").textContent=mode==="recent"?longDate(recent):name;
+  $("lpNote").textContent=mode==="recent"?"Press play to watch. Earlier services are listed in the player.":"Not seeing video? The stream may still be starting. Refresh in a minute, or use the buttons below.";
+  if(mode!=="none"&&liveShown!==mode){$("lpFrame").replaceChildren(el("iframe",{src:liveEmbed(L.url),title:mode==="live"?"Live worship service":"Most recent worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
+  if(mode==="none"&&liveShown!=="none")$("lpFrame").replaceChildren();
+  liveShown=mode;if(mode!=="none")renderSermon(mode==="live"?nyKey():recent,mode==="live");
+  const svc=liveService();
+  $("liveOff").textContent=ls.on?"":mode==="recent"?(svc?"Join us live every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":""):(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");
 }
 setInterval(renderLive,30000);
 function openLive(){const L=state.live||{mode:"auto",before:10,after:90};
