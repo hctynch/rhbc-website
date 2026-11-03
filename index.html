@@ -284,6 +284,15 @@ a.card:hover{border-color:var(--muted)}
 .vpop h4{margin:0;font:600 .8rem/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--brand-hi);display:flex;justify-content:space-between;gap:12px;align-items:center}
 .vpop h4 span{color:var(--muted);letter-spacing:.06em}
 .vpop p{margin:0;font-family:var(--display);font-size:1.06rem;line-height:1.5}
+.dpop{pointer-events:none;width:min(340px,calc(100vw - 32px))}
+.dpop ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.dpop li{display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px}
+.dpop li i{border-radius:2px;background:var(--cat)}
+.dpop li.weekly i{background:repeating-linear-gradient(var(--cat) 0 4px,transparent 4px 7px)}
+.dpop .t{font-size:.8rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.dpop .n{font-weight:600;line-height:1.3}
+.dpop .l{font-size:.85rem;color:var(--muted)}
+.dpop .hint2{font-size:.78rem;color:var(--muted);margin:0}
 .vpop sup{font-family:var(--body);font-size:.68rem;font-weight:700;color:var(--brand-hi);margin-right:3px}
 .vpop .vclose{justify-self:end;font:600 .8rem/1 var(--body);background:none;border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--ink);cursor:pointer}
 @media (max-width:560px){.bel-group li{flex-direction:column;align-items:flex-start;gap:6px}.bel-group .refs{justify-content:flex-start}.bel-group{padding:16px 18px 4px}}
@@ -1574,6 +1583,7 @@ textarea{min-height:84px;resize:vertical}
 </div>
 
 <div class="vpop" id="vpop" role="dialog" aria-modal="false" aria-labelledby="vpopH" hidden></div>
+<div class="vpop dpop" id="dpop" role="tooltip" hidden></div>
 
 <div id="overlay8" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg8Title">
@@ -1974,7 +1984,8 @@ function renderGrid(){
     for(const e of [...special,...weekly].slice(0,3)){const p=el("span",{className:"pill"+(e.weekly?" weekly":""),style:"--cat:"+catVar(e.cat),textContent:e.title});p.title=e.title;cell.append(p)}
     if(evs.length>3)cell.append(el("span",{className:"more",textContent:"+"+(evs.length-3)+" more"}));
     if(special.length){const dots=el("span",{className:"dots"});for(const e of special.slice(0,4))dots.append(el("i",{style:"--cat:"+catVar(e.cat)}));cell.append(dots)}
-    cell.onclick=()=>{selected=k;renderGrid();renderDay()};
+    cell.onclick=()=>{selected=k;hideDpop();renderGrid();renderDay()};
+    if(evs.length)cell.dataset.k=k;
     g.append(cell);
   }
 }
@@ -2000,6 +2011,28 @@ function renderAgenda(){
 }
 $("vMonth").onclick=()=>setCalMode("month");
 $("vAgenda").onclick=()=>setCalMode("agenda");
+/* day preview on hover (desktop mouse only) */
+const dpop=$("dpop");let dpT=null,dpCell=null;
+function hideDpop(){clearTimeout(dpT);dpop.hidden=true;dpCell=null}
+function showDpop(cell){
+  const k=cell.dataset.k,evs=eventsOn(k);if(!evs.length)return hideDpop();dpCell=cell;
+  const ul=el("ul");
+  for(const e of evs.slice(0,8)){const li=el("li",{className:e.weekly?"weekly":"",style:"--cat:"+catVar(e.cat)},el("i"),el("div",{},el("div",{className:"t",textContent:fmtRange(e)}),el("div",{className:"n",textContent:e.title})));
+    if(e.loc)li.lastChild.append(el("div",{className:"l",textContent:e.loc}));ul.append(li)}
+  dpop.replaceChildren(el("h4",{},longDate(k),el("span",{textContent:evs.length+(evs.length>1?" events":" event")})),ul);
+  if(evs.length>8)dpop.append(el("p",{className:"hint2",textContent:"+"+(evs.length-8)+" more. Click the day to see them all."}));
+  dpop.hidden=false;
+  const r=cell.getBoundingClientRect(),w=dpop.offsetWidth,h=dpop.offsetHeight,vw=document.documentElement.clientWidth;
+  let left=r.right+8;if(left+w>vw-16)left=r.left-w-8;if(left<16)left=Math.min(Math.max(16,r.left),vw-w-16);
+  let top=r.top;if(top+h>innerHeight-12)top=Math.max(12,innerHeight-12-h);
+  dpop.style.left=(left+scrollX)+"px";dpop.style.top=(top+scrollY)+"px";
+}
+if(matchMedia("(hover:hover) and (pointer:fine)").matches){
+  $("grid").addEventListener("mouseover",e=>{const c=e.target.closest(".cell[data-k]");if(!c||c===dpCell)return;clearTimeout(dpT);dpT=setTimeout(()=>showDpop(c),dpop.hidden?250:0)});
+  $("grid").addEventListener("mouseleave",hideDpop);
+  $("grid").addEventListener("mouseout",e=>{const c=e.target.closest(".cell");const to=e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest(".cell[data-k]");if(c&&!to&&!(e.relatedTarget&&c.contains(e.relatedTarget))){clearTimeout(dpT);dpT=setTimeout(hideDpop,80)}});
+  addEventListener("scroll",hideDpop,{passive:true});addEventListener("hashchange",hideDpop);
+}
 function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
   const info=el("div",{style:"min-width:0"},el("div",{className:"when",textContent:withDate?shortDate(e.date)+" · "+fmtRange(e):fmtRange(e)}),h);
