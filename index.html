@@ -2699,8 +2699,8 @@ function curSermon(t){
   return b&&(b.s&&(b.s.title||b.s.scr||b.s.by)||b.t)?b:null;
 }
 function refBtn(r){const b=el("button",{type:"button",className:"bref",textContent:r,title:"Read "+r});b.dataset.ref=r;b.setAttribute("aria-haspopup","dialog");b.setAttribute("aria-expanded","false");return b}
-function renderSermon(dk,live,label){
-  const box=$("lpSermon"),b=curSermon(dk);
+function renderSermon(dk,live,label,bo){
+  const box=$("lpSermon"),b=bo!==undefined?bo:curSermon(dk);
   box.hidden=!b;$("lpHead").hidden=!!b;if(!b){box.replaceChildren();return}
   const s=b.s||{},dl=el("dl");
   if(s.scr)dl.append(el("div",{},el("dt",{textContent:"Scripture"}),el("dd",{},parseRef(s.scr)?refBtn(s.scr):s.scr)));
@@ -2744,7 +2744,10 @@ const vimeoSrc=(v,auto)=>"https://player.vimeo.com/video/"+encodeURIComponent(v.
 const validSvc=v=>v&&/^\d+$/.test(v.id||"")&&/^\d{4}-\d{2}-\d{2}$/.test(v.date||"");
 /* recordings are saved when the stream ends, so a morning service is saved before about 3 PM */
 const isMorning=v=>!v.time||+v.time.slice(0,2)<15;
-const svcSermon=v=>isMorning(v)?curSermon(v.date):null;
+/* svcNotes in the site data add details to a recording that has no bulletin of its own
+   (for example revival nights): {videoId:{t,title,scr,by}} */
+const svcSermon=v=>{const b=isMorning(v)?curSermon(v.date):null,n=(state.svcNotes||{})[v.id];if(!n)return b;
+  const s={...((b&&b.s)||{})};["title","scr","by","series"].forEach(k=>{if(n[k])s[k]=n[k]});return{...(b||{}),t:n.t||(b&&b.t)||"",s}};
 const svcName=v=>DAYNAMES[fromKey(v.date).getDay()]+(isMorning(v)?" Worship Service":" Evening Service");
 const latestSvc=()=>SERVICES.find(validSvc)||null;
 const fmtDur=d=>{d=Math.round((+d||0)/60);return d<60?d+" min":Math.floor(d/60)+" hr"+(d%60?" "+(d%60)+" min":"")};
@@ -2856,7 +2859,8 @@ function renderLive(){
   if(liveShown!==key){liveShown=key;if(typeof renderServices==="function")setTimeout(renderServices,0)}if(mode==="none"){}
   else if(mode==="live")renderSermon(nyKey(),true);
   else{const v=mode==="picked"?picked:latest,dk=v?v.date:recent,lab=mode==="picked"?"Earlier Service":"Most Recent Service";
-    if(v&&!isMorning(v)){$("lpSermon").hidden=true;$("lpHead").hidden=false}else renderSermon(dk,false,lab);
+    const bo=v?svcSermon(v):undefined;
+    if(v&&!bo){$("lpSermon").hidden=true;$("lpHead").hidden=false}else renderSermon(dk,false,lab,bo);
     if(v)$("lpTitle").textContent=longDate(v.date)+(isMorning(v)?"":" · Evening")}
   const svc=liveService();
   $("liveOff").textContent=ls.on?"":(mode==="recent"||mode==="picked")?(svc?"Join us live every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":""):(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");

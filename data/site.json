@@ -604,5 +604,23 @@
   "before": 10,
   "after": 90,
   "url": "https://vimeo.com/event/1270700"
+ },
+ "svcNotes": {
+  "1232785249": {
+   "t": "Revival",
+   "by": "Rev. Keith Nuckolls"
+  },
+  "1232850153": {
+   "t": "Revival",
+   "by": "Rev. Keith Nuckolls"
+  },
+  "1233208015": {
+   "t": "Revival",
+   "by": "Rev. Keith Nuckolls"
+  },
+  "1233557711": {
+   "t": "Revival",
+   "by": "Rev. Keith Nuckolls"
+  }
  }
 }
