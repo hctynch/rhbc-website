@@ -12,7 +12,7 @@ MATCH = os.environ.get("VIMEO_MATCH", "Worship Service").strip().lower()
 OUT = "data/services.json"
 NY = ZoneInfo("America/New_York")
 API = os.environ.get("VIMEO_API", "https://api.vimeo.com")
-FIELDS = "uri,name,created_time,duration,player_embed_url,link,status"
+FIELDS = "uri,name,created_time,release_time,modified_time,duration,player_embed_url,link,status,live"
 
 
 def get(path):
@@ -42,13 +42,33 @@ def from_event():
     return vids
 
 
+def when(v):
+    """When the service actually streamed (Eastern time) and which field said so.
+
+    A recurring Vimeo event creates the next week's video as soon as a stream
+    ends, so created_time is a week early for recordings. Prefer the live
+    stream's own times, then the release time.
+    """
+    live = v.get("live") or {}
+    for src, val in (("live.ended_time", live.get("ended_time")),
+                     ("live.started_time", live.get("started_time") or live.get("start_time")),
+                     ("live.scheduled_start_time", live.get("scheduled_start_time")),
+                     ("release_time", v.get("release_time")),
+                     ("created_time", v.get("created_time"))):
+        if val:
+            try:
+                return datetime.datetime.fromisoformat(str(val).replace("Z", "+00:00")).astimezone(NY), src
+            except ValueError:
+                pass
+    return None, None
+
+
 def is_service(v):
     """Named like a worship service, or recorded on a Sunday morning (Eastern)."""
     if MATCH in (v.get("name") or "").lower():
         return True
-    try:
-        t = datetime.datetime.fromisoformat(v["created_time"].replace("Z", "+00:00")).astimezone(NY)
-    except Exception:
+    t, _ = when(v)
+    if not t:
         return False
     return t.weekday() == 6 and 10 <= t.hour < 13 and int(v.get("duration") or 0) >= 1800
 
@@ -75,9 +95,15 @@ def tidy(v):
         parts = (v.get("link") or "").rstrip("/").split("/")
         if len(parts) >= 2 and parts[-2] == vid:
             h = parts[-1]
-    t = datetime.datetime.fromisoformat(v["created_time"].replace("Z", "+00:00")).astimezone(NY)
+    t, src = when(v)
+    if not t:
+        return None
+    SRC[src] = SRC.get(src, 0) + 1
     return {"id": vid, "h": h, "date": t.strftime("%Y-%m-%d"), "time": t.strftime("%H:%M"),
             "dur": int(v.get("duration") or 0)}
+
+
+SRC = {}
 
 
 def main():
@@ -102,12 +128,12 @@ def main():
     except Exception:
         old = None
     if old and old.get("videos") == uniq:
-        print("No change (%d services)." % len(uniq))
+        print("No change (%d services). Dates from: %s" % (len(uniq), SRC))
         return 0
     with open(OUT, "w") as f:
         json.dump(new, f, indent=1)
         f.write("\n")
-    print("Wrote %d services from the %s." % (len(uniq), source))
+    print("Wrote %d services from the %s. Dates from: %s" % (len(uniq), source, SRC))
     return 0
 
 
