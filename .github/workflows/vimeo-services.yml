@@ -6,6 +6,11 @@ on:
     - cron: "*/30 16-22 * * 0"
     - cron: "17 10 * * *"
   workflow_dispatch:
+    inputs:
+      debug:
+        description: "Print date fields for the newest recordings"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -25,6 +30,7 @@ jobs:
       - name: Read recordings from Vimeo
         env:
           VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
+          VIMEO_DEBUG: ${{ github.event.inputs.debug }}
         run: python .github/scripts/vimeo_services.py
       - name: Publish if anything changed
         run: |

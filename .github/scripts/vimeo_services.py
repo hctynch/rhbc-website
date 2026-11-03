@@ -12,7 +12,7 @@ MATCH = os.environ.get("VIMEO_MATCH", "Worship Service").strip().lower()
 OUT = "data/services.json"
 NY = ZoneInfo("America/New_York")
 API = os.environ.get("VIMEO_API", "https://api.vimeo.com")
-FIELDS = "uri,name,created_time,release_time,modified_time,duration,player_embed_url,link,status,live"
+FIELDS = "uri,name,created_time,release_time,modified_time,last_user_action_event_date,duration,player_embed_url,link,status,live,type,is_playable"
 
 
 def get(path):
@@ -117,6 +117,11 @@ def main():
     except Exception as e:  # Live API needs an Enterprise plan; fall back to the library
         print("Event clips unavailable (%s); using the video library." % e)
         vids, source = from_library(), "library"
+    if os.environ.get("VIMEO_DEBUG"):
+        for v in vids[:10]:
+            print("DEBUG", (v.get("uri") or "").rsplit("/", 1)[-1], "created", v.get("created_time"), "release", v.get("release_time"),
+                  "modified", v.get("modified_time"), "lastaction", v.get("last_user_action_event_date"),
+                  "dur", v.get("duration"), "type", v.get("type"), "live", json.dumps(v.get("live"))[:160])
     rows = [r for r in map(tidy, vids) if r]
     seen, uniq = set(), []
     for r in sorted(rows, key=lambda r: (r["date"], r["time"]), reverse=True):
