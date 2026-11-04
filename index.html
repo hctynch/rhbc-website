@@ -114,6 +114,8 @@ p{margin:0}
 .nb-edit{flex:none;font:600 .78rem/1 var(--body);padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--on-brand) 55%,transparent);background:transparent;color:var(--on-brand);cursor:pointer}
 .nb-edit:hover{background:color-mix(in srgb,var(--on-brand) 15%,transparent)}
 .nb-empty{opacity:.85;font-style:italic}
+.nb-short{display:none}
+@media (max-width:640px){.nb-long{display:none}.nb-short{display:inline}.nb-row:has(.nb-tools) .nb-msg{flex-basis:100%}}
 .nlist{display:grid;gap:12px}
 .nrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
 .nrow .full{grid-column:1/-1}
@@ -2077,7 +2079,7 @@ function paintNotice(){
   rows.forEach((n,i)=>{
     const msg=el("div",{className:"nb-msg"});
     if(n){msg.append(el("span",{textContent:n.text}));const u=safeUrl(n.url||"");if(u){msg.append(" ",el("a",{href:u,target:"_blank",rel:"noopener",textContent:"Learn More →"}))}}
-    else msg.append(el("span",{className:"nb-empty",textContent:"No announcement banners are showing right now."}));
+    else msg.append(el("span",{className:"nb-empty"},el("span",{className:"nb-long",textContent:"No announcement banners are showing right now."}),el("span",{className:"nb-short",textContent:"No banners showing"})));
     const wrap=el("div",{className:"wrap"},msg);
     if(canEditFlag&&i===0){const b=el("button",{type:"button",className:"nb-edit",textContent:"Edit Banners"});b.onclick=openBanners;const a=el("button",{type:"button",className:"nb-edit",textContent:"Closing / Delay Alert"});a.onclick=openAlert;wrap.append(el("div",{className:"nb-tools"},a,b))}
     box.append(el("div",{className:"nb-row"},wrap));
