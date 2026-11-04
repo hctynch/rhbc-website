@@ -594,6 +594,15 @@ a.card:hover{border-color:var(--muted)}
 .ev-side{display:grid;justify-items:end;align-content:start;gap:8px}
 .ev-cat{display:inline-flex;align-items:center;white-space:nowrap;font-size:.8rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--cat) 14%,var(--surface));color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
 .ev-locrow{margin-top:6px}
+.tag.mo-tag{color:var(--muted);border-color:var(--line);text-transform:none;letter-spacing:0;font-weight:600}
+.mrow .m-rep{display:grid;gap:8px}
+.mrow .m-opt{display:flex!important;flex-wrap:wrap;align-items:center;gap:8px;font-weight:500}
+.mrow .m-opt select,.mrow .m-opt input[type=number]{width:auto;min-width:0}
+.mrow .m-opt input[type=radio]{width:auto;margin:0}
+.mrow .m-prev{font-size:.85rem;color:var(--muted);margin:0}
+.mrow .m-prev b{color:var(--ink);font-weight:600}
+.mrow .m-skips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.85rem}
+.mrow .m-skips button{font:600 .8rem/1 var(--body);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 9px;cursor:pointer;color:var(--ink)}
 .cat-pick{display:grid;gap:8px}
 .cat-lab{font-size:.85rem;font-weight:600}
 .cat-opts{display:flex;flex-wrap:wrap;gap:6px}
@@ -776,7 +785,7 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- ============ CALENDAR ============ -->
 <div class="view" data-route="calendar" data-title="Calendar" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button></div></div></section>
   <section class="band" style="padding-top:40px"><div class="wrap">
     <div id="restoreSlot"></div>
     <div class="cal">
@@ -1032,9 +1041,10 @@ textarea{min-height:84px;resize:vertical}
 </div>
 
 <div class="view" data-route="schedule" data-sec="about" data-title="Our Schedule" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button></div></div></section>
   <div class="wrap pbody"><div class="prose">
     <div class="week" data-weekly></div>
+    <div class="week" data-monthly hidden></div>
     <p class="note">All children and youth activities on Wednesday and Sunday evenings meet in the Multi-Purpose Building.</p>
     <div class="linkrow"><a class="btn ghost" href="#calendar">See Special Events</a></div>
   </div><aside class="side"></aside></div>
@@ -1756,6 +1766,22 @@ textarea{min-height:84px;resize:vertical}
   </div>
 </div>
 
+<div id="overlay13" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg13Title">
+    <h3 id="dlg13Title">Recurring Events</h3>
+    <p class="meta">Events that repeat every month, like the 4th Monday, the 5th Sunday or the 15th. They show on the calendar, in Next Eight Weeks and on Our Schedule. Click Edit on any event to change it.</p>
+    <form id="mForm" novalidate style="display:grid;gap:14px">
+      <div id="mList" class="nlist"></div>
+      <button class="btn ghost" type="button" id="mAdd" style="justify-self:start">+ Add Recurring Event</button>
+      <p class="err" id="m-err" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn ghost" type="button" id="mCancel">Cancel</button>
+        <button class="btn primary" type="submit">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="overlay11" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg11Title">
     <h3 id="dlg11Title">Live Stream Settings</h3>
@@ -2020,10 +2046,24 @@ const evColor=e=>{const c=evCats(e);return c.length?catVar(c[0]):"var(--muted)"}
 const evShown=e=>{const c=evCats(e);return !c.length||c.some(x=>active.has(x))};
 const evBarStyle=e=>{const c=evCats(e);let st="--cat:"+evColor(e);
   if(c.length>1&&!e.weekly){const n=c.length;st+=";background:linear-gradient("+c.map((x,i)=>catVar(x)+" "+Math.round(i*100/n)+"% "+Math.round((i+1)*100/n)+"%").join(",")+")"}return st};
-let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(Object.keys(CATS)), showWeekly=true;
+let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(Object.keys(CATS)), showWeekly=true, showMonthly=true;
+/* recurring (monthly) events: {mode:"nth",n:1-5|-1,dow} or {mode:"day",day:1-31}; skips months without that day */
+const ORD=["","1st","2nd","3rd","4th","5th"];
+const ordDay=d=>d+(d%100>=11&&d%100<=13?"th":["th","st","nd","rd"][d%10]||"th");
+const moRule=m=>m.mode==="day"?ordDay(+m.day)+" of every month":(m.n==-1?"Last":ORD[m.n])+" "+DAYNAMES[m.dow]+" of every month";
+function moMatches(m,k){
+  const d=fromKey(k),ym=k.slice(0,7);
+  if(m.from&&ym<m.from)return false;if(m.until&&ym>m.until)return false;if((m.skip||[]).includes(k))return false;
+  if(m.mode==="day")return d.getDate()===+m.day;
+  if(d.getDay()!==+m.dow)return false;
+  const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  return +m.n===-1?d.getDate()+7>dim:Math.ceil(d.getDate()/7)===+m.n;
+}
+function moNext(m,count,fromK){const out=[];const d=fromKey(fromK||TODAY);for(let i=0;i<800&&out.length<count;i++){const k=keyOf(d);if(moMatches({...m,skip:[]},k))out.push(k);d.setDate(d.getDate()+1)}return out}
 
 function eventsOn(k){
   const list=state.events.filter(e=>e.date===k&&evShown(e));
+  if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moMatches(m,k))list.push({...m,loc:m.loc||"",desc:m.note||"",date:k,monthly:true,mid:m.id,id:"m:"+m.id});
   if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&evShown(w))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"})}
   return list.sort(sortEv);
 }
@@ -2097,6 +2137,7 @@ function renderFilters(){
   const f=$("filters");f.replaceChildren();
   for(const c in CATS){const b=el("button",{type:"button",className:"chip",style:"--dot:"+catVar(c)},el("i"),CATS[c].label);b.setAttribute("aria-pressed",String(active.has(c)));b.onclick=()=>{active.has(c)?active.delete(c):active.add(c);renderFilters();renderGrid();renderDay();renderUp()};f.append(b)}
   const w=el("button",{type:"button",className:"chip",style:"--dot:var(--muted)"},el("i"),"Weekly Services");w.setAttribute("aria-pressed",String(showWeekly));w.onclick=()=>{showWeekly=!showWeekly;renderFilters();renderGrid();renderDay()};f.append(w);
+  const mo=el("button",{type:"button",className:"chip",style:"--dot:var(--muted)"},el("i"),"Recurring Events");mo.setAttribute("aria-pressed",String(showMonthly));mo.onclick=()=>{showMonthly=!showMonthly;renderFilters();renderGrid();renderDay();renderUp()};f.append(mo);
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
@@ -2165,6 +2206,7 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
+  if(e.monthly)h.append(el("span",{className:"tag mo-tag",textContent:moRule(e).replace(" of every month"," monthly").replace(/^(\d+\w\w) monthly$/,"$1 monthly")}));
   const when=el("div",{className:"when"});
   if(withDate)when.append(el("span",{className:"wd",textContent:shortDate(e.date)}),el("span",{className:"wsep",textContent:" · "}));
   when.append(el("span",{className:"wt",textContent:fmtRange(e)}));
@@ -2175,7 +2217,9 @@ function evRow(e,withDate){
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});
   evCats(e).forEach(c=>right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(c),textContent:CATS[c].label})));
-  if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
+  if(e.monthly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Series"});b.onclick=()=>openMonthly(e.mid);
+    const sk=el("button",{type:"button",className:"btn ghost small edit",textContent:"Skip This Date"});sk.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;m.skip=[...(m.skip||[]),e.date];dirty=true;editing=true;renderAll();toast(e.title+" skipped on "+shortDate(e.date)+". Press “Save Changes” to publish.")};right.append(b,sk)}
+  else if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
   return el("li",{className:"ev"},el("span",{className:"bar"+(e.weekly?" weekly":""),style:evBarStyle(e)}),info,right,body);
 }
 function renderDay(){
@@ -2187,7 +2231,9 @@ function renderDay(){
 function renderUp(){
   const ul=$("upList");ul.replaceChildren();
   const end=new Date(now);end.setDate(end.getDate()+56);const ek=keyOf(end);
-  const evs=state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&evShown(e)).sort(sortEv);
+  const evs=state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&evShown(e));
+  if(showMonthly){const d=fromKey(TODAY);for(let i=0;i<=56;i++){const k=keyOf(d);for(const m of state.monthly||[])if(m.title&&evShown(m)&&moMatches(m,k))evs.push({...m,loc:m.loc||"",desc:m.note||"",date:k,monthly:true,mid:m.id,id:"m:"+m.id});d.setDate(d.getDate()+1)}}
+  evs.sort(sortEv);
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"No special events in the next eight weeks."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
@@ -2249,9 +2295,9 @@ function openEvent(id){
   $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
-function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay10"].forEach(i=>$(i).hidden=true)}
+function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay13","overlay10"].forEach(i=>$(i).hidden=true)}
 $("cancelBtn").onclick=closeDlg;$("nCancel").onclick=closeDlg;
-[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
+[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay13"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
 $("evForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const t=f.title.value.trim(),d=f.date.value,err=m=>{$("f-err").textContent=m;$("f-err").hidden=false};
@@ -2408,6 +2454,11 @@ function renderWeekly(){
       box.append(el("div",{className:"day"},el("h3",{textContent:DAYNAMES[d]}),el("ul",{},...items.map(wkItem))))}
     if(!box.children.length)box.append(el("p",{className:"empty-note",textContent:"No weekly events are listed right now."}));
   });
+  document.querySelectorAll("[data-monthly]").forEach(box=>{
+    const ms=(state.monthly||[]).filter(m=>m.title&&(!m.until||m.until>=TODAY.slice(0,7)));box.replaceChildren();box.hidden=!ms.length;if(!ms.length)return;
+    box.append(el("div",{className:"day"},el("h3",{textContent:"Recurring Events"}),el("ul",{},...ms.slice().sort((a,b)=>(a.mode===b.mode?0:a.mode==="nth"?-1:1)||(a.mode==="day"?(+a.day)-(+b.day):((+a.n===-1?6:+a.n)-(+b.n===-1?6:+b.n))||((+a.dow)-(+b.dow)))||(a.start||"").localeCompare(b.start||"")).map(m=>
+      el("li",{},el("time",{textContent:m.start?fmtTime(m.start):""}),el("span",{},m.title,el("small",{className:"wk-loc",textContent:moRule(m)}),m.loc?el("small",{className:"wk-loc",textContent:m.loc}):null,m.note?el("small",{className:"wk-note keep-lines",textContent:m.note}):null))))));
+  });
   const byId=Object.fromEntries(wk.map(w=>[w.id,w]));
   document.querySelectorAll("[data-wk]").forEach(n=>{const w=byId[n.dataset.wk];if(!w)return;const f=n.dataset.fmt,D=DAYNAMES[w.dow];
     const t=f==="day"?D+", "+fmtTime(w.start):f==="days"?D+"s, "+fmtTime(w.start):f==="daysrange"?D+"s, "+fmtSpan(w):fmtTime(w.start);
@@ -2465,6 +2516,81 @@ $("wForm").addEventListener("submit",ev=>{
   }
   state.weekly=sortWk(out);dirty=true;editing=true;closeDlg();renderAll();
   toast("Weekly schedule updated. Press “Save Changes” to publish it.");
+});
+
+/* recurring events editor */
+let mRowId=0;
+function moRow(m,open){
+  const id="mo"+(++mRowId);const row=el("div",{className:"nrow wrow mrow"+(open?" open":"")});row.dataset.mid=m.id||"";row._skip=[...(m.skip||[])];
+  const sum=el("b",{className:"w-sum"});
+  const tog=el("button",{type:"button",className:"btn ghost small",textContent:open?"Done":"Edit"});
+  tog.onclick=()=>{const o=row.classList.toggle("open");tog.textContent=o?"Done":"Edit";if(o)ti.focus()};
+  const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
+  const head=el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},tog,rm));
+  const ti=el("input",{className:"m-title",maxLength:90,value:m.title||"",placeholder:"WMU Circle Meetings"});
+  const cat=el("div",{className:"cat-opts m-cats",role:"group"});cat.setAttribute("aria-label","Ministries");const mc=evCats(m);
+  for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=mc.includes(c);cat.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}
+  const rn=id+"-mode";
+  const r1=el("input",{type:"radio",name:rn,value:"nth"}),r2=el("input",{type:"radio",name:rn,value:"day"});(m.mode==="day"?r2:r1).checked=true;
+  const nSel=el("select",{className:"m-n"});[["1","1st"],["2","2nd"],["3","3rd"],["4","4th"],["5","5th"],["-1","Last"]].forEach(([v,t])=>nSel.append(el("option",{value:v,textContent:t})));nSel.value=String(m.n??1);
+  const dSel=el("select",{className:"m-dow"});DAYNAMES.forEach((n,i)=>dSel.append(el("option",{value:String(i),textContent:n})));dSel.value=String(m.dow??1);
+  const dayIn=el("select",{className:"m-day"});for(let i=1;i<=31;i++)dayIn.append(el("option",{value:String(i),textContent:ordDay(i)}));dayIn.value=String(m.day||15);
+  const rep1=el("label",{className:"m-opt"},r1,"On the",nSel,dSel,"of every month");
+  const rep2=el("label",{className:"m-opt"},r2,"On the",dayIn,"of every month");
+  const prev=el("p",{className:"m-prev"});
+  const st=el("input",{className:"m-start",type:"time",value:m.start||""});
+  const en=el("input",{className:"m-end",type:"time",value:m.end||""});
+  const fr=el("input",{className:"m-from",type:"month",value:m.from||""});
+  const un=el("input",{className:"m-until",type:"month",value:m.until||""});
+  const lo=el("input",{className:"w-loc",maxLength:80,value:m.loc||""});
+  const no=el("textarea",{className:"m-note",maxLength:400,placeholder:"Who it’s for, what to bring… (optional)"});no.value=m.note||"";
+  const skips=el("div",{className:"m-skips"});
+  const val=()=>({mode:r2.checked?"day":"nth",n:+nSel.value,dow:+dSel.value,day:+dayIn.value,from:fr.value,until:un.value,skip:row._skip});
+  const upd=()=>{const v=val();sum.textContent=(ti.value.trim()||"New event")+" — "+moRule(v)+(st.value?" · "+fmtTime(st.value):"");
+    const nx=moNext(v,4,TODAY).filter(k=>!row._skip.includes(k)).slice(0,3);
+    prev.replaceChildren("Next dates: ",el("b",{textContent:nx.length?nx.map(k=>shortDate(k)).join("  ·  "):"none in the dates chosen"}));
+    if(v.mode==="day"&&v.day>28)prev.append(" (months without a "+ordDay(v.day)+" are skipped)");
+    if(v.mode==="nth"&&v.n===5)prev.append(" (only months with a 5th "+DAYNAMES[v.dow]+")");
+    skips.replaceChildren();if(row._skip.length){skips.append("Skipped:");row._skip.slice().sort().forEach(k=>{const b=el("button",{type:"button",title:"Put this date back",textContent:shortDate(k)+" ✕"});b.onclick=()=>{row._skip=row._skip.filter(x=>x!==k);upd()};skips.append(b)})}};
+  [ti,nSel,dSel,dayIn,r1,r2,st,fr,un].forEach(x=>{x.addEventListener("input",upd);x.addEventListener("change",upd)});upd();
+  const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
+  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),
+    el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministries ",el("span",{className:"hint",textContent:"Choose any that apply, or none"})),cat),
+    el("div",{className:"full m-rep"},el("span",{className:"cat-lab",textContent:"Repeats"}),rep1,rep2,prev,skips),
+    L("Starts",st),L("Ends (optional)",en),L("Location",locPicker(lo),"full"),L("Details",no,"full"),
+    L("Starting month (optional)",fr),L("Ending month (optional)",un));
+  row.append(head,f);return row;
+}
+let moFocus=null;
+function openMonthly(focusId){
+  const box=$("mList");box.replaceChildren(...(state.monthly||[]).map(m=>moRow(m,m.id===focusId)));
+  if(!box.children.length)box.append(moRow({mode:"nth",n:4,dow:1},true));
+  $("m-err").hidden=true;$("overlay13").hidden=false;
+  const o=box.querySelector(".mrow.open");if(o)setTimeout(()=>o.scrollIntoView({block:"nearest"}),30);
+}
+$("mAdd").onclick=()=>{const r=moRow({mode:"nth",n:4,dow:1},true);$("mList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".m-title").focus()};
+$("mCancel").onclick=closeDlg;
+document.querySelectorAll(".mo-edit").forEach(b=>b.onclick=()=>openMonthly(null));
+$("mForm").addEventListener("submit",ev=>{
+  ev.preventDefault();const err=m=>{$("m-err").textContent=m;$("m-err").hidden=false};
+  const out=[];
+  for(const row of $("mList").querySelectorAll(".mrow")){
+    const q=c=>row.querySelector(c),title=q(".m-title").value.trim(),start=q(".m-start").value,end=q(".m-end").value;
+    const show=()=>{row.classList.add("open");row.querySelector(".nrow-tools button").textContent="Done";row.scrollIntoView({block:"nearest"})};
+    const note=q(".m-note").value.replace(/\r/g,"").trim(),loc=normLoc(q(".w-loc").value);
+    if(!title&&!start&&!note&&!loc)continue;
+    if(!title){show();return err("Each recurring event needs a name. Remove any you don’t want.")}
+    if(end&&!start){show();return err("“"+title+"” has an end time but no start time.")}
+    if(end&&start&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
+    const from=q(".m-from").value,until=q(".m-until").value;
+    if(from&&until&&until<from){show();return err("The ending month for “"+title+"” is before its starting month.")}
+    const mode=row.querySelector('input[type=radio]:checked').value,cats=[...row.querySelectorAll(".m-cats input:checked")].map(i=>i.value);
+    const rec={id:row.dataset.mid||("m"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title,mode,cats,cat:cats[0]||"",start,end:/^\d{2}:\d{2}$/.test(end)?end:"",loc,note,from,until,skip:row._skip||[]};
+    if(mode==="day")rec.day=+q(".m-day").value;else{rec.n=+q(".m-n").value;rec.dow=+q(".m-dow").value}
+    rememberLocation(loc);out.push(rec);
+  }
+  state.monthly=out;dirty=true;editing=true;closeDlg();renderAll();
+  toast("Recurring events updated. Press “Save Changes” to publish them.");
 });
 
 /* staff */
@@ -3100,7 +3226,7 @@ $("saveBtn").onclick=async()=>{
 renderAll();show();
 
 /* staff sign-in (GitHub key) */
-if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".wk-edit,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
+if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".wk-edit,.ls-edit,.mo-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
 $("staffLink").textContent=GH.ok?"Staff Sign Out":"Staff Sign In";
 $("staffLink").onclick=e=>{e.preventDefault();
   if(GH.ok){if(dirty&&!confirm("You have unsaved changes. Sign Out anyway?"))return;GH.forget();location.reload();return}
