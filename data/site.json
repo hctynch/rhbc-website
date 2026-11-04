@@ -26,8 +26,12 @@
    "id": "e1a1a4b9501e83ga",
    "title": "Church Basketball Meeting",
    "date": "2026-11-15",
-   "cats": [],
-   "cat": "",
+   "cats": [
+    "kids",
+    "students",
+    "adults"
+   ],
+   "cat": "kids",
    "start": "12:15",
    "end": "",
    "loc": "Sanctuary",
@@ -38,8 +42,10 @@
    "id": "e1a1a4b9502026hl",
    "title": "Children’s & Youth Ministry Teams Meeting",
    "date": "2026-11-15",
-   "cats": [],
-   "cat": "",
+   "cats": [
+    "adults"
+   ],
+   "cat": "adults",
    "start": "16:00",
    "end": "",
    "loc": "Youth Suite",
