@@ -162,6 +162,8 @@ p{margin:0}
 .hero h1{font-size:clamp(2.7rem,1.6rem + 4.6vw,5rem);letter-spacing:-.01em}
 .hero h1 em{font-style:normal;color:var(--brand-hi)}
 .hero-copy{display:grid;gap:22px;min-width:0}
+.sunday-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.sunday-head .wk-edit{flex:none}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
 .sunday{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:26px;display:grid;gap:18px;min-width:0}
 .sunday h2{font-size:1.5rem}
@@ -695,10 +697,9 @@ textarea{min-height:84px;resize:vertical}
         </div>
       </div>
       <aside class="sunday" aria-labelledby="sundayHead">
-        <div><p class="eyebrow">Every Sunday</p><h2 id="sundayHead">Join us this week</h2></div>
+        <div class="sunday-head"><div><p class="eyebrow">Every Sunday</p><h2 id="sundayHead">Join Us This Week</h2></div><button class="btn ghost small wk-edit" type="button" hidden>Edit Weekly Schedule</button></div>
         <ul class="times" id="sundayTimes"></ul>
         <div class="addr-row"><p class="addr"><strong>113 Rocky Hock Church Road</strong><br><strong>Edenton, NC 27932</strong></p><a class="btn ghost small dir-btn" id="dirBtn" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rocky+Hock+Baptist+Church,+113+Rocky+Hock+Church+Road,+Edenton,+NC+27932" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Get Directions</a></div>
-        <button class="btn ghost small wk-edit" type="button" hidden style="justify-self:start">Edit Weekly Schedule</button>
       </aside>
     </div>
   </section>
