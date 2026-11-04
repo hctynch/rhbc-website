@@ -196,6 +196,7 @@ body:not(.editing) .phero .linkrow:not(:has(> :not([hidden]):not(.editor-tools))
 .fact span{font-weight:600;line-height:1.4}
 .fact small{color:var(--muted);font-size:.87rem;line-height:1.4}
 .note{font-size:.88rem;color:var(--muted)}
+.keep-lines,figcaption,.lb-cap,#lbCap{white-space:pre-line}
 .kverses{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .kverses .fact{gap:6px}
 .kverses .fact span{font-family:var(--display);font-weight:400;font-size:1.1rem}
@@ -2017,7 +2018,7 @@ function paintAlert(){
   const kind=KIND_LABEL[a.kind]?a.kind:"cancel";box.dataset.kind=kind;box.hidden=false;
   const ic=el("span",{className:"al-ic"});ic.setAttribute("aria-hidden","true");ic.innerHTML='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICONS[kind]+'</svg>';
   const body=el("div",{className:"al-body"},el("span",{className:"al-kind",textContent:KIND_LABEL[kind]}),el("h2",{className:"al-title",textContent:a.title}));
-  if(a.details)body.append(el("p",{className:"al-details",textContent:a.details}));
+  if(a.details)body.append(el("p",{className:"al-details keep-lines",textContent:a.details}));
   const u=safeUrl(a.url||"");if(u)body.append(el("div",{className:"al-actions"},el("a",{className:"btn primary small",href:u,target:"_blank",rel:"noopener",textContent:(a.urlText||"More information")+" →"})));
   const wrap=el("div",{className:"wrap"},ic,body);
   if(canEditFlag){const b=el("button",{type:"button",className:"btn ghost small al-edit",textContent:"Edit Alert"});b.onclick=openAlert;wrap.append(b)}
@@ -2053,7 +2054,7 @@ function renderNext(){
     const chip=el("div",{className:"datechip"},el("b",{textContent:d.toLocaleDateString("en-US",{month:"short"})}),el("span",{textContent:String(d.getDate())}));
     const h=el("h3",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
     const body=el("div",{style:"display:grid;gap:4px;min-width:0"},h,el("p",{className:"meta",textContent:d.toLocaleDateString("en-US",{weekday:"long"})+" · "+fmtRange(e)+(e.loc?" · "+e.loc:"")}));
-    if(e.desc)body.append(el("p",{className:"meta",textContent:e.desc}));
+    if(e.desc)body.append(el("p",{className:"meta keep-lines",textContent:e.desc}));
     box.append(el("article",{className:"next-card"},chip,body));
   }
 }
@@ -2131,7 +2132,7 @@ function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
   const info=el("div",{style:"min-width:0"},el("div",{className:"when",textContent:withDate?shortDate(e.date)+" · "+fmtRange(e):fmtRange(e)}),h);
   const sub=[CATS[e.cat]?CATS[e.cat].label:"",e.loc].filter(Boolean).join(" · ");if(sub)info.append(el("p",{textContent:sub}));
-  if(e.desc)info.append(el("p",{textContent:e.desc}));
+  if(e.desc)info.append(el("p",{className:"keep-lines",textContent:e.desc}));
   const u=safeUrl(e.url||"");if(u)info.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div");
   if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
@@ -2277,7 +2278,7 @@ function renderJobs(){
   if(!jobs.length){box.append(el("p",{className:"empty-note",textContent:"There are no open positions right now. Please check back."}));return}
   jobs.forEach((j,i)=>{
     const card=el("article",{className:"job"},el("h3",{textContent:j.t}));
-    if(j.n)card.append(el("p",{textContent:j.n}));
+    if(j.n)card.append(el("p",{className:"keep-lines",textContent:j.n}));
     const row=el("div",{className:"row"});
     const href=j.a?fileUrl(j.a):safeUrl(j.u||"");
     if(href)row.append(el("a",{className:"btn primary small",href,target:"_blank",rel:"noopener",textContent:j.a?"Job description (PDF)":"View the Full Posting"}));
@@ -2406,7 +2407,7 @@ function renderStaff(){
     const info=el("div",{},el("h3",{textContent:m.name}));
     const role=[m.role,m.phone].filter(Boolean).join(" · ");if(role)info.append(el("p",{className:"role",textContent:role}));
     if(m.email)info.append(el("p",{className:"contact"},el("a",{href:"mailto:"+m.email,textContent:m.email})));
-    (m.bio||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).forEach(t=>info.append(el("p",{textContent:t})));
+    (m.bio||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).forEach(t=>info.append(el("p",{className:"keep-lines",textContent:t})));
     const tools=el("div",{className:"staff-tools"});
     const eb=el("button",{type:"button",className:"btn ghost small",textContent:"Edit"});eb.onclick=()=>openStaff(i);
     const up=el("button",{type:"button",className:"btn ghost small",textContent:"↑ Up",disabled:i===0,ariaLabel:"Move "+m.name+" up"});up.onclick=()=>moveStaff(i,-1);
@@ -2513,7 +2514,7 @@ function renderSpecials(){
   if(!L.length){box.append(el("p",{className:"empty-note",textContent:"No special events are listed right now. Check the church calendar."}));return}
   L.forEach((ev,i)=>{
     const card=el("article",{className:"special"},el("h2",{textContent:ev.title}));
-    if(ev.desc)card.append(el("p",{textContent:ev.desc}));
+    if(ev.desc)card.append(el("p",{className:"keep-lines",textContent:ev.desc}));
     const row=el("div",{className:"linkrow"});
     const ext=h=>h.charAt(0)!=="#";
     if(ev.reg&&ev.reg.url){const h=linkHref(ev.reg.url);if(h){const a=el("a",{className:"btn primary",href:h,textContent:ev.reg.text||"Register"});if(ext(h)){a.target="_blank";a.rel="noopener"}row.append(a)}}
