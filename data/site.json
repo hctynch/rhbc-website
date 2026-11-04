@@ -70,7 +70,7 @@
   },
   {
    "id": "emw1isx64276g",
-   "title": "RHBC vs St Paul's/Open Door",
+   "title": "Basketball: RHBC vs St Paul's/Open Door",
    "date": "2027-01-02",
    "cats": [
     "fellowship"
@@ -84,7 +84,7 @@
   },
   {
    "id": "emw1oa5jhr6ki",
-   "title": "Ballard's Bridge vs RHBC",
+   "title": "Basketball: Ballard's Bridge vs RHBC",
    "date": "2027-01-09",
    "cats": [
     "fellowship"
@@ -98,8 +98,50 @@
   },
   {
    "id": "emw1og7esqn51",
-   "title": "RHBC vs Edenton Baptist",
+   "title": "Basketball: RHBC vs Edenton Baptist",
    "date": "2027-01-16",
+   "cats": [
+    "fellowship"
+   ],
+   "cat": "fellowship",
+   "start": "16:30",
+   "end": "21:30",
+   "loc": "Multi-Purpose Building",
+   "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
+   "url": ""
+  },
+  {
+   "id": "emw1oj79gi7cg",
+   "title": "Basketball: RHBC vs St Paul's/Open Door",
+   "date": "2027-01-23",
+   "cats": [
+    "fellowship"
+   ],
+   "cat": "fellowship",
+   "start": "16:30",
+   "end": "21:30",
+   "loc": "Multi-Purpose Building",
+   "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
+   "url": ""
+  },
+  {
+   "id": "emw1om5xhqqzy",
+   "title": "Basketball: RHBC vs Ballard's Bridge",
+   "date": "2027-02-06",
+   "cats": [
+    "fellowship"
+   ],
+   "cat": "fellowship",
+   "start": "16:30",
+   "end": "21:30",
+   "loc": "Multi-Purpose Building",
+   "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
+   "url": ""
+  },
+  {
+   "id": "emw1ongpfyb1p",
+   "title": "Basketball: RHBC vs Edenton Baptist",
+   "date": "2027-02-13",
    "cats": [
     "fellowship"
    ],
