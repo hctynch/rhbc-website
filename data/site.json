@@ -670,5 +670,23 @@
    "by": "Rev. Keith Nuckolls"
   }
  },
- "locations": []
+ "locations": [],
+ "monthly": [
+  {
+   "id": "mmw1o412felqw",
+   "title": "Deacon's Meeting",
+   "mode": "nth",
+   "cats": [],
+   "cat": "",
+   "start": "19:00",
+   "end": "",
+   "loc": "Conference Room",
+   "note": "",
+   "from": "",
+   "until": "",
+   "skip": [],
+   "n": 4,
+   "dow": 1
+  }
+ ]
 }
