@@ -1018,7 +1018,7 @@ textarea{min-height:84px;resize:vertical}
   <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button></div></div></section>
   <div class="wrap pbody"><div class="prose">
     <div class="week" data-weekly></div>
-    <p class="note">All children and youth activities on Wednesday and Sunday evenings meet in the Multi-Purpose Building (MPB).</p>
+    <p class="note">All children and youth activities on Wednesday and Sunday evenings meet in the Multi-Purpose Building.</p>
     <div class="linkrow"><a class="btn ghost" href="#calendar">See Special Events</a></div>
   </div><aside class="side"></aside></div>
 </div>
@@ -1033,7 +1033,7 @@ textarea{min-height:84px;resize:vertical}
     <h2>Where to Go</h2>
     <ul class="clist">
       <li><span class="ci" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M10 4h4"/><path d="M6 21V11l6-5 6 5v10"/><path d="M10 21v-4a2 2 0 0 1 4 0v4"/></svg></span><div class="cv"><b>Sunday worship</b><span class="cval">Sanctuary</span></div></li>
-      <li><span class="ci" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/><circle cx="17" cy="9" r="2"/><path d="M21 21v-1a4 4 0 0 0-5-3.9"/></svg></span><div class="cv"><b>Children and youth</b><span class="cval">Multi-Purpose Building (MPB)</span><small>Sunday and Wednesday evenings</small></div></li>
+      <li><span class="ci" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/><circle cx="17" cy="9" r="2"/><path d="M21 21v-1a4 4 0 0 0-5-3.9"/></svg></span><div class="cv"><b>Children and youth</b><span class="cval">Multi-Purpose Building</span><small>Sunday and Wednesday evenings</small></div></li>
       <li><span class="ci" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M15 12h.01"/></svg></span><div class="cv"><b>Young at Heart</b><span class="cval">Senior Adult Building, Room 312</span></div></li>
     </ul>
   </div><aside class="side"></aside></div>
@@ -1068,7 +1068,7 @@ textarea{min-height:84px;resize:vertical}
     <p>Children are dismissed from the worship service to Children’s Church and picked up in their classrooms afterward.</p>
     <h2>Evenings</h2>
     <div class="facts">
-      <div class="fact"><b>Sunday</b><span data-wk="deepdive" data-fmt="time">6:00 PM</span><small>Deep Dive children’s ministry, MPB</small></div>
+      <div class="fact"><b>Sunday</b><span data-wk="deepdive" data-fmt="time">6:00 PM</span><small>Deep Dive children’s ministry, Multi-Purpose Building</small></div>
       <div class="fact"><b>GAs & RAs</b><span>Wednesday</span><small>Girls in Action and Royal Ambassadors, grades 1–5</small></div>
       <div class="fact"><b>Mission Friends</b><span>Wednesday</span><small>Ages 3–4, Room 406</small></div>
     </div>
@@ -1197,7 +1197,7 @@ textarea{min-height:84px;resize:vertical}
     <p>The cypress in our logo pictures the Christian life: roots grounded in Christ and in fellowship, height that keeps growing toward Him, branches that spread the Gospel, and a long life of faithful commitment. A checkmark marks students graduating into their next stage of faith, and a rocket stands for launching into deeper study.</p>
     <h2>When we meet</h2>
     <div class="facts">
-      <div class="fact"><b>Sunday School</b><span data-wk="ss" data-fmt="time">9:45 AM</span><small>Youth room, second floor of the MPB</small></div>
+      <div class="fact"><b>Sunday School</b><span data-wk="ss" data-fmt="time">9:45 AM</span><small>Youth room, second floor of the Multi-Purpose Building</small></div>
       <div class="fact"><b>Sunday night</b><span data-wk="deepdive" data-fmt="time">6:00 PM</span><small>Message from Pastor Trey, then small-group breakouts led by our Youth Ministry Team</small></div>
       <div class="fact"><b>Wednesday night</b><span data-wk="vertical" data-fmt="time" data-suffix=" meal">6:45 PM meal</span><small>Come early for the gym and games, then worship and a message</small></div>
     </div>
@@ -1574,7 +1574,7 @@ textarea{min-height:84px;resize:vertical}
       <label>Ministry<select id="f-cat"></select></label>
       <label>Starts<input id="f-start" type="time"></label>
       <label>Ends<input id="f-end" type="time"></label>
-      <label class="full">Location<input id="f-loc" maxlength="80" placeholder="Sanctuary, MPB, Fellowship Hall…"></label>
+      <label class="full">Location<input id="f-loc" maxlength="80" placeholder="Sanctuary, Multi-Purpose Building, Fellowship Hall…"></label>
       <label class="full">Details<textarea id="f-desc" maxlength="400"></textarea></label>
       <label class="full">Link (optional)<input id="f-url" type="url" placeholder="https://"></label>
       <p class="err full" id="f-err" hidden></p>
@@ -2192,7 +2192,8 @@ function knownLocations(){
   LOC_DEFAULTS.forEach(add);(state.locations||[]).forEach(add);(state.events||[]).forEach(e=>add(e.loc));(state.weekly||[]).forEach(w=>add(w.loc));
   return [...seen.values()].sort((a,b)=>a.localeCompare(b));
 }
-function rememberLocation(x){x=(x||"").trim();if(!x)return;const k=x.toLowerCase(),L=state.locations||(state.locations=[]);
+const normLoc=x=>/^\s*mpb\s*$/i.test(x||"")?"Multi-Purpose Building":(x||"").trim();
+function rememberLocation(x){x=normLoc(x);if(!x)return;const k=x.toLowerCase(),L=state.locations||(state.locations=[]);
   if(!LOC_DEFAULTS.some(d=>d.toLowerCase()===k)&&!L.some(d=>d.toLowerCase()===k))L.push(x)}
 function locPicker(input){
   const sel=el("select",{className:"loc-sel"});sel.setAttribute("aria-label","Location");
@@ -2229,7 +2230,7 @@ $("evForm").addEventListener("submit",ev=>{
   if(f.end.value&&!f.start.value)return err("Add a start time, or clear the end time.");
   if(f.end.value&&f.start.value&&f.end.value<=f.start.value)return err("The end time needs to be after the start time.");
   if(f.url.value.trim()&&!safeUrl(f.url.value.trim()))return err("The link should start with https://");
-  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cat:f.cat.value,start:f.start.value||"",end:f.end.value||"",loc:f.loc.value.trim(),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
+  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cat:f.cat.value,start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
   closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
@@ -2422,7 +2423,7 @@ $("wForm").addEventListener("submit",ev=>{
   const out=[];
   for(const row of $("wList").querySelectorAll(".nrow")){
     const g=c=>row.querySelector(c).value.trim();
-    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=g(".w-loc"),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cat=g(".w-cat");
+    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=normLoc(g(".w-loc")),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cat=g(".w-cat");
     if(!title&&!start&&!note&&!loc)continue;
     const show=()=>{row.classList.add("open");row.querySelector(".nrow-tools button").textContent="Done";row.scrollIntoView({block:"nearest"})};
     if(!title){show();return err("Each weekly event needs a name. Remove any you don’t want.")}
