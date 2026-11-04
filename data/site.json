@@ -416,7 +416,8 @@
    "title": "Sunday School",
    "loc": "",
    "note": "All Ages",
-   "cat": "adults"
+   "cats": [],
+   "cat": ""
   },
   {
    "id": "worship",
@@ -426,6 +427,9 @@
    "title": "Morning Worship",
    "loc": "Sanctuary",
    "note": "Nursery and Children’s Church Provided",
+   "cats": [
+    "worship"
+   ],
    "cat": "worship"
   },
   {
@@ -436,6 +440,9 @@
    "title": "Deep Dive",
    "loc": "Sanctuary",
    "note": "Adult Bible Study",
+   "cats": [
+    "adults"
+   ],
    "cat": "adults"
   },
   {
@@ -446,6 +453,9 @@
    "title": "Vertical Student Ministry",
    "loc": "Youth Suite",
    "note": "Middle & High School Youth",
+   "cats": [
+    "students"
+   ],
    "cat": "students"
   },
   {
@@ -456,6 +466,9 @@
    "title": "Foundations Kid's Ministry",
    "loc": "Multi-Purpose Building",
    "note": "1st – 5th Grade Girls and Boys",
+   "cats": [
+    "kids"
+   ],
    "cat": "kids"
   },
   {
@@ -466,6 +479,9 @@
    "title": "Young at Heart Adult Bible Study",
    "loc": "Senior Adult Building",
    "note": "Room 312",
+   "cats": [
+    "adults"
+   ],
    "cat": "adults"
   },
   {
@@ -476,6 +492,9 @@
    "title": "Vertical Student Ministry",
    "loc": "Youth Suite",
    "note": "Middle & High School Youth\nMeal Provided",
+   "cats": [
+    "students"
+   ],
    "cat": "students"
   },
   {
@@ -486,6 +505,9 @@
    "title": "GAs & RAs",
    "loc": "Multi-Purpose Building",
    "note": "1st – 5th Grade Girls and Boys\nMeal in the Special Function Room",
+   "cats": [
+    "kids"
+   ],
    "cat": "kids"
   },
   {
@@ -496,6 +518,9 @@
    "title": "Worship Seeds",
    "loc": "Sanctuary",
    "note": "",
+   "cats": [
+    "adults"
+   ],
    "cat": "adults"
   },
   {
@@ -506,6 +531,9 @@
    "title": "Mission Friends",
    "loc": "Multi-Purpose Building",
    "note": "Ages 3 – 5",
+   "cats": [
+    "kids"
+   ],
    "cat": "kids"
   },
   {
@@ -516,6 +544,9 @@
    "title": "Sanctuary Choir Practice",
    "loc": "Choir Room",
    "note": "",
+   "cats": [
+    "music"
+   ],
    "cat": "music"
   }
  ],
