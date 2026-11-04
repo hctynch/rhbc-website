@@ -170,6 +170,8 @@ p{margin:0}
 .times li:last-child{border-bottom:1px solid var(--line)}
 .times time{white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums}
 .times span small{display:block;color:var(--muted);font-size:.85rem;line-height:1.4}
+li small.wk-loc,li small.wk-note{display:block;line-height:1.4}
+li small.wk-loc{font-weight:600}
 .addr{font-size:.93rem;color:var(--muted)}
 .addr-row{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap}
 .addr-row .addr{margin:0}
@@ -2339,7 +2341,7 @@ $("jForm").addEventListener("submit",async ev=>{
 /* weekly schedule */
 const DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const fmtSpan=w=>{if(!w.end)return fmtTime(w.start);const a=fmtTime(w.start),b=fmtTime(w.end);return a.slice(-2)===b.slice(-2)?a.slice(0,-3)+" – "+b:a+" – "+b};
-function wkItem(w){const sub=[w.loc,(w.note||"").replace(/\s*\n\s*/g," · ")].filter(Boolean).join(" · ");return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,sub?el("small",{textContent:sub}):null))}
+function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,w.loc?el("small",{className:"wk-loc",textContent:w.loc}):null,w.note?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
 function renderWeekly(){
   const wk=state.weekly||[];
   const sun=wk.filter(w=>w.dow===0);
