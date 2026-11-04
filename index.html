@@ -2024,7 +2024,7 @@ let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=ne
 
 function eventsOn(k){
   const list=state.events.filter(e=>e.date===k&&evShown(e));
-  if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&active.has(w.cat))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"})}
+  if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&evShown(w))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"})}
   return list.sort(sortEv);
 }
 let canEditFlag=false;
@@ -2426,7 +2426,8 @@ function wkRow(w,open){
   const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
   const head=el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},tog,rm));
   const day=el("select",{id:id+"-d",className:"w-dow"});DAYNAMES.forEach((n,i)=>day.append(el("option",{value:String(i),textContent:n})));day.value=String(w.dow??3);
-  const cat=el("select",{id:id+"-c",className:"w-cat"});for(const c in CATS)cat.append(el("option",{value:c,textContent:CATS[c].label}));cat.value=w.cat||"adults";
+  const cat=el("div",{className:"cat-opts w-cats",role:"group"});cat.setAttribute("aria-label","Ministries");const wc=evCats(w);
+  for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=wc.includes(c);cat.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}
   const st=el("input",{id:id+"-s",className:"w-start",type:"time",value:w.start||""});
   const en=el("input",{id:id+"-e",className:"w-end",type:"time",value:w.end||""});
   const ti=el("input",{id:id+"-t",className:"w-title",maxLength:90,value:w.title||"",placeholder:"Wednesday night prayer meeting"});
@@ -2435,7 +2436,7 @@ function wkRow(w,open){
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
   const upd=()=>{sum.textContent=DAYNAMES[+day.value]+(st.value?" · "+fmtTime(st.value):"")+(ti.value.trim()?" — "+ti.value.trim():"")};
   day.onchange=upd;st.oninput=upd;ti.oninput=upd;upd();
-  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),L("Day",day),L("Ministry",cat),L("Starts",st),L("Ends (optional)",en),L("Location",locPicker(lo),"full"),L("Details",no,"full"));
+  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministries ",el("span",{className:"hint",textContent:"Choose any that apply, or none"})),cat),L("Day",day),L("Starts",st),L("Ends (optional)",en),el("span"),L("Location",locPicker(lo),"full"),L("Details",no,"full"));
   row.append(head,f);
   return row;
 }
@@ -2444,7 +2445,7 @@ function openWeekly(){
   if(!box.children.length)box.append(wkRow({dow:3},true));
   $("w-err").hidden=true;$("overlay5").hidden=false;
 }
-$("wAdd").onclick=()=>{const r=wkRow({dow:3,cat:"adults"},true);$("wList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".w-title").focus()};
+$("wAdd").onclick=()=>{const r=wkRow({dow:3},true);$("wList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".w-title").focus()};
 $("wCancel").onclick=closeDlg;
 document.querySelectorAll(".wk-edit,.wk-edit2").forEach(b=>b.onclick=openWeekly);
 $("wForm").addEventListener("submit",ev=>{
@@ -2453,14 +2454,14 @@ $("wForm").addEventListener("submit",ev=>{
   const out=[];
   for(const row of $("wList").querySelectorAll(".nrow")){
     const g=c=>row.querySelector(c).value.trim();
-    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=normLoc(g(".w-loc")),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cat=g(".w-cat");
+    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=normLoc(g(".w-loc")),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cats=[...row.querySelectorAll(".w-cats input:checked")].map(i=>i.value);
     if(!title&&!start&&!note&&!loc)continue;
     const show=()=>{row.classList.add("open");row.querySelector(".nrow-tools button").textContent="Done";row.scrollIntoView({block:"nearest"})};
     if(!title){show();return err("Each weekly event needs a name. Remove any you don’t want.")}
     if(!/^\d{2}:\d{2}$/.test(start)){show();return err("“"+title+"” needs a start time.")}
     if(end&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
     rememberLocation(loc);
-    out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cat:CATS[cat]?cat:"adults"});
+    out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cats,cat:cats[0]||""});
   }
   state.weekly=sortWk(out);dirty=true;editing=true;closeDlg();renderAll();
   toast("Weekly schedule updated. Press “Save Changes” to publish it.");
