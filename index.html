@@ -588,9 +588,18 @@ a.card:hover{border-color:var(--muted)}
 .ev h4{margin:0;font-size:1rem;font-weight:600;line-height:1.35}
 .ev p{font-size:.9rem;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
 .ev .when{font-size:.86rem;font-weight:600;font-variant-numeric:tabular-nums}
+.ev .bar{grid-row:span 2}
+.ev-body{grid-column:2/4;min-width:0;margin-top:-12px}
+.ev-body:empty{display:none}
+.ev-side{display:grid;justify-items:end;align-content:start;gap:8px}
+.ev-cat{display:inline-flex;align-items:center;white-space:nowrap;font-size:.8rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--cat) 14%,var(--surface));color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
+.ev-locrow{margin-top:6px}
+.ev-loc{display:inline-flex;align-items:center;gap:6px;max-width:100%;font-size:.84rem;font-weight:600;line-height:1.25;color:var(--ink);padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.ev-loc svg{flex:none;color:var(--brand-hi)}
+@media (max-width:380px){.ev .when .wsep{display:none}.ev .when .wt{display:block}}
 .tag{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:3px;border:1px solid var(--gold);color:var(--gold);margin-left:6px;vertical-align:2px}
-.ev .edit{visibility:hidden}
-.editing .ev .edit{visibility:visible}
+.ev .edit{display:none}
+.editing .ev .edit{display:inline-flex}
 .editor-tools{display:none;gap:8px;flex-wrap:wrap}
 .editing .editor-tools{display:flex}
 
@@ -2142,13 +2151,18 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
-  const info=el("div",{style:"min-width:0"},el("div",{className:"when",textContent:withDate?shortDate(e.date)+" · "+fmtRange(e):fmtRange(e)}),h);
-  const sub=[CATS[e.cat]?CATS[e.cat].label:"",e.loc].filter(Boolean).join(" · ");if(sub)info.append(el("p",{textContent:sub}));
-  if(e.desc)info.append(el("p",{className:"keep-lines",textContent:e.desc}));
-  const u=safeUrl(e.url||"");if(u)info.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
-  const right=el("div");
+  const when=el("div",{className:"when"});
+  if(withDate)when.append(el("span",{className:"wd",textContent:shortDate(e.date)}),el("span",{className:"wsep",textContent:" · "}));
+  when.append(el("span",{className:"wt",textContent:fmtRange(e)}));
+  const info=el("div",{style:"min-width:0"},when,h);
+  if(e.loc){const c=el("span",{className:"ev-loc"});c.insertAdjacentHTML("beforeend",'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>');c.append(e.loc);c.setAttribute("aria-label","Location: "+e.loc);info.append(el("div",{className:"ev-locrow"},c))}
+  const body=el("div",{className:"ev-body"});
+  if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
+  const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
+  const right=el("div",{className:"ev-side"});
+  if(CATS[e.cat])right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(e.cat),textContent:CATS[e.cat].label}));
   if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
-  return el("li",{className:"ev"},el("span",{className:"bar"+(e.weekly?" weekly":""),style:"--cat:"+catVar(e.cat)}),info,right);
+  return el("li",{className:"ev"},el("span",{className:"bar"+(e.weekly?" weekly":""),style:"--cat:"+catVar(e.cat)}),info,right,body);
 }
 function renderDay(){
   $("dayLabel").textContent=longDate(selected);$("dayEyebrow").textContent=selected===TODAY?"Today":"Selected day";
