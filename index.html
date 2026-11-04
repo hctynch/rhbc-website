@@ -208,6 +208,8 @@ body:not(.editing) .phero .linkrow:not(:has(> :not([hidden]):not(.editor-tools))
 .fact span{font-weight:600;line-height:1.4}
 .fact small{color:var(--muted);font-size:.87rem;line-height:1.4}
 .note{font-size:.88rem;color:var(--muted)}
+.loc-pick{display:grid;gap:8px;min-width:0}
+.loc-pick select,.loc-pick input{width:100%;max-width:100%;min-width:0}
 .keep-lines,figcaption,.lb-cap,#lbCap{white-space:pre-line}
 .kverses{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .kverses .fact{gap:6px}
@@ -2183,6 +2185,28 @@ document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",(
 }));
 
 /* ---------- editing ---------- */
+/* location: pick from the church's rooms, or add a new one (remembered in state.locations) */
+const LOC_DEFAULTS=["Sanctuary","Multi-Purpose Building","Gym","Special Function Room","Fellowship Hall","Youth Suite","Senior Adult Building","Carey Evans SS Room","Conference Room","Choir Room"];
+function knownLocations(){
+  const seen=new Map(),add=x=>{x=(x||"").trim();if(x&&!seen.has(x.toLowerCase()))seen.set(x.toLowerCase(),x)};
+  LOC_DEFAULTS.forEach(add);(state.locations||[]).forEach(add);(state.events||[]).forEach(e=>add(e.loc));(state.weekly||[]).forEach(w=>add(w.loc));
+  return [...seen.values()].sort((a,b)=>a.localeCompare(b));
+}
+function rememberLocation(x){x=(x||"").trim();if(!x)return;const k=x.toLowerCase(),L=state.locations||(state.locations=[]);
+  if(!LOC_DEFAULTS.some(d=>d.toLowerCase()===k)&&!L.some(d=>d.toLowerCase()===k))L.push(x)}
+function locPicker(input){
+  const sel=el("select",{className:"loc-sel"});sel.setAttribute("aria-label","Location");
+  const wrap=el("span",{className:"loc-pick"});
+  input.placeholder="Type the new location";input.classList.add("loc-new");
+  const fill=()=>{const v=input.value.trim(),list=knownLocations();if(v&&!list.some(k=>k.toLowerCase()===v.toLowerCase()))list.push(v);
+    sel.replaceChildren(el("option",{value:"",textContent:"Choose a location…"}),...list.map(k=>el("option",{value:k,textContent:k})),el("option",{value:"__new",textContent:"+ Add a new location…"}));
+    const m=list.find(k=>k.toLowerCase()===v.toLowerCase());sel.value=m||"";input.hidden=true};
+  sel.onchange=()=>{if(sel.value==="__new"){input.value="";input.hidden=false;input.focus()}else{input.value=sel.value;input.hidden=true}};
+  input._syncLoc=fill;
+  if(input.parentNode)input.replaceWith(wrap);
+  wrap.append(sel,input);fill();return wrap;
+}
+locPicker($("f-loc"));
 const f={title:$("f-title"),date:$("f-date"),cat:$("f-cat"),start:$("f-start"),end:$("f-end"),loc:$("f-loc"),desc:$("f-desc"),url:$("f-url")};
 for(const c in CATS)f.cat.append(el("option",{value:c,textContent:CATS[c].label}));
 let editingId=null,delArmed=false;
@@ -2190,7 +2214,7 @@ function openEvent(id){
   const e=id?state.events.find(x=>x.id===id):null;editingId=e?e.id:null;delArmed=false;
   $("dlgTitle").textContent=e?"Edit Event":"Add Event";
   f.title.value=e?e.title:"";f.date.value=e?e.date:selected;f.cat.value=e?e.cat:"fellowship";
-  f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
+  f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.loc._syncLoc();f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
   $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
@@ -2205,7 +2229,7 @@ $("evForm").addEventListener("submit",ev=>{
   if(f.end.value&&!f.start.value)return err("Add a start time, or clear the end time.");
   if(f.end.value&&f.start.value&&f.end.value<=f.start.value)return err("The end time needs to be after the start time.");
   if(f.url.value.trim()&&!safeUrl(f.url.value.trim()))return err("The link should start with https://");
-  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cat:f.cat.value,start:f.start.value||"",end:f.end.value||"",loc:f.loc.value.trim(),desc:f.desc.value.trim(),url:f.url.value.trim()};
+  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cat:f.cat.value,start:f.start.value||"",end:f.end.value||"",loc:f.loc.value.trim(),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
   closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
@@ -2375,12 +2399,12 @@ function wkRow(w,open){
   const st=el("input",{id:id+"-s",className:"w-start",type:"time",value:w.start||""});
   const en=el("input",{id:id+"-e",className:"w-end",type:"time",value:w.end||""});
   const ti=el("input",{id:id+"-t",className:"w-title",maxLength:90,value:w.title||"",placeholder:"Wednesday night prayer meeting"});
-  const lo=el("input",{id:id+"-l",className:"w-loc",maxLength:80,value:w.loc||"",placeholder:"Sanctuary, MPB, Fellowship Hall…"});
+  const lo=el("input",{id:id+"-l",className:"w-loc",maxLength:80,value:w.loc||""});
   const no=el("textarea",{id:id+"-n",className:"w-note",maxLength:400,placeholder:"Who it’s for, what to bring, meal provided… (optional)"});no.value=w.note||"";
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
   const upd=()=>{sum.textContent=DAYNAMES[+day.value]+(st.value?" · "+fmtTime(st.value):"")+(ti.value.trim()?" — "+ti.value.trim():"")};
   day.onchange=upd;st.oninput=upd;ti.oninput=upd;upd();
-  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),L("Day",day),L("Ministry",cat),L("Starts",st),L("Ends (optional)",en),L("Location",lo,"full"),L("Details",no,"full"));
+  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),L("Day",day),L("Ministry",cat),L("Starts",st),L("Ends (optional)",en),L("Location",locPicker(lo),"full"),L("Details",no,"full"));
   row.append(head,f);
   return row;
 }
@@ -2404,6 +2428,7 @@ $("wForm").addEventListener("submit",ev=>{
     if(!title){show();return err("Each weekly event needs a name. Remove any you don’t want.")}
     if(!/^\d{2}:\d{2}$/.test(start)){show();return err("“"+title+"” needs a start time.")}
     if(end&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
+    rememberLocation(loc);
     out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cat:CATS[cat]?cat:"adults"});
   }
   state.weekly=sortWk(out);dirty=true;editing=true;closeDlg();renderAll();
