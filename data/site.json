@@ -17,8 +17,8 @@
    "cat": "adults",
    "start": "08:00",
    "end": "",
-   "loc": "Hamrick’s, Raleigh",
-   "desc": "We will leave the church at 8:00 AM.\nSign-up sheets are posted throughout the church.\nQuestions? Contact any member of the Senior Adult Committee.",
+   "loc": "",
+   "desc": "Shopping trip to Hamrick’s in Raleigh.\nWe will leave the church at 8:00 AM.\nSign-up sheets are posted throughout the church.\nQuestions? Contact any member of the Senior Adult Committee.",
    "url": "",
    "id": "e1a1a4b9501cyjs6"
   },
@@ -61,8 +61,8 @@
    "cat": "adults",
    "start": "11:30",
    "end": "13:00",
-   "loc": "Camp Cale",
-   "desc": "Sponsored by Camp Cale. Tickets are $8 each.\nMenu: turkey, green beans, mashed potatoes, rolls and dessert.\nReserve by calling (252) 264-2513 or online at campcale.com.",
+   "loc": "",
+   "desc": "Held at Camp Cale. Tickets are $8 each.\nMenu: turkey, green beans, mashed potatoes, rolls and dessert.\nReserve by calling (252) 264-2513 or online at campcale.com.",
    "url": "https://campcale.com",
    "id": "e1a1a4b95024si2i"
   },
@@ -636,5 +636,6 @@
    "t": "Revival",
    "by": "Rev. Keith Nuckolls"
   }
- }
+ },
+ "locations": []
 }
