@@ -117,6 +117,14 @@ p{margin:0}
 .nlist{display:grid;gap:12px}
 .nrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
 .nrow .full{grid-column:1/-1}
+.wrow .w-fields{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.wrow.open .w-fields{display:grid}
+.wrow .w-fields .full{grid-column:1/-1}
+.wrow .w-fields label{display:grid;gap:6px;font-size:.85rem;font-weight:600;grid-template-columns:minmax(0,1fr)}
+.wrow .w-fields textarea{min-height:84px}
+.wrow .nrow-head .w-sum{font-weight:600;font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--ink);min-width:0;flex:1 1 220px;overflow-wrap:anywhere}
+.wrow .nrow-tools{flex:none}
+@media (max-width:520px){.wrow .w-fields{grid-template-columns:minmax(0,1fr)}}
 .nrow .nrow-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .nrow-tools{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
 .nrow .nrow-head{flex-wrap:wrap}
@@ -746,7 +754,7 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- ============ CALENDAR ============ -->
 <div class="view" data-route="calendar" data-title="Calendar" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button></div></div></section>
   <section class="band" style="padding-top:40px"><div class="wrap">
     <div id="restoreSlot"></div>
     <div class="cal">
@@ -774,7 +782,6 @@ textarea{min-height:84px;resize:vertical}
         <div class="panel">
           <p class="eyebrow">Next eight weeks</p>
           <ul class="ev-list" id="upList"></ul>
-          <div class="editor-tools" style="margin-top:14px"><button class="btn ghost small" id="noticeBtn" type="button">Edit Banners</button><button class="btn ghost small wk-edit2" type="button">Edit Weekly Schedule</button><button class="btn ghost small al-open" type="button">Closing / Delay Alert</button></div>
         </div>
       </div>
     </div>
@@ -1594,7 +1601,7 @@ textarea{min-height:84px;resize:vertical}
 <div id="overlay5" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg5Title">
     <h3 id="dlg5Title">Weekly Schedule</h3>
-    <p class="meta">These repeat every week. They fill the Every Sunday box, the weekly schedule, the ministry pages and the calendar. The list sorts itself by day and time when you apply.</p>
+    <p class="meta">These repeat every week. They fill the Every Sunday box, the weekly schedule, the ministry pages and the calendar. Click Edit on any event to change it. The list sorts itself by day and time when you apply.</p>
     <form id="wForm" novalidate style="display:grid;gap:14px">
       <div id="wList" class="nlist"></div>
       <button class="btn ghost" type="button" id="wAdd" style="justify-self:start">+ Add Weekly Event</button>
@@ -1989,7 +1996,7 @@ let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=ne
 
 function eventsOn(k){
   const list=state.events.filter(e=>e.date===k&&active.has(e.cat));
-  if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&active.has(w.cat))list.push({...w,loc:w.note||"",date:k,weekly:true,id:"w"})}
+  if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&active.has(w.cat))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"})}
   return list.sort(sortEv);
 }
 let canEditFlag=false;
@@ -2332,7 +2339,7 @@ $("jForm").addEventListener("submit",async ev=>{
 /* weekly schedule */
 const DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const fmtSpan=w=>{if(!w.end)return fmtTime(w.start);const a=fmtTime(w.start),b=fmtTime(w.end);return a.slice(-2)===b.slice(-2)?a.slice(0,-3)+" – "+b:a+" – "+b};
-function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,w.note?el("small",{textContent:w.note}):null))}
+function wkItem(w){const sub=[w.loc,(w.note||"").replace(/\s*\n\s*/g," · ")].filter(Boolean).join(" · ");return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,sub?el("small",{textContent:sub}):null))}
 function renderWeekly(){
   const wk=state.weekly||[];
   const sun=wk.filter(w=>w.dow===0);
@@ -2353,29 +2360,33 @@ function renderWeekly(){
   const m=document.querySelector('meta[name="description"]');if(m&&line)m.setAttribute("content","Rocky Hock Baptist Church, 113 Rocky Hock Church Road, Edenton, NC. "+line.replace(" · ",", ")+".");
 }
 let wRowId=0;
-function wkRow(w){
-  const id="wk"+(++wRowId);const row=el("div",{className:"nrow"});row.dataset.wid=w.id||"";
+function wkRow(w,open){
+  const id="wk"+(++wRowId);const row=el("div",{className:"nrow wrow"+(open?" open":"")});row.dataset.wid=w.id||"";
   const sum=el("b",{className:"w-sum"});
+  const tog=el("button",{type:"button",className:"btn ghost small",textContent:open?"Done":"Edit"});
+  tog.onclick=()=>{const o=row.classList.toggle("open");tog.textContent=o?"Done":"Edit";if(o)ti.focus()};
   const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
-  const head=el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},rm));
+  const head=el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},tog,rm));
   const day=el("select",{id:id+"-d",className:"w-dow"});DAYNAMES.forEach((n,i)=>day.append(el("option",{value:String(i),textContent:n})));day.value=String(w.dow??3);
   const cat=el("select",{id:id+"-c",className:"w-cat"});for(const c in CATS)cat.append(el("option",{value:c,textContent:CATS[c].label}));cat.value=w.cat||"adults";
   const st=el("input",{id:id+"-s",className:"w-start",type:"time",value:w.start||""});
   const en=el("input",{id:id+"-e",className:"w-end",type:"time",value:w.end||""});
-  const ti=el("input",{id:id+"-t",className:"w-title",maxLength:80,value:w.title||"",placeholder:"Wednesday night prayer meeting"});
-  const no=el("input",{id:id+"-n",className:"w-note",maxLength:140,value:w.note||"",placeholder:"Who it’s for or where it meets (optional)"});
+  const ti=el("input",{id:id+"-t",className:"w-title",maxLength:90,value:w.title||"",placeholder:"Wednesday night prayer meeting"});
+  const lo=el("input",{id:id+"-l",className:"w-loc",maxLength:80,value:w.loc||"",placeholder:"Sanctuary, MPB, Fellowship Hall…"});
+  const no=el("textarea",{id:id+"-n",className:"w-note",maxLength:400,placeholder:"Who it’s for, what to bring, meal provided… (optional)"});no.value=w.note||"";
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
-  const upd=()=>{sum.textContent=DAYNAMES[+day.value]+(st.value?" · "+fmtTime(st.value):"")};
-  day.onchange=upd;st.oninput=upd;upd();
-  row.append(head,L("Name",ti,"full"),L("Day",day),L("Category",cat),L("Start time",st),L("End time (optional)",en),L("Note (optional)",no,"full"));
+  const upd=()=>{sum.textContent=DAYNAMES[+day.value]+(st.value?" · "+fmtTime(st.value):"")+(ti.value.trim()?" — "+ti.value.trim():"")};
+  day.onchange=upd;st.oninput=upd;ti.oninput=upd;upd();
+  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),L("Day",day),L("Ministry",cat),L("Starts",st),L("Ends (optional)",en),L("Location",lo,"full"),L("Details",no,"full"));
+  row.append(head,f);
   return row;
 }
 function openWeekly(){
-  const box=$("wList");box.replaceChildren(...(state.weekly||[]).map(wkRow));
-  if(!box.children.length)box.append(wkRow({dow:3}));
+  const box=$("wList");box.replaceChildren(...(state.weekly||[]).map(w=>wkRow(w,false)));
+  if(!box.children.length)box.append(wkRow({dow:3},true));
   $("w-err").hidden=true;$("overlay5").hidden=false;
 }
-$("wAdd").onclick=()=>{const r=wkRow({dow:3,cat:"adults"});$("wList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".w-title").focus()};
+$("wAdd").onclick=()=>{const r=wkRow({dow:3,cat:"adults"},true);$("wList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".w-title").focus()};
 $("wCancel").onclick=closeDlg;
 document.querySelectorAll(".wk-edit,.wk-edit2").forEach(b=>b.onclick=openWeekly);
 $("wForm").addEventListener("submit",ev=>{
@@ -2384,12 +2395,13 @@ $("wForm").addEventListener("submit",ev=>{
   const out=[];
   for(const row of $("wList").querySelectorAll(".nrow")){
     const g=c=>row.querySelector(c).value.trim();
-    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),note=g(".w-note"),dow=+g(".w-dow"),cat=g(".w-cat");
-    if(!title&&!start&&!note)continue;
-    if(!title)return err("Each weekly event needs a name. Remove any you don’t want.");
-    if(!/^\d{2}:\d{2}$/.test(start))return err("“"+title+"” needs a start time.");
-    if(end&&end<=start)return err("The end time for “"+title+"” needs to be after the start time.");
-    out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,note,cat:CATS[cat]?cat:"adults"});
+    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=g(".w-loc"),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cat=g(".w-cat");
+    if(!title&&!start&&!note&&!loc)continue;
+    const show=()=>{row.classList.add("open");row.querySelector(".nrow-tools button").textContent="Done";row.scrollIntoView({block:"nearest"})};
+    if(!title){show();return err("Each weekly event needs a name. Remove any you don’t want.")}
+    if(!/^\d{2}:\d{2}$/.test(start)){show();return err("“"+title+"” needs a start time.")}
+    if(end&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
+    out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cat:CATS[cat]?cat:"adults"});
   }
   state.weekly=sortWk(out);dirty=true;editing=true;closeDlg();renderAll();
   toast("Weekly schedule updated. Press “Save Changes” to publish it.");
@@ -2978,7 +2990,7 @@ function openBanners(){
   setTimeout(()=>{const f=box.querySelector(".n-text");if(f)f.focus()},30);
 }
 $("nAdd").onclick=()=>{const r=bannerRow({});$("nList").append(r);numberBanners();r.querySelector(".n-text").focus()};
-$("noticeBtn").onclick=openBanners;
+
 $("nForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const err=m=>{$("n-err").textContent=m;$("n-err").hidden=false};
