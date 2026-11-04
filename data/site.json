@@ -12,6 +12,61 @@
    "url": ""
   },
   {
+   "title": "Senior Adults Shopping Trip to Hamrick’s",
+   "date": "2026-11-10",
+   "cat": "adults",
+   "start": "08:00",
+   "end": "",
+   "loc": "Hamrick’s, Raleigh",
+   "desc": "We will leave the church at 8:00 AM.\nSign-up sheets are posted throughout the church.\nQuestions? Contact any member of the Senior Adult Committee.",
+   "url": "",
+   "id": "e1a1a4b9501cyjs6"
+  },
+  {
+   "title": "Church Basketball Meeting",
+   "date": "2026-11-15",
+   "cat": "fellowship",
+   "start": "12:15",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "Immediately following Morning Worship, at the front of the sanctuary.\nFor parents and the children and youth playing Church Basketball this season.\nMedical Release and Photography & Media Permission forms will be available.",
+   "url": "",
+   "id": "e1a1a4b9501e83ga"
+  },
+  {
+   "title": "Children’s & Youth Ministry Teams Meeting",
+   "date": "2026-11-15",
+   "cat": "kids",
+   "start": "16:00",
+   "end": "",
+   "loc": "Youth Suite",
+   "desc": "Finalize the basketball schedule and duties.",
+   "url": "",
+   "id": "e1a1a4b9502026hl"
+  },
+  {
+   "title": "Chase Bateman Memorial Blood Drive",
+   "date": "2026-11-17",
+   "cat": "fellowship",
+   "start": "13:00",
+   "end": "18:00",
+   "loc": "",
+   "desc": "Visit redcrossblood.org and enter RHBC, or use the Red Cross Blood Donor app.\nRaffles: 2 turkeys from Billy & LouAnn Elliott, a Christmas boxwood from Paradise Plant Farm, and a gift basket from Natalie Phelps.\nVolunteers are needed. Call or text Rhonda Bass at (252) 337-5766.",
+   "url": "https://www.redcrossblood.org",
+   "id": "e1a1a4b950220qvz"
+  },
+  {
+   "title": "Camp Cale Senior Adult Christmas Luncheon",
+   "date": "2026-12-01",
+   "cat": "adults",
+   "start": "11:30",
+   "end": "13:00",
+   "loc": "Camp Cale",
+   "desc": "Sponsored by Camp Cale. Tickets are $8 each.\nMenu: turkey, green beans, mashed potatoes, rolls and dessert.\nReserve by calling (252) 264-2513 or online at campcale.com.",
+   "url": "https://campcale.com",
+   "id": "e1a1a4b95024si2i"
+  },
+  {
    "id": "emw1isx64276g",
    "title": "Rocky Hock vs St Paul's/Open Door",
    "date": "2027-01-02",
