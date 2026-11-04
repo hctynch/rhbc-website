@@ -594,6 +594,14 @@ a.card:hover{border-color:var(--muted)}
 .ev-side{display:grid;justify-items:end;align-content:start;gap:8px}
 .ev-cat{display:inline-flex;align-items:center;white-space:nowrap;font-size:.8rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--cat) 14%,var(--surface));color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
 .ev-locrow{margin-top:6px}
+.cat-pick{display:grid;gap:8px}
+.cat-lab{font-size:.85rem;font-weight:600}
+.cat-opts{display:flex;flex-wrap:wrap;gap:6px}
+.cat-opt{position:relative;display:inline-flex!important;align-items:center;cursor:pointer;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:.85rem;font-weight:600;line-height:1}
+.cat-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.cat-opt:has(input:checked){background:color-mix(in srgb,var(--cat) 14%,var(--surface));border-color:color-mix(in srgb,var(--cat) 45%,transparent);color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
+.cat-opt:has(input:checked)::before{content:"✓";margin-right:5px;font-weight:700}
+.cat-opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 .ev-loc{display:inline-flex;align-items:center;gap:6px;max-width:100%;font-size:.84rem;font-weight:600;line-height:1.25;color:var(--ink);padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
 .ev-loc svg{flex:none;color:var(--brand-hi)}
 @media (max-width:380px){.ev .when .wsep{display:none}.ev .when .wt{display:block}}
@@ -1580,7 +1588,7 @@ textarea{min-height:84px;resize:vertical}
     <form id="evForm" class="form" novalidate>
       <label class="full">Event name<input id="f-title" required maxlength="90"></label>
       <label>Date<input id="f-date" type="date" required></label>
-      <label>Ministry<select id="f-cat"></select></label>
+      <div class="full cat-pick" role="group" aria-labelledby="f-cats-lab"><span class="cat-lab" id="f-cats-lab">Ministries <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-cats"></div></div>
       <label>Starts<input id="f-start" type="time"></label>
       <label>Ends<input id="f-end" type="time"></label>
       <label class="full">Location<input id="f-loc" maxlength="80" placeholder="Sanctuary, Multi-Purpose Building, Fellowship Hall…"></label>
@@ -2006,10 +2014,16 @@ const shortDate=k=>fromKey(k).toLocaleDateString("en-US",{weekday:"short",month:
 const sortEv=(a,b)=>(a.date+(a.start||"00:00")).localeCompare(b.date+(b.start||"00:00"));
 const safeUrl=u=>{try{const x=new URL(u);return(x.protocol==="https:"||x.protocol==="http:")?x.href:""}catch(e){return""}};
 const catVar=c=>"var("+(CATS[c]||CATS.fellowship).v+")";
+/* an event can belong to several ministries, or none (older events only have .cat) */
+const evCats=e=>(Array.isArray(e.cats)?e.cats:(e.cat?[e.cat]:[])).filter(c=>CATS[c]);
+const evColor=e=>{const c=evCats(e);return c.length?catVar(c[0]):"var(--muted)"};
+const evShown=e=>{const c=evCats(e);return !c.length||c.some(x=>active.has(x))};
+const evBarStyle=e=>{const c=evCats(e);let st="--cat:"+evColor(e);
+  if(c.length>1&&!e.weekly){const n=c.length;st+=";background:linear-gradient("+c.map((x,i)=>catVar(x)+" "+Math.round(i*100/n)+"% "+Math.round((i+1)*100/n)+"%").join(",")+")"}return st};
 let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(Object.keys(CATS)), showWeekly=true;
 
 function eventsOn(k){
-  const list=state.events.filter(e=>e.date===k&&active.has(e.cat));
+  const list=state.events.filter(e=>e.date===k&&evShown(e));
   if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&active.has(w.cat))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"})}
   return list.sort(sortEv);
 }
@@ -2097,9 +2111,9 @@ function renderGrid(){
     cell.setAttribute("aria-label",longDate(k)+(evs.length?", "+evs.length+" event"+(evs.length>1?"s":""):""));
     cell.append(el("span",{className:"n",textContent:String(d.getDate())}));
     const special=evs.filter(e=>!e.weekly),weekly=evs.filter(e=>e.weekly);
-    for(const e of [...special,...weekly].slice(0,3)){const p=el("span",{className:"pill"+(e.weekly?" weekly":""),style:"--cat:"+catVar(e.cat),textContent:e.title});p.title=e.title;cell.append(p)}
+    for(const e of [...special,...weekly].slice(0,3)){const p=el("span",{className:"pill"+(e.weekly?" weekly":""),style:"--cat:"+evColor(e),textContent:e.title});p.title=e.title;cell.append(p)}
     if(evs.length>3)cell.append(el("span",{className:"more",textContent:"+"+(evs.length-3)+" more"}));
-    if(special.length){const dots=el("span",{className:"dots"});for(const e of special.slice(0,4))dots.append(el("i",{style:"--cat:"+catVar(e.cat)}));cell.append(dots)}
+    if(special.length){const dots=el("span",{className:"dots"});for(const e of special.slice(0,4))dots.append(el("i",{style:"--cat:"+evColor(e)}));cell.append(dots)}
     cell.onclick=()=>{selected=k;hideDpop();renderGrid();renderDay()};
     if(evs.length)cell.dataset.k=k;
     g.append(cell);
@@ -2133,7 +2147,7 @@ function hideDpop(){clearTimeout(dpT);dpop.hidden=true;dpCell=null}
 function showDpop(cell){
   const k=cell.dataset.k,evs=eventsOn(k);if(!evs.length)return hideDpop();dpCell=cell;
   const ul=el("ul");
-  for(const e of evs.slice(0,8)){const li=el("li",{className:e.weekly?"weekly":"",style:"--cat:"+catVar(e.cat)},el("i"),el("div",{},el("div",{className:"t",textContent:fmtRange(e)}),el("div",{className:"n",textContent:e.title})));
+  for(const e of evs.slice(0,8)){const li=el("li",{className:e.weekly?"weekly":"",style:"--cat:"+evColor(e)},el("i"),el("div",{},el("div",{className:"t",textContent:fmtRange(e)}),el("div",{className:"n",textContent:e.title})));
     if(e.loc)li.lastChild.append(el("div",{className:"l",textContent:e.loc}));ul.append(li)}
   dpop.replaceChildren(el("h4",{},longDate(k),el("span",{textContent:evs.length+(evs.length>1?" events":" event")})),ul);
   if(evs.length>8)dpop.append(el("p",{className:"hint2",textContent:"+"+(evs.length-8)+" more. Click the day to see them all."}));
@@ -2160,9 +2174,9 @@ function evRow(e,withDate){
   if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});
-  if(CATS[e.cat])right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(e.cat),textContent:CATS[e.cat].label}));
+  evCats(e).forEach(c=>right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(c),textContent:CATS[c].label})));
   if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
-  return el("li",{className:"ev"},el("span",{className:"bar"+(e.weekly?" weekly":""),style:"--cat:"+catVar(e.cat)}),info,right,body);
+  return el("li",{className:"ev"},el("span",{className:"bar"+(e.weekly?" weekly":""),style:evBarStyle(e)}),info,right,body);
 }
 function renderDay(){
   $("dayLabel").textContent=longDate(selected);$("dayEyebrow").textContent=selected===TODAY?"Today":"Selected day";
@@ -2173,7 +2187,7 @@ function renderDay(){
 function renderUp(){
   const ul=$("upList");ul.replaceChildren();
   const end=new Date(now);end.setDate(end.getDate()+56);const ek=keyOf(end);
-  const evs=state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&active.has(e.cat)).sort(sortEv);
+  const evs=state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&evShown(e)).sort(sortEv);
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"No special events in the next eight weeks."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
@@ -2222,13 +2236,15 @@ function locPicker(input){
   wrap.append(sel,input);fill();return wrap;
 }
 locPicker($("f-loc"));
-const f={title:$("f-title"),date:$("f-date"),cat:$("f-cat"),start:$("f-start"),end:$("f-end"),loc:$("f-loc"),desc:$("f-desc"),url:$("f-url")};
-for(const c in CATS)f.cat.append(el("option",{value:c,textContent:CATS[c].label}));
+const f={title:$("f-title"),date:$("f-date"),start:$("f-start"),end:$("f-end"),loc:$("f-loc"),desc:$("f-desc"),url:$("f-url")};
+for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});$("f-cats").append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}
+const setCats=a=>document.querySelectorAll("#f-cats input").forEach(i=>i.checked=a.includes(i.value));
+const getCats=()=>[...document.querySelectorAll("#f-cats input:checked")].map(i=>i.value);
 let editingId=null,delArmed=false;
 function openEvent(id){
   const e=id?state.events.find(x=>x.id===id):null;editingId=e?e.id:null;delArmed=false;
   $("dlgTitle").textContent=e?"Edit Event":"Add Event";
-  f.title.value=e?e.title:"";f.date.value=e?e.date:selected;f.cat.value=e?e.cat:"fellowship";
+  f.title.value=e?e.title:"";f.date.value=e?e.date:selected;setCats(e?evCats(e):[]);
   f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.loc._syncLoc();f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
   $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
@@ -2244,7 +2260,7 @@ $("evForm").addEventListener("submit",ev=>{
   if(f.end.value&&!f.start.value)return err("Add a start time, or clear the end time.");
   if(f.end.value&&f.start.value&&f.end.value<=f.start.value)return err("The end time needs to be after the start time.");
   if(f.url.value.trim()&&!safeUrl(f.url.value.trim()))return err("The link should start with https://");
-  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cat:f.cat.value,start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
+  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
   closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
