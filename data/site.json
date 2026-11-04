@@ -12,15 +12,15 @@
    "url": ""
   },
   {
+   "id": "e1a1a4b9501cyjs6",
    "title": "Senior Adults Shopping Trip to Hamrick’s",
    "date": "2026-11-10",
    "cat": "adults",
    "start": "08:00",
    "end": "",
    "loc": "",
-   "desc": "Shopping trip to Hamrick’s in Raleigh.\nWe will leave the church at 8:00 AM.\nSign-up sheets are posted throughout the church.\nQuestions? Contact any member of the Senior Adult Committee.",
-   "url": "",
-   "id": "e1a1a4b9501cyjs6"
+   "desc": "Shopping trip to Hamrick’s in Raleigh.\nWe will leave the church at 8:00 AM.\nSign-up sheets are posted throughout the church.\nQuestions? Contact a member of the Senior Adult Committee.",
+   "url": ""
   },
   {
    "title": "Church Basketball Meeting",
@@ -45,15 +45,15 @@
    "id": "e1a1a4b9502026hl"
   },
   {
+   "id": "e1a1a4b950220qvz",
    "title": "Chase Bateman Memorial Blood Drive",
    "date": "2026-11-17",
-   "cat": "fellowship",
+   "cat": "missions",
    "start": "13:00",
    "end": "18:00",
-   "loc": "",
-   "desc": "Visit redcrossblood.org and enter RHBC, or use the Red Cross Blood Donor app.\nRaffles: 2 turkeys from Billy & LouAnn Elliott, a Christmas boxwood from Paradise Plant Farm, and a gift basket from Natalie Phelps.\nVolunteers are needed. Call or text Rhonda Bass at (252) 337-5766.",
-   "url": "https://www.redcrossblood.org",
-   "id": "e1a1a4b950220qvz"
+   "loc": "Multi-Purpose Building",
+   "desc": "Visit redcrossblood.org and enter RHBC, or use the Red Cross Blood Donor app.\nVolunteers are needed. Call or text Rhonda Bass at (252) 337-5766.",
+   "url": "https://www.redcrossblood.org"
   },
   {
    "title": "Camp Cale Senior Adult Christmas Luncheon",
