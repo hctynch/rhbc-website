@@ -544,14 +544,14 @@
    "end": "",
    "title": "Sunday School",
    "loc": "",
-   "note": "All Ages",
+   "note": "",
    "cats": [
     "bible"
    ],
-   "cat": "bible",
    "auds": [
     "all"
-   ]
+   ],
+   "cat": "bible"
   },
   {
    "id": "worship",
@@ -564,10 +564,10 @@
    "cats": [
     "worship"
    ],
-   "cat": "worship",
    "auds": [
     "all"
-   ]
+   ],
+   "cat": "worship"
   },
   {
    "id": "deepdive",
@@ -576,14 +576,14 @@
    "end": "",
    "title": "Deep Dive",
    "loc": "Sanctuary",
-   "note": "Adult Bible Study",
+   "note": "",
    "cats": [
     "bible"
    ],
-   "cat": "bible",
    "auds": [
     "adults"
-   ]
+   ],
+   "cat": "bible"
   },
   {
    "id": "wmvxceknqwzwr",
@@ -596,10 +596,10 @@
    "cats": [
     "bible"
    ],
-   "cat": "bible",
    "auds": [
     "students"
-   ]
+   ],
+   "cat": "bible"
   },
   {
    "id": "wmvxceknqecrq",
@@ -612,10 +612,10 @@
    "cats": [
     "bible"
    ],
-   "cat": "bible",
    "auds": [
     "kids"
-   ]
+   ],
+   "cat": "bible"
   },
   {
    "id": "yah",
@@ -628,10 +628,10 @@
    "cats": [
     "bible"
    ],
-   "cat": "bible",
    "auds": [
     "seniors"
-   ]
+   ],
+   "cat": "bible"
   },
   {
    "id": "vertical",
@@ -644,10 +644,10 @@
    "cats": [
     "bible"
    ],
-   "cat": "bible",
    "auds": [
     "students"
-   ]
+   ],
+   "cat": "bible"
   },
   {
    "id": "garas",
@@ -660,10 +660,10 @@
    "cats": [
     "missions"
    ],
-   "cat": "missions",
    "auds": [
     "kids"
-   ]
+   ],
+   "cat": "missions"
   },
   {
    "id": "seeds",
@@ -676,10 +676,10 @@
    "cats": [
     "worship"
    ],
-   "cat": "worship",
    "auds": [
     "adults"
-   ]
+   ],
+   "cat": "worship"
   },
   {
    "id": "mf",
@@ -692,10 +692,10 @@
    "cats": [
     "missions"
    ],
-   "cat": "missions",
    "auds": [
     "kids"
-   ]
+   ],
+   "cat": "missions"
   },
   {
    "id": "choir",
@@ -708,10 +708,10 @@
    "cats": [
     "music"
    ],
-   "cat": "music",
    "auds": [
     "adults"
-   ]
+   ],
+   "cat": "music"
   }
  ],
  "alert": {
