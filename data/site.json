@@ -717,10 +717,10 @@
  "alert": {
   "kind": "cancel",
   "title": "Canceled due to snow.",
-  "details": "",
+  "details": "Service Only at 11AM",
   "url": "",
   "urlText": "",
-  "until": "2026-11-01T17:25"
+  "until": "2026-11-05T16:11"
  },
  "photos": [
   {
