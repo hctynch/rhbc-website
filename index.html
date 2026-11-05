@@ -15,7 +15,7 @@
 :root{
   /*@@PALETTE_LIGHT@@*/--brand:#8C1007; --brand-hi:#8C1007; --on-brand:#FFF7F5; --accent:#8C1007; --gold:#9A6A12; --logo-tile:transparent; --logo-pad:0;
   --bg:#F7F6F5; --surface:#FFFFFF; --wash:#EFECEA; --ink:#222124; --muted:#5E5C61; --line:#E0DCDA;/*@@END@@*/
-  --c-worship:#2F5C8A; --c-kids:#C2602C; --c-students:#7A4E9E; --c-adults:#2E7A57; --c-missions:#A87720; --c-music:#A93D57; --c-fellowship:#3F7880;
+  --c-worship:#2F5C8A; --c-kids:#C2602C; --c-students:#7A4E9E; --c-adults:#2E7A57; --c-missions:#A87720; --c-music:#A93D57; --c-fellowship:#3F7880; --c-bible:#2E7A57; --c-prayer:#7A4E9E; --c-outreach:#C2602C; --c-meetings:#5F6B7A;
   --display:"Young Serif", Georgia, "Times New Roman", serif;
   --body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --shadow:0 1px 2px rgb(34 20 18 / .06), 0 8px 24px rgb(34 20 18 / .08);
@@ -23,12 +23,12 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   /*@@PALETTE_DARK@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:transparent; --logo-pad:0;
   --bg:#151314; --surface:#1E1B1C; --wash:#252122; --ink:#EDEAE9; --muted:#A9A4A4; --line:#38302F;/*@@END@@*/
-  --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5;
+  --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5; --c-bible:#6CC197; --c-prayer:#BC97DC; --c-outreach:#EC9562; --c-meetings:#A7B0BC;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25); color-scheme:dark }}
 :root[data-theme="dark"]{
   /*@@PALETTE_DARK2@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:transparent; --logo-pad:0;
   --bg:#151314; --surface:#1E1B1C; --wash:#252122; --ink:#EDEAE9; --muted:#A9A4A4; --line:#38302F;/*@@END@@*/
-  --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5;
+  --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5; --c-bible:#6CC197; --c-prayer:#BC97DC; --c-outreach:#EC9562; --c-meetings:#A7B0BC;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25); color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -533,12 +533,16 @@ a.card:hover{border-color:var(--muted)}
 .cal-bar h3{margin-right:auto;font-size:1.45rem;min-width:9ch}
 .iconbtn{width:38px;height:38px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
 .iconbtn:hover{border-color:var(--muted)}
-.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+.filters{display:grid;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:600 .8rem/1 var(--body);cursor:pointer}
 .chip i{display:none}
 .chip:hover{border-color:color-mix(in srgb,var(--dot,var(--muted)) 55%,transparent);color:var(--ink)}
 .chip[aria-pressed="true"]{border-color:transparent;background:color-mix(in srgb,var(--dot,var(--muted)) 14%,var(--surface));color:color-mix(in srgb,var(--dot,var(--muted)) 72%,var(--ink))}
 .chip-all[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.flab{font:700 .7rem/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);width:110px;flex:none}
+@media (max-width:600px){.flab{width:100%;margin-top:2px}}
+.chip-aud[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .chip-sep{width:1px;align-self:stretch;min-height:22px;background:var(--line);margin:0 4px}
 .fsw{display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:4px 2px;font:600 .8rem/1 var(--body);color:var(--muted);cursor:pointer}
 .fsw-track{position:relative;width:30px;height:18px;border-radius:9px;background:var(--line);transition:background .15s;flex:none}
@@ -604,7 +608,10 @@ a.card:hover{border-color:var(--muted)}
 .ev-body:empty{display:none}
 .ev-side{display:grid;justify-items:end;align-content:start;gap:8px}
 .ev-cat{display:inline-flex;align-items:center;white-space:nowrap;font-size:.8rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--cat) 14%,var(--surface));color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
-.ev-locrow{margin-top:6px}
+.ev-locrow{margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ev-auds{display:inline-flex;flex-wrap:wrap;gap:6px}
+.ev-aud{display:inline-flex;align-items:center;white-space:nowrap;font-size:.78rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:var(--ink);color:var(--surface)}
+@media (max-width:600px){.ev-locrow{flex-direction:column;align-items:flex-start}}
 .tag.mo-tag{color:var(--muted);border-color:var(--line);text-transform:none;letter-spacing:0;font-weight:600}
 .mrow .m-rep{display:grid;gap:8px}
 .mrow .m-opt{display:flex!important;flex-wrap:wrap;align-items:center;gap:8px;font-weight:500}
@@ -621,6 +628,7 @@ a.card:hover{border-color:var(--muted)}
 .cat-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
 .cat-opt:has(input:checked){background:color-mix(in srgb,var(--cat) 14%,var(--surface));border-color:color-mix(in srgb,var(--cat) 45%,transparent);color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
 .cat-opt:has(input:checked)::before{content:"✓";margin-right:5px;font-weight:700}
+.cat-opt.aud:has(input:checked){background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .cat-opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 .ev-loc{display:inline-flex;align-items:center;gap:6px;max-width:100%;font-size:.84rem;font-weight:600;line-height:1.25;color:var(--ink);padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
 .ev-loc svg{flex:none;color:var(--brand-hi)}
@@ -1609,7 +1617,8 @@ textarea{min-height:84px;resize:vertical}
     <form id="evForm" class="form" novalidate>
       <label class="full">Event name<input id="f-title" required maxlength="90"></label>
       <label>Date<input id="f-date" type="date" required></label>
-      <div class="full cat-pick" role="group" aria-labelledby="f-cats-lab"><span class="cat-lab" id="f-cats-lab">Ministries <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-cats"></div></div>
+      <div class="full cat-pick" role="group" aria-labelledby="f-cats-lab"><span class="cat-lab" id="f-cats-lab">Ministry <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-cats"></div></div>
+      <div class="full cat-pick" role="group" aria-labelledby="f-auds-lab"><span class="cat-lab" id="f-auds-lab">Who It’s For <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-auds"></div></div>
       <label>Starts<input id="f-start" type="time"></label>
       <label>Ends<input id="f-end" type="time"></label>
       <label class="full">Location<input id="f-loc" maxlength="80" placeholder="Sanctuary, Multi-Purpose Building, Fellowship Hall…"></label>
@@ -1901,15 +1910,15 @@ let SAVED=window.__RHBC_DATA||{events:[]};
 const GH=window.__RHBC_GH;
 const fileUrl=id=>!id?"":(GH&&GH.local[id])?GH.local[id]:id.indexOf("/")>=0?id.split("/").map(encodeURIComponent).join("/"):fileUrl(id);
 const DEFAULT_WEEKLY=[
-  {id:"ss",dow:0,start:"09:45",end:"",title:"Sunday School",note:"For all ages",cat:"adults"},
-  {id:"worship",dow:0,start:"11:00",end:"",title:"Morning Worship",note:"Children’s Church for age 2 – 5th grade",cat:"worship"},
-  {id:"deepdive",dow:0,start:"18:00",end:"",title:"Deep Dive",note:"Adult Bible study, children & students",cat:"adults"},
-  {id:"yah",dow:2,start:"10:00",end:"",title:"Young at Heart Adult Bible Study",note:"Room 312, Senior Adult Building",cat:"adults"},
-  {id:"vertical",dow:3,start:"18:45",end:"",title:"Vertical Student Ministries",note:"Middle & high school youth · Youth Suite · meal provided",cat:"students"},
-  {id:"garas",dow:3,start:"18:45",end:"",title:"GAs & RAs",note:"1st – 5th grade girls and boys · meal in the Special Function Room",cat:"kids"},
-  {id:"seeds",dow:3,start:"19:00",end:"",title:"Worship Seeds",note:"For adults",cat:"adults"},
-  {id:"mf",dow:3,start:"19:00",end:"",title:"Mission Friends",note:"Ages 3 – 5",cat:"kids"},
-  {id:"choir",dow:3,start:"20:00",end:"21:00",title:"Sanctuary Choir practice",note:"",cat:"music"}
+  {id:"ss",dow:0,start:"09:45",end:"",title:"Sunday School",note:"For all ages",cats:["bible"],auds:["all"]},
+  {id:"worship",dow:0,start:"11:00",end:"",title:"Morning Worship",note:"Children’s Church for age 2 – 5th grade",cats:["worship"],auds:["all"]},
+  {id:"deepdive",dow:0,start:"18:00",end:"",title:"Deep Dive",note:"Adult Bible study, children & students",cats:["bible"],auds:["adults"]},
+  {id:"yah",dow:2,start:"10:00",end:"",title:"Young at Heart Adult Bible Study",note:"Room 312, Senior Adult Building",cats:["bible"],auds:["seniors"]},
+  {id:"vertical",dow:3,start:"18:45",end:"",title:"Vertical Student Ministries",note:"Middle & high school youth · Youth Suite · meal provided",cats:["bible"],auds:["students"]},
+  {id:"garas",dow:3,start:"18:45",end:"",title:"GAs & RAs",note:"1st – 5th grade girls and boys · meal in the Special Function Room",cats:["missions"],auds:["kids"]},
+  {id:"seeds",dow:3,start:"19:00",end:"",title:"Worship Seeds",note:"For adults",cats:["worship"],auds:["adults"]},
+  {id:"mf",dow:3,start:"19:00",end:"",title:"Mission Friends",note:"Ages 3 – 5",cats:["missions"],auds:["kids"]},
+  {id:"choir",dow:3,start:"20:00",end:"21:00",title:"Sanctuary Choir practice",note:"",cats:["music"],auds:["adults"]}
 ];
 const sortWk=a=>a.map((w,i)=>[w,i]).sort((x,y)=>(x[0].dow-y[0].dow)||(x[0].start||"").localeCompare(y[0].start||"")||(x[1]-y[1])).map(x=>x[0]);
 const DEFAULT_STAFF=[{"id": "str", "name": "James Richard Rogers III (Trey)", "ini": "TR", "role": "Senior Pastor", "phone": "(252) 221-4133", "email": "trogers@rhbce.org", "bio": "Pastor Trey comes from the mountains of Western North Carolina, where faith and ministry were part of his life from an early age. A fourth-generation minister, he sensed God’s call to preach at 14, was licensed in 2011 and ordained in 2016.\n\nHe holds a B.A. in Religious Studies from Young Harris College, where he met his wife, Julianna. They married in 2018. “Mrs. Juli” teaches 3rd grade at D.F. Walker Elementary School.\n\nOver 15 years he has served in pastoral, youth and children’s, and music ministry. He came to Rocky Hock as Associate Pastor of Youth and Children in 2024 and was called as Senior Pastor in March 2026.", "photo": ""}, {"id": "sch", "name": "Dr. Cache’ Hapner", "ini": "CH", "role": "Director of Family & Children’s Ministries", "phone": "(252) 221-4133", "email": "chapner@rhbce.org", "bio": "Dr. Hapner is an educator, mentor and retired U.S. Navy Chief Petty Officer with more than 20 years of experience teaching, training and building teams. In the Navy she held leadership roles including Instructor and Senior Training Leader.\n\nShe holds a Doctor of Education in Organizational Leadership and teaches at College of the Albemarle, where she develops curriculum and mentors students. Her community service includes Drug Education for Youth (DEFY), school volunteer programs, GED instruction, and support for senior citizens and homeless veterans, earning her two Military Outstanding Volunteer Service Medals. She and her husband, Dan, have three children, and the family has served at Rocky Hock through Vacation Bible School, Hand Bells and more.\n\nRaised in the Baptist church, she accepted Christ at 13. She joined the staff in October 2026. Her heart is to partner with parents and families so every child comes to know Jesus, grows as His disciple, and feels safe, loved and rooted in the church family.", "photo": ""}, {"id": "slb", "name": "Linda Bunch", "ini": "LB", "role": "Administrative Assistant", "phone": "(252) 221-4133", "email": "lbunch@rhbce.org", "bio": "Linda joined the staff in 2007. She grew up in Perquimans County and has lived in Rocky Hock for more than three decades. She sees her work as a calling as much as a job.", "photo": ""}, {"id": "sdl", "name": "Deborah Long", "ini": "DL", "role": "Custodian", "phone": "(252) 221-4133", "email": "", "bio": "Deborah has served full-time since 2015. She has lived in Rocky Hock most of her life and has been a member since she was 12.", "photo": ""}];
@@ -2037,7 +2046,8 @@ function renderDocs(){
 }
 
 /* ---------- calendar ---------- */
-const CATS={worship:{label:"Worship",v:"--c-worship"},kids:{label:"Kids",v:"--c-kids"},students:{label:"Students",v:"--c-students"},adults:{label:"Adults",v:"--c-adults"},missions:{label:"Missions",v:"--c-missions"},music:{label:"Music",v:"--c-music"},fellowship:{label:"Fellowship",v:"--c-fellowship"}};
+const CATS={worship:{label:"Worship",v:"--c-worship"},bible:{label:"Bible Study",v:"--c-bible"},music:{label:"Music",v:"--c-music"},missions:{label:"Missions",v:"--c-missions"},fellowship:{label:"Fellowship",v:"--c-fellowship"},prayer:{label:"Prayer",v:"--c-prayer"},outreach:{label:"Outreach",v:"--c-outreach"},meetings:{label:"Meetings",v:"--c-meetings"}};
+const AUDS={all:"All Ages",kids:"Kids",students:"Students",adults:"Adults",seniors:"Senior Adults"};
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const pad=n=>String(n).padStart(2,"0");
@@ -2053,12 +2063,15 @@ const safeUrl=u=>{try{const x=new URL(u);return(x.protocol==="https:"||x.protoco
 const catVar=c=>"var("+(CATS[c]||CATS.fellowship).v+")";
 /* an event can belong to several ministries, or none (older events only have .cat) */
 const evCats=e=>(Array.isArray(e.cats)?e.cats:(e.cat?[e.cat]:[])).filter(c=>CATS[c]);
+/* who it's for; older events kept kids/students/adults in .cats */
+const evAuds=e=>(Array.isArray(e.auds)?e.auds:(Array.isArray(e.cats)?e.cats:(e.cat?[e.cat]:[]))).filter(a=>AUDS[a]);
 const evColor=e=>{const c=evCats(e);return c.length?catVar(c[0]):"var(--muted)"};
 /* ministry filter: an empty set means "All"; otherwise show only events in a chosen ministry */
-const evShown=e=>{if(!active.size)return true;return evCats(e).some(x=>active.has(x))};
+const evShown=e=>{if(active.size&&!evCats(e).some(x=>active.has(x)))return false;
+  if(activeAud.size){const a=evAuds(e);if(!a.includes("all")&&!a.some(x=>activeAud.has(x)))return false}return true};
 const evBarStyle=e=>{const c=evCats(e);let st="--cat:"+evColor(e);
   if(c.length>1&&!e.weekly){const n=c.length;st+=";background:linear-gradient("+c.map((x,i)=>catVar(x)+" "+Math.round(i*100/n)+"% "+Math.round((i+1)*100/n)+"%").join(",")+")"}return st};
-let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(), showWeekly=true, showMonthly=true;
+let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(), activeAud=new Set(), showWeekly=true, showMonthly=true;
 /* recurring (monthly) events: {mode:"nth",n:1-5|-1,dow} or {mode:"day",day:1-31}; skips months without that day */
 const ORD=["","1st","2nd","3rd","4th","5th"];
 const ordDay=d=>d+(d%100>=11&&d%100<=13?"th":["th","st","nd","rd"][d%10]||"th");
@@ -2148,13 +2161,14 @@ function renderNext(){
 function renderFilters(){
   const f=$("filters");f.replaceChildren();
   const redraw=()=>{renderFilters();renderGrid();renderDay();renderUp()};
-  const all=el("button",{type:"button",className:"chip chip-all",textContent:"All"});all.setAttribute("aria-pressed",String(!active.size));
-  all.onclick=()=>{active.clear();redraw()};f.append(all);
-  for(const c in CATS){const b=el("button",{type:"button",className:"chip",style:"--dot:"+catVar(c)},el("i"),CATS[c].label);b.setAttribute("aria-pressed",String(active.has(c)));
-    b.onclick=()=>{active.has(c)?active.delete(c):active.add(c);if(active.size===Object.keys(CATS).length)active.clear();redraw()};f.append(b)}
-  f.append(el("span",{className:"chip-sep",ariaHidden:"true"}));
+  const row=(lab,set,keys,label,cls,dot)=>{const r=el("div",{className:"frow",role:"group"});r.setAttribute("aria-label",lab);r.append(el("span",{className:"flab",textContent:lab}));
+    const all=el("button",{type:"button",className:"chip chip-all",textContent:"All"});all.setAttribute("aria-pressed",String(!set.size));all.onclick=()=>{set.clear();redraw()};r.append(all);
+    for(const k of keys){const b=el("button",{type:"button",className:"chip"+cls,style:dot?"--dot:"+dot(k):""},el("i"),label(k));b.setAttribute("aria-pressed",String(set.has(k)));
+      b.onclick=()=>{set.has(k)?set.delete(k):set.add(k);if(set.size===keys.length)set.clear();redraw()};r.append(b)}
+    return r};
+  f.append(row("Ministry",active,Object.keys(CATS),k=>CATS[k].label,"",catVar),row("Who It\u2019s For",activeAud,Object.keys(AUDS),k=>AUDS[k]," chip-aud",null));
   const sw=(label,on,fn)=>{const b=el("button",{type:"button",className:"fsw"},el("span",{className:"fsw-track"}),label);b.setAttribute("aria-pressed",String(on));b.onclick=fn;return b};
-  f.append(sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Recurring Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()}));
+  f.append(el("div",{className:"frow"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Recurring Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()})));
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
@@ -2228,7 +2242,10 @@ function evRow(e,withDate){
   if(withDate)when.append(el("span",{className:"wd",textContent:shortDate(e.date)}),el("span",{className:"wsep",textContent:" · "}));
   when.append(el("span",{className:"wt",textContent:fmtRange(e)}));
   const info=el("div",{style:"min-width:0"},when,h);
-  if(e.loc){const c=el("span",{className:"ev-loc"});c.insertAdjacentHTML("beforeend",'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>');c.append(e.loc);c.setAttribute("aria-label","Location: "+e.loc);info.append(el("div",{className:"ev-locrow"},c))}
+  const lr=el("div",{className:"ev-locrow"});
+  if(e.loc){const c=el("span",{className:"ev-loc"});c.insertAdjacentHTML("beforeend",'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>');c.append(e.loc);c.setAttribute("aria-label","Location: "+e.loc);lr.append(c)}
+  const au=evAuds(e);if(au.length){const a=el("span",{className:"ev-auds"});a.setAttribute("aria-label","For: "+au.map(x=>AUDS[x]).join(", "));au.forEach(x=>a.append(el("span",{className:"ev-aud",textContent:AUDS[x]})));lr.append(a)}
+  if(lr.children.length)info.append(lr);
   const body=el("div",{className:"ev-body"});
   if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
@@ -2300,14 +2317,19 @@ function locPicker(input){
 }
 locPicker($("f-loc"));
 const f={title:$("f-title"),date:$("f-date"),start:$("f-start"),end:$("f-end"),loc:$("f-loc"),desc:$("f-desc"),url:$("f-url")};
-for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});$("f-cats").append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}
+function audOpts(box,sel){for(const a in AUDS){const cb=el("input",{type:"checkbox",value:a});cb.checked=sel.includes(a);box.append(el("label",{className:"cat-opt aud"},cb,el("span",{textContent:AUDS[a]})))}return box}
+function catOpts(box,sel){for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=sel.includes(c);box.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}return box}
+const pickHint=()=>el("span",{className:"hint",textContent:"Choose any that apply, or none"});
+catOpts($("f-cats"),[]);audOpts($("f-auds"),[]);
+const setAuds=a=>document.querySelectorAll("#f-auds input").forEach(i=>i.checked=a.includes(i.value));
+const getAuds=()=>[...document.querySelectorAll("#f-auds input:checked")].map(i=>i.value);
 const setCats=a=>document.querySelectorAll("#f-cats input").forEach(i=>i.checked=a.includes(i.value));
 const getCats=()=>[...document.querySelectorAll("#f-cats input:checked")].map(i=>i.value);
 let editingId=null,delArmed=false;
 function openEvent(id){
   const e=id?state.events.find(x=>x.id===id):null;editingId=e?e.id:null;delArmed=false;
   $("dlgTitle").textContent=e?"Edit Event":"Add Event";
-  f.title.value=e?e.title:"";f.date.value=e?e.date:selected;setCats(e?evCats(e):[]);
+  f.title.value=e?e.title:"";f.date.value=e?e.date:selected;setCats(e?evCats(e):[]);setAuds(e?evAuds(e):[]);
   f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.loc._syncLoc();f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
   $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
@@ -2323,7 +2345,7 @@ $("evForm").addEventListener("submit",ev=>{
   if(f.end.value&&!f.start.value)return err("Add a start time, or clear the end time.");
   if(f.end.value&&f.start.value&&f.end.value<=f.start.value)return err("The end time needs to be after the start time.");
   if(f.url.value.trim()&&!safeUrl(f.url.value.trim()))return err("The link should start with https://");
-  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
+  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),auds:getAuds(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
   closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
@@ -2494,8 +2516,8 @@ function wkRow(w,open){
   const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
   const head=el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},tog,rm));
   const day=el("select",{id:id+"-d",className:"w-dow"});DAYNAMES.forEach((n,i)=>day.append(el("option",{value:String(i),textContent:n})));day.value=String(w.dow??3);
-  const cat=el("div",{className:"cat-opts w-cats",role:"group"});cat.setAttribute("aria-label","Ministries");const wc=evCats(w);
-  for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=wc.includes(c);cat.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}
+  const cat=catOpts(el("div",{className:"cat-opts w-cats",role:"group",ariaLabel:"Ministry"}),evCats(w));
+  const aud=audOpts(el("div",{className:"cat-opts w-auds",role:"group",ariaLabel:"Who It’s For"}),evAuds(w));
   const st=el("input",{id:id+"-s",className:"w-start",type:"time",value:w.start||""});
   const en=el("input",{id:id+"-e",className:"w-end",type:"time",value:w.end||""});
   const ti=el("input",{id:id+"-t",className:"w-title",maxLength:90,value:w.title||"",placeholder:"Wednesday night prayer meeting"});
@@ -2504,7 +2526,7 @@ function wkRow(w,open){
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
   const upd=()=>{sum.textContent=DAYNAMES[+day.value]+(st.value?" · "+fmtTime(st.value):"")+(ti.value.trim()?" — "+ti.value.trim():"")};
   day.onchange=upd;st.oninput=upd;ti.oninput=upd;upd();
-  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministries ",el("span",{className:"hint",textContent:"Choose any that apply, or none"})),cat),L("Day",day),L("Starts",st),L("Ends (optional)",en),el("span"),L("Location",locPicker(lo),"full"),L("Details",no,"full"));
+  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministry ",pickHint()),cat),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For ",pickHint()),aud),L("Day",day),L("Starts",st),L("Ends (optional)",en),el("span"),L("Location",locPicker(lo),"full"),L("Details",no,"full"));
   row.append(head,f);
   return row;
 }
@@ -2522,14 +2544,14 @@ $("wForm").addEventListener("submit",ev=>{
   const out=[];
   for(const row of $("wList").querySelectorAll(".nrow")){
     const g=c=>row.querySelector(c).value.trim();
-    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=normLoc(g(".w-loc")),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cats=[...row.querySelectorAll(".w-cats input:checked")].map(i=>i.value);
+    const title=g(".w-title"),start=g(".w-start"),end=g(".w-end"),loc=normLoc(g(".w-loc")),note=row.querySelector(".w-note").value.replace(/\r/g,"").trim(),dow=+g(".w-dow"),cats=[...row.querySelectorAll(".w-cats input:checked")].map(i=>i.value),auds=[...row.querySelectorAll(".w-auds input:checked")].map(i=>i.value);
     if(!title&&!start&&!note&&!loc)continue;
     const show=()=>{row.classList.add("open");row.querySelector(".nrow-tools button").textContent="Done";row.scrollIntoView({block:"nearest"})};
     if(!title){show();return err("Each weekly event needs a name. Remove any you don’t want.")}
     if(!/^\d{2}:\d{2}$/.test(start)){show();return err("“"+title+"” needs a start time.")}
     if(end&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
     rememberLocation(loc);
-    out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cats,cat:cats[0]||""});
+    out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cats,auds,cat:cats[0]||""});
   }
   state.weekly=sortWk(out);dirty=true;editing=true;closeDlg();renderAll();
   toast("Weekly schedule updated. Press “Save Changes” to publish it.");
@@ -2545,8 +2567,8 @@ function moRow(m,open){
   const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
   const head=el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},tog,rm));
   const ti=el("input",{className:"m-title",maxLength:90,value:m.title||"",placeholder:"WMU Circle Meetings"});
-  const cat=el("div",{className:"cat-opts m-cats",role:"group"});cat.setAttribute("aria-label","Ministries");const mc=evCats(m);
-  for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=mc.includes(c);cat.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}
+  const cat=catOpts(el("div",{className:"cat-opts m-cats",role:"group",ariaLabel:"Ministry"}),evCats(m));
+  const aud=audOpts(el("div",{className:"cat-opts m-auds",role:"group",ariaLabel:"Who It’s For"}),evAuds(m));
   const rn=id+"-mode";
   const r1=el("input",{type:"radio",name:rn,value:"nth"}),r2=el("input",{type:"radio",name:rn,value:"day"});(m.mode==="day"?r2:r1).checked=true;
   const nSel=el("select",{className:"m-n"});[["1","1st"],["2","2nd"],["3","3rd"],["4","4th"],["5","5th"],["-1","Last"]].forEach(([v,t])=>nSel.append(el("option",{value:v,textContent:t})));nSel.value=String(m.n??1);
@@ -2572,7 +2594,8 @@ function moRow(m,open){
   [ti,nSel,dSel,dayIn,r1,r2,st,fr,un].forEach(x=>{x.addEventListener("input",upd);x.addEventListener("change",upd)});upd();
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
   const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),
-    el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministries ",el("span",{className:"hint",textContent:"Choose any that apply, or none"})),cat),
+    el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministry ",pickHint()),cat),
+    el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For ",pickHint()),aud),
     el("div",{className:"full m-rep"},el("span",{className:"cat-lab",textContent:"Repeats"}),rep1,rep2,prev,skips),
     L("Starts",st),L("Ends (optional)",en),L("Location",locPicker(lo),"full"),L("Details",no,"full"),
     L("Starting month (optional)",fr),L("Ending month (optional)",un));
@@ -2601,8 +2624,8 @@ $("mForm").addEventListener("submit",ev=>{
     if(end&&start&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
     const from=q(".m-from").value,until=q(".m-until").value;
     if(from&&until&&until<from){show();return err("The ending month for “"+title+"” is before its starting month.")}
-    const mode=row.querySelector('input[type=radio]:checked').value,cats=[...row.querySelectorAll(".m-cats input:checked")].map(i=>i.value);
-    const rec={id:row.dataset.mid||("m"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title,mode,cats,cat:cats[0]||"",start,end:/^\d{2}:\d{2}$/.test(end)?end:"",loc,note,from,until,skip:row._skip||[]};
+    const mode=row.querySelector('input[type=radio]:checked').value,cats=[...row.querySelectorAll(".m-cats input:checked")].map(i=>i.value),auds=[...row.querySelectorAll(".m-auds input:checked")].map(i=>i.value);
+    const rec={id:row.dataset.mid||("m"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title,mode,cats,auds,cat:cats[0]||"",start,end:/^\d{2}:\d{2}$/.test(end)?end:"",loc,note,from,until,skip:row._skip||[]};
     if(mode==="day")rec.day=+q(".m-day").value;else{rec.n=+q(".m-n").value;rec.dow=+q(".m-dow").value}
     rememberLocation(loc);out.push(rec);
   }

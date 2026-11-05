@@ -4,53 +4,71 @@
    "id": "emvwxzebb2i5n",
    "title": "Halloween",
    "date": "2026-10-31",
-   "cat": "kids",
+   "cat": "fellowship",
    "start": "",
    "end": "",
    "loc": "Multi-Purpose Building",
    "desc": "",
-   "url": ""
+   "url": "",
+   "cats": [
+    "fellowship"
+   ],
+   "auds": [
+    "kids"
+   ]
   },
   {
    "id": "e1a1a4b9501cyjs6",
    "title": "Senior Adults Shopping Trip to Hamrick’s",
    "date": "2026-11-10",
-   "cat": "adults",
+   "cat": "fellowship",
    "start": "08:00",
    "end": "",
    "loc": "",
    "desc": "Shopping trip to Hamrick’s in Raleigh.\nWe will leave the church at 8:00 AM.\nSign-up sheets are posted throughout the church.\nQuestions? Contact a member of the Senior Adult Committee.",
-   "url": ""
+   "url": "",
+   "cats": [
+    "fellowship"
+   ],
+   "auds": [
+    "seniors"
+   ]
   },
   {
    "id": "e1a1a4b9501e83ga",
    "title": "Church Basketball Meeting",
    "date": "2026-11-15",
    "cats": [
-    "kids",
-    "students",
-    "adults"
+    "meetings"
    ],
-   "cat": "kids",
+   "cat": "meetings",
    "start": "12:15",
    "end": "",
    "loc": "Sanctuary",
    "desc": "Immediately following Morning Worship.\nFor parents and everyone playing this season.\nMedical Release and Photography & Media Permission forms will be available.",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students",
+    "adults"
+   ]
   },
   {
    "id": "e1a1a4b9502026hl",
    "title": "Children’s & Youth Ministry Teams Meeting",
    "date": "2026-11-15",
    "cats": [
-    "adults"
+    "meetings"
    ],
-   "cat": "adults",
+   "cat": "meetings",
    "start": "16:00",
    "end": "",
    "loc": "Youth Suite",
    "desc": "Finalize the basketball schedule and duties.",
-   "url": ""
+   "url": "",
+   "auds": [
+    "adults"
+   ]
   },
   {
    "id": "e1a1a4b950220qvz",
@@ -61,18 +79,30 @@
    "end": "18:00",
    "loc": "Multi-Purpose Building",
    "desc": "Volunteers are needed.\nCall or text Rhonda Bass at (252) 337-5766",
-   "url": "https://www.redcrossblood.org/give.html/drive-results?zipSponsor=RHBC"
+   "url": "https://www.redcrossblood.org/give.html/drive-results?zipSponsor=RHBC",
+   "cats": [
+    "missions"
+   ],
+   "auds": [
+    "all"
+   ]
   },
   {
    "title": "Camp Cale Senior Adult Christmas Luncheon",
    "date": "2026-12-01",
-   "cat": "adults",
+   "cat": "fellowship",
    "start": "11:30",
    "end": "13:00",
    "loc": "",
    "desc": "Held at Camp Cale. Tickets are $8 each.\nMenu: turkey, green beans, mashed potatoes, rolls and dessert.\nReserve by calling (252) 264-2513 or online at campcale.com.",
    "url": "https://campcale.com",
-   "id": "e1a1a4b95024si2i"
+   "id": "e1a1a4b95024si2i",
+   "cats": [
+    "fellowship"
+   ],
+   "auds": [
+    "seniors"
+   ]
   },
   {
    "id": "emw1isx64276g",
@@ -86,7 +116,11 @@
    "end": "21:30",
    "loc": "Multi-Purpose Building",
    "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students"
+   ]
   },
   {
    "id": "emw1oa5jhr6ki",
@@ -100,7 +134,11 @@
    "end": "21:30",
    "loc": "",
    "desc": "Location: Ballard's Bridge\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students"
+   ]
   },
   {
    "id": "emw1og7esqn51",
@@ -114,7 +152,11 @@
    "end": "21:30",
    "loc": "Multi-Purpose Building",
    "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students"
+   ]
   },
   {
    "id": "emw1oj79gi7cg",
@@ -128,7 +170,11 @@
    "end": "21:30",
    "loc": "Multi-Purpose Building",
    "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students"
+   ]
   },
   {
    "id": "emw1om5xhqqzy",
@@ -142,7 +188,11 @@
    "end": "21:30",
    "loc": "Multi-Purpose Building",
    "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students"
+   ]
   },
   {
    "id": "emw1ongpfyb1p",
@@ -156,7 +206,11 @@
    "end": "21:30",
    "loc": "Multi-Purpose Building",
    "desc": "Location: Rocky Hock Baptist Church\nGrade Groups & Game Times\nCo-Ed K-2: 4:30PM\nCo-Ed 3-5: 5:00PM\n6-8 Boys: 6:00PM\n6-12 Girls: 7:00PM\n9-12 Boys: 8:00PM",
-   "url": ""
+   "url": "",
+   "auds": [
+    "kids",
+    "students"
+   ]
   }
  ],
  "bulletins": [
@@ -492,11 +546,12 @@
    "loc": "",
    "note": "All Ages",
    "cats": [
-    "kids",
-    "students",
-    "adults"
+    "bible"
    ],
-   "cat": "kids"
+   "cat": "bible",
+   "auds": [
+    "all"
+   ]
   },
   {
    "id": "worship",
@@ -507,12 +562,12 @@
    "loc": "Sanctuary",
    "note": "Nursery and Children’s Church Provided",
    "cats": [
-    "worship",
-    "kids",
-    "students",
-    "adults"
+    "worship"
    ],
-   "cat": "worship"
+   "cat": "worship",
+   "auds": [
+    "all"
+   ]
   },
   {
    "id": "deepdive",
@@ -523,9 +578,12 @@
    "loc": "Sanctuary",
    "note": "Adult Bible Study",
    "cats": [
-    "adults"
+    "bible"
    ],
-   "cat": "adults"
+   "cat": "bible",
+   "auds": [
+    "adults"
+   ]
   },
   {
    "id": "wmvxceknqwzwr",
@@ -536,9 +594,12 @@
    "loc": "Youth Suite",
    "note": "Middle & High School Youth",
    "cats": [
-    "students"
+    "bible"
    ],
-   "cat": "students"
+   "cat": "bible",
+   "auds": [
+    "students"
+   ]
   },
   {
    "id": "wmvxceknqecrq",
@@ -549,9 +610,12 @@
    "loc": "Multi-Purpose Building",
    "note": "1st – 5th Grade Girls and Boys",
    "cats": [
-    "kids"
+    "bible"
    ],
-   "cat": "kids"
+   "cat": "bible",
+   "auds": [
+    "kids"
+   ]
   },
   {
    "id": "yah",
@@ -562,9 +626,12 @@
    "loc": "Senior Adult Building",
    "note": "Room 312",
    "cats": [
-    "adults"
+    "bible"
    ],
-   "cat": "adults"
+   "cat": "bible",
+   "auds": [
+    "seniors"
+   ]
   },
   {
    "id": "vertical",
@@ -575,9 +642,12 @@
    "loc": "Youth Suite",
    "note": "Middle & High School Youth\nMeal Provided",
    "cats": [
-    "students"
+    "bible"
    ],
-   "cat": "students"
+   "cat": "bible",
+   "auds": [
+    "students"
+   ]
   },
   {
    "id": "garas",
@@ -588,9 +658,12 @@
    "loc": "Multi-Purpose Building",
    "note": "1st – 5th Grade Girls and Boys\nMeal in the Special Function Room",
    "cats": [
-    "kids"
+    "missions"
    ],
-   "cat": "kids"
+   "cat": "missions",
+   "auds": [
+    "kids"
+   ]
   },
   {
    "id": "seeds",
@@ -601,9 +674,12 @@
    "loc": "Sanctuary",
    "note": "",
    "cats": [
-    "adults"
+    "worship"
    ],
-   "cat": "adults"
+   "cat": "worship",
+   "auds": [
+    "adults"
+   ]
   },
   {
    "id": "mf",
@@ -614,9 +690,12 @@
    "loc": "Multi-Purpose Building",
    "note": "Ages 3 – 5",
    "cats": [
-    "kids"
+    "missions"
    ],
-   "cat": "kids"
+   "cat": "missions",
+   "auds": [
+    "kids"
+   ]
   },
   {
    "id": "choir",
@@ -629,7 +708,10 @@
    "cats": [
     "music"
    ],
-   "cat": "music"
+   "cat": "music",
+   "auds": [
+    "adults"
+   ]
   }
  ],
  "alert": {
@@ -762,8 +844,10 @@
    "id": "mmw1o412felqw",
    "title": "Deacon's Meeting",
    "mode": "nth",
-   "cats": [],
-   "cat": "",
+   "cats": [
+    "meetings"
+   ],
+   "cat": "meetings",
    "start": "19:00",
    "end": "",
    "loc": "Conference Room",
@@ -772,7 +856,10 @@
    "until": "",
    "skip": [],
    "n": 4,
-   "dow": 1
+   "dow": 1,
+   "auds": [
+    "adults"
+   ]
   }
  ]
 }
