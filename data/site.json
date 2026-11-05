@@ -847,6 +847,9 @@
    "cats": [
     "meetings"
    ],
+   "auds": [
+    "adults"
+   ],
    "cat": "meetings",
    "start": "19:00",
    "end": "",
@@ -856,10 +859,28 @@
    "until": "",
    "skip": [],
    "n": 4,
-   "dow": 1,
+   "dow": 1
+  },
+  {
+   "id": "mmw41lqqrnkia",
+   "title": "Finance Committee Meeting",
+   "mode": "nth",
+   "cats": [
+    "meetings"
+   ],
    "auds": [
     "adults"
-   ]
+   ],
+   "cat": "meetings",
+   "start": "19:00",
+   "end": "",
+   "loc": "Conference Room",
+   "note": "",
+   "from": "2026-11",
+   "until": "",
+   "skip": [],
+   "n": 3,
+   "dow": 1
   }
  ]
 }
