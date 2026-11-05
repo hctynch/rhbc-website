@@ -613,8 +613,8 @@ a.card:hover{border-color:var(--muted)}
 .ev .bar{grid-row:span 2}
 .ev-body{grid-column:2/4;min-width:0;margin-top:-12px}
 .ev-body:empty{display:none}
-.ev-side{display:grid;justify-items:end;align-content:start;gap:8px}
-.ev-cat{display:inline-flex;align-items:center;white-space:nowrap;font-size:.8rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--cat) 14%,var(--surface));color:color-mix(in srgb,var(--cat) 72%,var(--ink))}
+.ev-side{display:grid;justify-items:end;align-content:start;gap:2px 8px;padding-top:1px}
+.ev-cat{display:inline-block;white-space:nowrap;font-size:.8rem;font-weight:700;line-height:1.3;text-align:right;color:color-mix(in srgb,var(--cat) 88%,var(--ink))}
 .ev-meta{margin-top:3px;display:grid;gap:1px}
 .ev-locrow{margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .ev-auds{display:inline-flex;flex-wrap:wrap;gap:6px}
@@ -2054,7 +2054,7 @@ function renderDocs(){
 }
 
 /* ---------- calendar ---------- */
-const CATS={worship:{label:"Worship",v:"--c-worship"},bible:{label:"Bible Study",v:"--c-bible"},music:{label:"Music",v:"--c-music"},missions:{label:"Missions",v:"--c-missions"},fellowship:{label:"Fellowship",v:"--c-fellowship"},prayer:{label:"Prayer",v:"--c-prayer"},outreach:{label:"Outreach",v:"--c-outreach"},meetings:{label:"Meetings",v:"--c-meetings"}};
+const CATS={worship:{label:"Worship",v:"--c-worship"},bible:{label:"Bible Study",v:"--c-bible"},music:{label:"Music",v:"--c-music"},missions:{label:"Missions",v:"--c-missions"},fellowship:{label:"Fellowship",v:"--c-fellowship"},prayer:{label:"Prayer",v:"--c-prayer"},outreach:{label:"Outreach",v:"--c-outreach"},meetings:{label:"Meeting",v:"--c-meetings"}};
 const AUDS={all:"All Ages",kids:"Kids",students:"Students",adults:"Adults",seniors:"Senior Adults"};
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
