@@ -176,6 +176,9 @@ p{margin:0}
 .times span small{display:block;color:var(--muted);font-size:.85rem;line-height:1.4}
 li small.wk-loc,li small.wk-note{display:block;line-height:1.4}
 li small.wk-loc{font-weight:600}
+li small.wk-ic{display:flex;align-items:baseline;gap:5px}
+li small.wk-ic svg{flex:none;color:var(--brand-hi);position:relative;top:1px}
+li small.wk-aud{font-weight:600;color:var(--brand-hi)}
 .addr{font-size:.93rem;color:var(--muted)}
 .addr-row{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap}
 .addr-row .addr{margin:0}
@@ -2482,8 +2485,12 @@ $("jForm").addEventListener("submit",async ev=>{
 /* weekly schedule */
 const DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const fmtSpan=w=>{if(!w.end)return fmtTime(w.start);const a=fmtTime(w.start),b=fmtTime(w.end);return a.slice(-2)===b.slice(-2)?a.slice(0,-3)+" – "+b:a+" – "+b};
-function wkAuds(w){const a=evAuds(w);if(!a.length)return null;return el("small",{className:"wk-loc wk-aud",textContent:a.map(x=>AUDS[x]).join(", ")})}
-function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,w.loc?el("small",{className:"wk-loc",textContent:w.loc}):null,wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
+const WK_PIN='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+const WK_PPL='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 4 6"/></svg>';
+function wkIco(cls,svg,txt){const n=el("small",{className:cls});n.insertAdjacentHTML("beforeend",svg);n.append(el("span",{textContent:txt}));return n}
+function wkLoc(w){return w.loc?wkIco("wk-loc wk-ic",WK_PIN,w.loc):null}
+function wkAuds(w){const a=evAuds(w).map(x=>AUDS[x]);if(!a.length)return null;return wkIco("wk-aud wk-ic",WK_PPL,"For "+(a.length>1?a.slice(0,-1).join(", ")+" & ":"")+a[a.length-1])}
+function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,wkLoc(w),wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
 function renderWeekly(){
   const wk=state.weekly||[];
   const sun=wk.filter(w=>w.dow===0);
@@ -2497,7 +2504,7 @@ function renderWeekly(){
   document.querySelectorAll("[data-monthly]").forEach(box=>{
     const ms=(state.monthly||[]).filter(m=>m.title&&(!m.until||m.until>=TODAY.slice(0,7)));box.replaceChildren();box.hidden=!ms.length;if(!ms.length)return;
     box.append(el("div",{className:"day"},el("h3",{textContent:"Recurring Events"}),el("ul",{},...ms.slice().sort((a,b)=>(a.mode===b.mode?0:a.mode==="nth"?-1:1)||(a.mode==="day"?(+a.day)-(+b.day):((+a.n===-1?6:+a.n)-(+b.n===-1?6:+b.n))||((+a.dow)-(+b.dow)))||(a.start||"").localeCompare(b.start||"")).map(m=>
-      el("li",{},el("time",{textContent:m.start?fmtTime(m.start):""}),el("span",{},m.title,el("small",{className:"wk-loc",textContent:moRule(m)}),m.loc?el("small",{className:"wk-loc",textContent:m.loc}):null,wkAuds(m),m.note?el("small",{className:"wk-note keep-lines",textContent:m.note}):null))))));
+      el("li",{},el("time",{textContent:m.start?fmtTime(m.start):""}),el("span",{},m.title,el("small",{className:"wk-loc",textContent:moRule(m)}),wkLoc(m),wkAuds(m),m.note?el("small",{className:"wk-note keep-lines",textContent:m.note}):null))))));
   });
   const byId=Object.fromEntries(wk.map(w=>[w.id,w]));
   document.querySelectorAll("[data-wk]").forEach(n=>{const w=byId[n.dataset.wk];if(!w)return;const f=n.dataset.fmt,D=DAYNAMES[w.dow];
