@@ -176,8 +176,6 @@ p{margin:0}
 .times span small{display:block;color:var(--muted);font-size:.85rem;line-height:1.4}
 li small.wk-loc,li small.wk-note{display:block;line-height:1.4}
 li small.wk-loc{font-weight:600}
-.wk-auds{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 3px}
-.wk-auds .ev-aud{font-size:.72rem;padding:4px 8px}
 .addr{font-size:.93rem;color:var(--muted)}
 .addr-row{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap}
 .addr-row .addr{margin:0}
@@ -2484,7 +2482,7 @@ $("jForm").addEventListener("submit",async ev=>{
 /* weekly schedule */
 const DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const fmtSpan=w=>{if(!w.end)return fmtTime(w.start);const a=fmtTime(w.start),b=fmtTime(w.end);return a.slice(-2)===b.slice(-2)?a.slice(0,-3)+" – "+b:a+" – "+b};
-function wkAuds(w){const a=evAuds(w);if(!a.length)return null;const b=el("span",{className:"wk-auds"});b.setAttribute("aria-label","For: "+a.map(x=>AUDS[x]).join(", "));a.forEach(x=>b.append(el("span",{className:"ev-aud",textContent:AUDS[x]})));return b}
+function wkAuds(w){const a=evAuds(w);if(!a.length)return null;return el("small",{className:"wk-loc wk-aud",textContent:a.map(x=>AUDS[x]).join(", ")})}
 function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,w.loc?el("small",{className:"wk-loc",textContent:w.loc}):null,wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
 function renderWeekly(){
   const wk=state.weekly||[];
