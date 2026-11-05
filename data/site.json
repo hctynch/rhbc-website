@@ -88,6 +88,24 @@
    ]
   },
   {
+   "id": "emw41ok9naog5",
+   "title": "Thanks & Praise Service",
+   "date": "2026-11-25",
+   "cats": [
+    "worship",
+    "fellowship"
+   ],
+   "auds": [
+    "all"
+   ],
+   "cat": "worship",
+   "start": "18:30",
+   "end": "",
+   "loc": "Gym",
+   "desc": "Meal and Service\nEveryone meets in Gym",
+   "url": ""
+  },
+  {
    "title": "Camp Cale Senior Adult Christmas Luncheon",
    "date": "2026-12-01",
    "cat": "fellowship",
