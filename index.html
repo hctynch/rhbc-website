@@ -16,6 +16,7 @@
   /*@@PALETTE_LIGHT@@*/--brand:#8C1007; --brand-hi:#8C1007; --on-brand:#FFF7F5; --accent:#8C1007; --gold:#9A6A12; --logo-tile:transparent; --logo-pad:0;
   --bg:#F7F6F5; --surface:#FFFFFF; --wash:#EFECEA; --ink:#222124; --muted:#5E5C61; --line:#E0DCDA;/*@@END@@*/
   --c-worship:#2F5C8A; --c-kids:#C2602C; --c-students:#7A4E9E; --c-adults:#2E7A57; --c-missions:#A87720; --c-music:#A93D57; --c-fellowship:#3F7880; --c-bible:#2E7A57; --c-prayer:#7A4E9E; --c-outreach:#C2602C; --c-meetings:#5F6B7A;
+  --m-worship:#1D5FC4; --m-bible:#2F7D1E; --m-music:#C2187A; --m-missions:#9A5B00; --m-fellowship:#E0480F; --m-prayer:#7B2FD0; --m-outreach:#00838F; --m-meetings:#52525B;
   --display:"Young Serif", Georgia, "Times New Roman", serif;
   --body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --shadow:0 1px 2px rgb(34 20 18 / .06), 0 8px 24px rgb(34 20 18 / .08);
@@ -24,11 +25,13 @@
   /*@@PALETTE_DARK@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:transparent; --logo-pad:0;
   --bg:#151314; --surface:#1E1B1C; --wash:#252122; --ink:#EDEAE9; --muted:#A9A4A4; --line:#38302F;/*@@END@@*/
   --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5; --c-bible:#6CC197; --c-prayer:#BC97DC; --c-outreach:#EC9562; --c-meetings:#A7B0BC;
+  --m-worship:#8AB2F2; --m-bible:#80C673; --m-music:#F57CB4; --m-missions:#EFC377; --m-fellowship:#F86F46; --m-prayer:#A66DFB; --m-outreach:#76CED9; --m-meetings:#9797A0;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25); color-scheme:dark }}
 :root[data-theme="dark"]{
   /*@@PALETTE_DARK2@@*/--brand:#9E1B10; --brand-hi:#EC8577; --on-brand:#FFF5F3; --accent:#F09184; --gold:#DDAE55; --logo-tile:transparent; --logo-pad:0;
   --bg:#151314; --surface:#1E1B1C; --wash:#252122; --ink:#EDEAE9; --muted:#A9A4A4; --line:#38302F;/*@@END@@*/
   --c-worship:#8DB4E0; --c-kids:#EC9562; --c-students:#BC97DC; --c-adults:#6CC197; --c-missions:#DDAE55; --c-music:#E9849B; --c-fellowship:#82BEC5; --c-bible:#6CC197; --c-prayer:#BC97DC; --c-outreach:#EC9562; --c-meetings:#A7B0BC;
+  --m-worship:#8AB2F2; --m-bible:#80C673; --m-music:#F57CB4; --m-missions:#EFC377; --m-fellowship:#F86F46; --m-prayer:#A66DFB; --m-outreach:#76CED9; --m-meetings:#9797A0;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25); color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -614,7 +617,9 @@ a.card:hover{border-color:var(--muted)}
 .ev-body{grid-column:2/4;min-width:0;margin-top:-12px}
 .ev-body:empty{display:none}
 .ev-side{display:grid;justify-items:end;align-content:start;gap:2px 8px;padding-top:1px}
-.ev-cat{display:inline-block;white-space:nowrap;font-size:.8rem;font-weight:700;line-height:1.3;text-align:right;color:color-mix(in srgb,var(--cat) 88%,var(--ink))}
+.ev-cat{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:.8rem;font-weight:700;line-height:1.3;color:var(--cat)}
+.cat-ic{display:inline-flex;flex:none}.cat-ic svg{display:block}
+.chip .cat-ic{color:var(--dot)}.cat-opt .cat-ic{margin-right:5px;color:var(--cat)}
 .ev-meta{margin-top:3px;display:grid;gap:1px}
 .ev-locrow{margin-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .ev-auds{display:inline-flex;flex-wrap:wrap;gap:6px}
@@ -2054,7 +2059,7 @@ function renderDocs(){
 }
 
 /* ---------- calendar ---------- */
-const CATS={worship:{label:"Worship",v:"--c-worship"},bible:{label:"Bible Study",v:"--c-bible"},music:{label:"Music",v:"--c-music"},missions:{label:"Missions",v:"--c-missions"},fellowship:{label:"Fellowship",v:"--c-fellowship"},prayer:{label:"Prayer",v:"--c-prayer"},outreach:{label:"Outreach",v:"--c-outreach"},meetings:{label:"Meeting",v:"--c-meetings"}};
+const CATS={worship:{label:"Worship",v:"--m-worship",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v5M9.5 5.5h5\"/><path d=\"M5 21V12l7-4 7 4v9\"/><path d=\"M10 21v-4a2 2 0 0 1 4 0v4\"/></svg>"},bible:{label:"Bible Study",v:"--m-bible",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z\"/><path d=\"M4 21V5\"/><path d=\"M12 7v6M9.5 9.5h5\"/></svg>"},music:{label:"Music",v:"--m-music",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 18V5l11-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"17\" cy=\"16\" r=\"3\"/></svg>"},missions:{label:"Missions",v:"--m-missions",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/></svg>"},fellowship:{label:"Fellowship",v:"--m-fellowship",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z\"/><path d=\"M16 10h2a2.5 2.5 0 0 1 0 5h-2\"/><path d=\"M8 3v3M12 3v3\"/></svg>"},prayer:{label:"Prayer",v:"--m-prayer",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 21s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z\"/></svg>"},outreach:{label:"Outreach",v:"--m-outreach",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z\"/><path d=\"M17 9a4 4 0 0 1 0 6M20 6.5a8 8 0 0 1 0 11\"/></svg>"},meetings:{label:"Meeting",v:"--m-meetings",ic:"<svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" aria-hidden=\"true\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4V3h6v1M9 10h6M9 14h6\"/></svg>"}};
 const AUDS={all:"All Ages",kids:"Kids",students:"Students",adults:"Adults",seniors:"Senior Adults"};
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -2068,6 +2073,7 @@ const longDate=k=>fromKey(k).toLocaleDateString("en-US",{weekday:"long",month:"l
 const shortDate=k=>fromKey(k).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
 const sortEv=(a,b)=>(a.date+(a.start||"00:00")).localeCompare(b.date+(b.start||"00:00"));
 const safeUrl=u=>{try{const x=new URL(u);return(x.protocol==="https:"||x.protocol==="http:")?x.href:""}catch(e){return""}};
+const catIco=c=>{const i=el("span",{className:"cat-ic"});i.innerHTML=(CATS[c]||{}).ic||"";return i};
 const catVar=c=>"var("+(CATS[c]||CATS.fellowship).v+")";
 /* an event can belong to several ministries, or none (older events only have .cat) */
 const evCats=e=>(Array.isArray(e.cats)?e.cats:(e.cat?[e.cat]:[])).filter(c=>CATS[c]);
@@ -2171,7 +2177,7 @@ function renderFilters(){
   const redraw=()=>{renderFilters();renderGrid();renderDay();renderUp()};
   const row=(lab,set,keys,label,cls,dot)=>{const r=el("div",{className:"frow",role:"group"});r.setAttribute("aria-label",lab);r.append(el("span",{className:"flab",textContent:lab}));
     const all=el("button",{type:"button",className:"chip chip-all",textContent:"All"});all.setAttribute("aria-pressed",String(!set.size));all.onclick=()=>{set.clear();redraw()};r.append(all);
-    for(const k of keys){const b=el("button",{type:"button",className:"chip"+cls,style:dot?"--dot:"+dot(k):""},el("i"),label(k));b.setAttribute("aria-pressed",String(set.has(k)));
+    for(const k of keys){const b=el("button",{type:"button",className:"chip"+cls,style:dot?"--dot:"+dot(k):""},dot?catIco(k):el("i"),label(k));b.setAttribute("aria-pressed",String(set.has(k)));
       b.onclick=()=>{set.has(k)?set.delete(k):set.add(k);if(set.size===keys.length)set.clear();redraw()};r.append(b)}
     return r};
   f.append(row("Ministry",active,Object.keys(CATS),k=>CATS[k].label,"",catVar),row("Who It\u2019s For",activeAud,Object.keys(AUDS),k=>AUDS[k]," chip-aud",null));
@@ -2255,7 +2261,7 @@ function evRow(e,withDate){
   if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});
-  evCats(e).forEach(c=>right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(c),textContent:CATS[c].label})));
+  evCats(e).forEach(c=>right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(c)},catIco(c),CATS[c].label)));
   if(e.monthly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Series"});b.onclick=()=>openMonthly(e.mid);
     const sk=el("button",{type:"button",className:"btn ghost small edit",textContent:"Skip This Date"});sk.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;m.skip=[...(m.skip||[]),e.date];dirty=true;editing=true;renderAll();toast(e.title+" skipped on "+shortDate(e.date)+". Press “Save Changes” to publish.")};right.append(b,sk)}
   else if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
@@ -2323,7 +2329,7 @@ function locPicker(input){
 locPicker($("f-loc"));
 const f={title:$("f-title"),date:$("f-date"),start:$("f-start"),end:$("f-end"),loc:$("f-loc"),desc:$("f-desc"),url:$("f-url")};
 function audOpts(box,sel){for(const a in AUDS){const cb=el("input",{type:"checkbox",value:a});cb.checked=sel.includes(a);box.append(el("label",{className:"cat-opt aud"},cb,el("span",{textContent:AUDS[a]})))}return box}
-function catOpts(box,sel){for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=sel.includes(c);box.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,el("span",{textContent:CATS[c].label})))}return box}
+function catOpts(box,sel){for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=sel.includes(c);box.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,catIco(c),el("span",{textContent:CATS[c].label})))}return box}
 const pickHint=()=>el("span",{className:"hint",textContent:"Choose any that apply, or none"});
 catOpts($("f-cats"),[]);audOpts($("f-auds"),[]);
 const setAuds=a=>document.querySelectorAll("#f-auds input").forEach(i=>i.checked=a.includes(i.value));
