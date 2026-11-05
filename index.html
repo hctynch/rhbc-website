@@ -2237,7 +2237,7 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
-  if(e.monthly)h.append(el("span",{className:"tag mo-tag",textContent:moRule(e).replace(" of every month"," monthly").replace(/^(\d+\w\w) monthly$/,"$1 monthly")}));
+  if(e.monthly)h.append(el("span",{className:"tag mo-tag",textContent:moRule(e).replace(" of every month"," Monthly")}));
   const when=el("div",{className:"when"});
   if(withDate)when.append(el("span",{className:"wd",textContent:shortDate(e.date)}),el("span",{className:"wsep",textContent:" · "}));
   when.append(el("span",{className:"wt",textContent:fmtRange(e)}));
