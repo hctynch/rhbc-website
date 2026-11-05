@@ -491,8 +491,12 @@
    "title": "Sunday School",
    "loc": "",
    "note": "All Ages",
-   "cats": [],
-   "cat": ""
+   "cats": [
+    "kids",
+    "students",
+    "adults"
+   ],
+   "cat": "kids"
   },
   {
    "id": "worship",
@@ -503,7 +507,10 @@
    "loc": "Sanctuary",
    "note": "Nursery and Children’s Church Provided",
    "cats": [
-    "worship"
+    "worship",
+    "kids",
+    "students",
+    "adults"
    ],
    "cat": "worship"
   },
