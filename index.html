@@ -481,6 +481,7 @@ a.card:hover{border-color:var(--muted)}
 .datechip{width:58px;text-align:center;border-radius:8px;border:1px solid var(--line);overflow:hidden;font-variant-numeric:tabular-nums;background:var(--bg)}
 .datechip b{display:block;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 0;color:var(--on-brand);background:var(--brand)}
 .datechip span{display:block;font-family:var(--display);font-size:1.6rem;line-height:1.3}
+.next-when{margin:0;font-size:.86rem;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
 .next-card h3{font-size:1.1rem;font-family:var(--body);font-weight:600;line-height:1.3}
 .meta{color:var(--muted);font-size:.88rem;line-height:1.45}
 .empty-note{color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:10px;grid-column:1/-1}
@@ -2160,7 +2161,7 @@ function renderNext(){
     const d=fromKey(e.date);
     const chip=el("div",{className:"datechip"},el("b",{textContent:d.toLocaleDateString("en-US",{month:"short"})}),el("span",{textContent:String(d.getDate())}));
     const h=el("h3",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
-    const body=el("div",{style:"display:grid;gap:4px;min-width:0"},h,el("p",{className:"meta",textContent:d.toLocaleDateString("en-US",{weekday:"long"})+" · "+fmtRange(e)}));{const lc=wkLoc(e),au=wkAuds(e);if(lc||au)body.append(el("div",{className:"ev-meta"},lc,au))}
+    const body=el("div",{style:"display:grid;gap:4px;min-width:0"},el("p",{className:"next-when",textContent:d.toLocaleDateString("en-US",{weekday:"long"})+" · "+fmtRange(e)}),h);{const lc=wkLoc(e),au=wkAuds(e);if(lc||au)body.append(el("div",{className:"ev-meta"},lc,au))}
     if(e.desc)body.append(el("p",{className:"meta keep-lines",textContent:e.desc}));
     box.append(el("article",{className:"next-card"},chip,body));
   }
