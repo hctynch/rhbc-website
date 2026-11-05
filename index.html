@@ -179,6 +179,9 @@ li small.wk-loc{font-weight:600}
 li small.wk-ic{display:flex;align-items:baseline;gap:5px}
 li small.wk-ic svg{flex:none;color:var(--brand-hi);position:relative;top:1px}
 li small.wk-aud{font-weight:600;color:var(--brand-hi)}
+.wk-title{font-weight:600}
+li small.wk-loc.wk-ic{font-weight:700;color:var(--ink);font-size:.92rem;margin-top:1px}
+.sunday .sunday-head .eyebrow{color:var(--brand-hi)}
 .addr{font-size:.93rem;color:var(--muted)}
 .addr-row{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap}
 .addr-row .addr{margin:0}
@@ -2490,7 +2493,7 @@ const WK_PPL='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke
 function wkIco(cls,svg,txt){const n=el("small",{className:cls});n.insertAdjacentHTML("beforeend",svg);n.append(el("span",{textContent:txt}));return n}
 function wkLoc(w){return w.loc?wkIco("wk-loc wk-ic",WK_PIN,w.loc):null}
 function wkAuds(w){const a=evAuds(w).map(x=>AUDS[x]);if(!a.length)return null;return wkIco("wk-aud wk-ic",WK_PPL,"For "+(a.length>1?a.slice(0,-1).join(", ")+" & ":"")+a[a.length-1])}
-function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},w.title,wkLoc(w),wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
+function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},el("span",{className:"wk-title",textContent:w.title}),wkLoc(w),wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
 function renderWeekly(){
   const wk=state.weekly||[];
   const sun=wk.filter(w=>w.dow===0);
@@ -2504,7 +2507,7 @@ function renderWeekly(){
   document.querySelectorAll("[data-monthly]").forEach(box=>{
     const ms=(state.monthly||[]).filter(m=>m.title&&(!m.until||m.until>=TODAY.slice(0,7)));box.replaceChildren();box.hidden=!ms.length;if(!ms.length)return;
     box.append(el("div",{className:"day"},el("h3",{textContent:"Recurring Events"}),el("ul",{},...ms.slice().sort((a,b)=>(a.mode===b.mode?0:a.mode==="nth"?-1:1)||(a.mode==="day"?(+a.day)-(+b.day):((+a.n===-1?6:+a.n)-(+b.n===-1?6:+b.n))||((+a.dow)-(+b.dow)))||(a.start||"").localeCompare(b.start||"")).map(m=>
-      el("li",{},el("time",{textContent:m.start?fmtTime(m.start):""}),el("span",{},m.title,el("small",{className:"wk-loc",textContent:moRule(m)}),wkLoc(m),wkAuds(m),m.note?el("small",{className:"wk-note keep-lines",textContent:m.note}):null))))));
+      el("li",{},el("time",{textContent:m.start?fmtTime(m.start):""}),el("span",{},el("span",{className:"wk-title",textContent:m.title}),el("small",{className:"wk-loc",textContent:moRule(m)}),wkLoc(m),wkAuds(m),m.note?el("small",{className:"wk-note keep-lines",textContent:m.note}):null))))));
   });
   const byId=Object.fromEntries(wk.map(w=>[w.id,w]));
   document.querySelectorAll("[data-wk]").forEach(n=>{const w=byId[n.dataset.wk];if(!w)return;const f=n.dataset.fmt,D=DAYNAMES[w.dow];
