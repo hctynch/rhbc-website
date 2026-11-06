@@ -103,7 +103,16 @@
    "end": "",
    "loc": "Gym",
    "desc": "Meal and Service\nEveryone meets in Gym",
-   "url": ""
+   "url": "",
+   "cancels": {
+    "mode": "some",
+    "ids": [
+     "vertical",
+     "garas",
+     "seeds",
+     "mf"
+    ]
+   }
   },
   {
    "title": "Camp Cale Senior Adult Christmas Luncheon",
@@ -900,5 +909,6 @@
    "n": 3,
    "dow": 1
   }
- ]
+ ],
+ "schedChanges": []
 }
