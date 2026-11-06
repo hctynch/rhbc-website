@@ -627,6 +627,24 @@ a.card:hover{border-color:var(--muted)}
 .ev-auds{display:inline-flex;flex-wrap:wrap;gap:6px}
 .ev-aud{display:inline-flex;align-items:center;white-space:nowrap;font-size:.78rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:var(--ink);color:var(--surface)}
 @media (max-width:600px){.ev-locrow{flex-direction:column;align-items:flex-start}}
+.cx-pick{display:grid;gap:8px}
+.cx-radios{display:flex;flex-wrap:wrap;gap:8px}
+.cx-rd{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:7px!important;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-weight:600;font-size:.88rem;cursor:pointer;color:var(--muted)}
+.cx-rd input{margin:0;accent-color:var(--brand)}
+.cx-rd:has(input:checked){border-color:var(--brand-hi);color:var(--brand-hi);background:color-mix(in srgb,var(--brand-hi) 8%,var(--surface))}
+.cx-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.82rem;color:var(--muted)}
+.cx-list{display:grid;gap:2px;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.cx-it{display:flex!important;flex-direction:row!important;align-items:center;gap:10px!important;font-size:.92rem;padding:4px 0;cursor:pointer;font-weight:500}
+.cx-it input{margin:0;width:18px;height:18px;accent-color:var(--brand)}
+.cx-it:has(input:checked) span:last-child{text-decoration:line-through;color:var(--muted)}
+.cx-tm{width:68px;flex:none;font-weight:600;font-size:.82rem;color:var(--muted)}
+.ev-body p.ev-rep{margin:6px 0 0!important;display:inline-block;font-size:.78rem;font-weight:700;color:var(--brand-hi);background:color-mix(in srgb,var(--brand-hi) 10%,var(--surface));border-radius:4px;padding:3px 7px}
+.ev-change .bar{background:repeating-linear-gradient(var(--brand-hi) 0 4px,transparent 4px 7px)!important}
+.ev-change h4{color:var(--brand-hi)}
+.times li.wk-special{background:color-mix(in srgb,var(--brand-hi) 7%,var(--surface));margin:0 -10px;padding-left:10px;padding-right:10px;border-radius:8px}
+small.wk-sp.wk-sp{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-hi);margin-top:1px}
+.wk-change .wk-title{color:var(--muted);font-weight:600}
+.sc-row .w-fields{display:grid;gap:12px}
 .tag.mo-tag{color:var(--muted);border-color:var(--line);text-transform:none;letter-spacing:0;font-weight:600}
 .mrow .m-rep{display:grid;gap:8px}
 .mrow .m-opt{display:flex!important;flex-wrap:wrap;align-items:center;gap:8px;font-weight:500}
@@ -819,7 +837,7 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- ============ CALENDAR ============ -->
 <div class="view" data-route="calendar" data-title="Calendar" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button><button class="btn ghost mo-edit sc-edit" type="button" hidden>Schedule Changes</button></div></div></section>
   <section class="band" style="padding-top:40px"><div class="wrap">
     <div id="restoreSlot"></div>
     <div class="cal">
@@ -1075,7 +1093,7 @@ textarea{min-height:84px;resize:vertical}
 </div>
 
 <div class="view" data-route="schedule" data-sec="about" data-title="Our Schedule" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button><button class="btn ghost mo-edit sc-edit" type="button" hidden>Schedule Changes</button></div></div></section>
   <div class="wrap pbody"><div class="prose">
     <div class="week" data-weekly></div>
     <div class="week" data-monthly hidden></div>
@@ -1634,6 +1652,7 @@ textarea{min-height:84px;resize:vertical}
       <label>Date<input id="f-date" type="date" required></label>
       <div class="full cat-pick" role="group" aria-labelledby="f-cats-lab"><span class="cat-lab" id="f-cats-lab">Ministry <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-cats"></div></div>
       <div class="full cat-pick" role="group" aria-labelledby="f-auds-lab"><span class="cat-lab" id="f-auds-lab">Who It’s For <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-auds"></div></div>
+      <div id="f-cx"></div>
       <label>Starts<input id="f-start" type="time"></label>
       <label>Ends<input id="f-end" type="time"></label>
       <label class="full">Location<input id="f-loc" maxlength="80" placeholder="Sanctuary, Multi-Purpose Building, Fellowship Hall…"></label>
@@ -1801,6 +1820,41 @@ textarea{min-height:84px;resize:vertical}
   </div>
 </div>
 
+<div id="overlay14" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg14Title">
+    <h3 id="dlg14Title">Move One Date</h3>
+    <p class="meta" id="mv-meta"></p>
+    <form id="mvForm" class="form" novalidate>
+      <label>New date<input id="mv-date" type="date" required></label>
+      <span></span>
+      <label>Starts<input id="mv-start" type="time"></label>
+      <label>Ends (optional)<input id="mv-end" type="time"></label>
+      <p class="hint full">Only this one date moves; every other month stays on its usual schedule. To put it back, choose “Undo Move” on the calendar or in Edit Recurring Events.</p>
+      <p class="err full" id="mv-err" hidden></p>
+      <div class="dialog-actions full">
+        <button class="btn ghost" type="button" id="mvCancel">Cancel</button>
+        <button class="btn primary" type="submit">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="overlay15" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg15Title">
+    <h3 id="dlg15Title">Schedule Changes</h3>
+    <p class="meta">Cancel regular weekly activities on a date without changing the weekly schedule, such as a holiday week. Canceled activities are hidden from the calendar that day and from Join Us This Week. For a special event that takes their place, add the event instead and choose what it replaces. To uncancel, remove the change.</p>
+    <form id="scForm" novalidate style="display:grid;gap:14px">
+      <div id="scList" class="nlist"></div>
+      <button class="btn ghost" type="button" id="scAdd" style="justify-self:start">+ Add Schedule Change</button>
+      <p class="err" id="sc-err" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn ghost" type="button" id="scCancel">Cancel</button>
+        <button class="btn primary" type="submit">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="overlay13" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg13Title">
     <h3 id="dlg13Title">Recurring Events</h3>
@@ -1945,6 +1999,7 @@ function normalize(st){
   if(!Array.isArray(st.staff))st.staff=JSON.parse(JSON.stringify(DEFAULT_STAFF));
   if(!Array.isArray(st.weekly))st.weekly=JSON.parse(JSON.stringify(DEFAULT_WEEKLY));
   st.weekly=sortWk(st.weekly.filter(w=>w&&w.title&&w.dow>=0&&w.dow<=6));
+  if(!Array.isArray(st.schedChanges))st.schedChanges=[];
   if(!Array.isArray(st.notices))st.notices=(st.notice&&st.notice.text)?[{text:st.notice.text,url:st.notice.url||"",until:""}]:[];
   delete st.notice;
   ["bulletins","newsletters"].forEach(k=>{if(Array.isArray(st[k]))st[k].sort((x,y)=>(y.d||"").localeCompare(x.d||""))});
@@ -2104,10 +2159,29 @@ function moMatches(m,k){
 }
 function moNext(m,count,fromK){const out=[];const d=fromKey(fromK||TODAY);for(let i=0;i<800&&out.length<count;i++){const k=keyOf(d);if(moMatches({...m,skip:[]},k))out.push(k);d.setDate(d.getDate()+1)}return out}
 
+/* one date of a recurring event can be moved: m.moves=[{from,to,start,end}] */
+const moMove=(m,k)=>(m.moves||[]).find(x=>x.to===k);
+function moOn(m,k){if(moMove(m,k))return true;if((m.moves||[]).some(x=>x.from===k))return false;return moMatches(m,k)}
+function moInst(m,k){const mv=moMove(m,k),r={...m,loc:m.loc||"",desc:m.note||"",date:k,monthly:true,mid:m.id,id:"m:"+m.id};
+  if(mv){r.movedFrom=mv.from;if(mv.start){r.start=mv.start;r.end=mv.end||""}}return r}
+/* weekly activities replaced by a special event, a recurring event, or a plain schedule change */
+function cxIds(c,dow){if(!c||(c.mode!=="all"&&c.mode!=="some"))return[];const day=(state.weekly||[]).filter(w=>w.dow===dow).map(w=>w.id);return c.mode==="all"?day:(c.ids||[]).filter(i=>day.includes(i))}
+function canceledOn(k){const dow=fromKey(k).getDay(),out=new Map(),add=(c,by)=>cxIds(c,dow).forEach(i=>{if(!out.has(i))out.set(i,by)});
+  state.events.forEach(e=>{if(e.date===k&&e.cancels)add(e.cancels,e.title)});
+  (state.monthly||[]).forEach(m=>{if(m.title&&m.cancels&&moOn(m,k))add(m.cancels,m.title)});
+  (state.schedChanges||[]).forEach(c=>{if(c.date===k)add(c,"")});
+  return out}
+const cxNames=(c,dow)=>{const ids=cxIds(c,dow);return (state.weekly||[]).filter(w=>ids.includes(w.id)).map(w=>w.title)};
+const andList=a=>a.length>1?a.slice(0,-1).join(", ")+" & "+a[a.length-1]:(a[0]||"");
+function cxLine(c,dow){if(!c)return"";if(c.mode==="all")return"Replaces all regular "+DAYNAMES[dow]+" activities";const n=cxNames(c,dow);return n.length?"Replaces "+andList(n):""}
+function changeItem(c){const dow=fromKey(c.date).getDay(),n=cxNames(c,dow);if(!n.length)return null;
+  return {id:"sc:"+c.id,scid:c.id,change:true,date:c.date,start:"",title:c.mode==="all"?"No Regular "+DAYNAMES[dow]+" Activities":(n.length===1?n[0]+" Canceled":"Some "+DAYNAMES[dow]+" Activities Canceled"),
+    desc:[c.note||"",c.mode==="all"?"":"Canceled: "+andList(n)].filter(Boolean).join("\n"),cats:[],auds:[]}}
 function eventsOn(k){
   const list=state.events.filter(e=>e.date===k&&evShown(e));
-  if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moMatches(m,k))list.push({...m,loc:m.loc||"",desc:m.note||"",date:k,monthly:true,mid:m.id,id:"m:"+m.id});
-  if(showWeekly){const dow=fromKey(k).getDay();for(const w of state.weekly)if(w.dow===dow&&evShown(w))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"})}
+  if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))list.push(moInst(m,k));
+  if(showWeekly){const dow=fromKey(k).getDay(),cx=canceledOn(k);for(const w of state.weekly)if(w.dow===dow&&evShown(w)&&!cx.has(w.id))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"});
+    for(const c of state.schedChanges||[])if(c.date===k){const it=changeItem(c);if(it)list.push(it)}}
   return list.sort(sortEv);
 }
 let canEditFlag=false;
@@ -2255,21 +2329,26 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
-  if(e.monthly)h.append(el("span",{className:"tag mo-tag",textContent:e.mode==="day"?ordDay(+e.day)+" of Each Month":(e.n==-1?"Last":ORD[e.n])+" "+DAYNAMES[e.dow]+" of the Month"}));
+  if(e.monthly)h.append(el("span",{className:"tag mo-tag",textContent:e.movedFrom?"Moved from "+shortDate(e.movedFrom).replace(/^\w+, /,""):e.mode==="day"?ordDay(+e.day)+" of Each Month":(e.n==-1?"Last":ORD[e.n])+" "+DAYNAMES[e.dow]+" of the Month"}));
   const when=el("div",{className:"when"});
   if(withDate)when.append(el("span",{className:"wd",textContent:shortDate(e.date)}),el("span",{className:"wsep",textContent:" · "}));
-  when.append(el("span",{className:"wt",textContent:fmtRange(e)}));
+  when.append(el("span",{className:"wt",textContent:e.change?"Schedule Change":fmtRange(e)}));
   const info=el("div",{style:"min-width:0"},when,h);
   const lc=wkLoc(e),au=wkAuds(e);if(lc||au)info.append(el("div",{className:"ev-meta"},lc,au));
   const body=el("div",{className:"ev-body"});
   if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
+  if(e.cancels&&!e.change){const t=cxLine(e.cancels,fromKey(e.date).getDay());if(t)body.append(el("p",{className:"ev-rep",textContent:t}))}
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});
   evCats(e).forEach(c=>right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(c)},catIco(c),CATS[c].label)));
   if(e.monthly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Series"});b.onclick=()=>openMonthly(e.mid);
-    const sk=el("button",{type:"button",className:"btn ghost small edit",textContent:"Skip This Date"});sk.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;m.skip=[...(m.skip||[]),e.date];dirty=true;editing=true;renderAll();toast(e.title+" skipped on "+shortDate(e.date)+". Press “Save Changes” to publish.")};right.append(b,sk)}
+    const sk=el("button",{type:"button",className:"btn ghost small edit",textContent:"Skip This Date"});sk.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;m.skip=[...(m.skip||[]),e.date];dirty=true;editing=true;renderAll();toast(e.title+" skipped on "+shortDate(e.date)+". Press “Save Changes” to publish.")};const mvb=el("button",{type:"button",className:"btn ghost small edit",textContent:e.movedFrom?"Undo Move":"Move This Date"});
+    mvb.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;
+      if(e.movedFrom){m.moves=(m.moves||[]).filter(x=>x.to!==e.date);dirty=true;editing=true;renderAll();toast(e.title+" is back on "+shortDate(e.movedFrom)+". Press “Save Changes” to publish.")}else openMove(e.mid,e.date)};
+    right.append(b,mvb,sk)}
+  else if(e.change){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openChanges();right.append(b)}
   else if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
-  return el("li",{className:"ev"},el("span",{className:"bar"+(e.weekly?" weekly":""),style:evBarStyle(e)}),info,right,body);
+  return el("li",{className:"ev"+(e.change?" ev-change":"")},el("span",{className:"bar"+(e.weekly?" weekly":""),style:e.change?"":evBarStyle(e)}),info,right,body);
 }
 function renderDay(){
   $("dayLabel").textContent=longDate(selected);$("dayEyebrow").textContent=selected===TODAY?"Today":"Selected day";
@@ -2281,7 +2360,8 @@ function renderUp(){
   const ul=$("upList");ul.replaceChildren();
   const end=new Date(now);end.setDate(end.getDate()+56);const ek=keyOf(end);
   const evs=state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&evShown(e));
-  if(showMonthly){const d=fromKey(TODAY);for(let i=0;i<=56;i++){const k=keyOf(d);for(const m of state.monthly||[])if(m.title&&evShown(m)&&moMatches(m,k))evs.push({...m,loc:m.loc||"",desc:m.note||"",date:k,monthly:true,mid:m.id,id:"m:"+m.id});d.setDate(d.getDate()+1)}}
+  if(showMonthly){const d=fromKey(TODAY);for(let i=0;i<=56;i++){const k=keyOf(d);for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))evs.push(moInst(m,k));d.setDate(d.getDate()+1)}}
+  if(showWeekly)for(const c of state.schedChanges||[])if(c.date>=TODAY&&c.date<=ek){const it=changeItem(c);if(it)evs.push(it)}
   evs.sort(sortEv);
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"No special events in the next eight weeks."}));
   for(const e of evs)ul.append(evRow(e,true));
@@ -2340,18 +2420,44 @@ const setAuds=a=>document.querySelectorAll("#f-auds input").forEach(i=>i.checked
 const getAuds=()=>[...document.querySelectorAll("#f-auds input:checked")].map(i=>i.value);
 const setCats=a=>document.querySelectorAll("#f-cats input").forEach(i=>i.checked=a.includes(i.value));
 const getCats=()=>[...document.querySelectorAll("#f-cats input:checked")].map(i=>i.value);
+let cxN=0;
+function cxEditor(dowFn,opt){opt=opt||{};
+  const box=el("div",{className:"full cx-pick"}),nm="cx"+(++cxN);let cur={mode:opt.noKeep?"all":"none",ids:[]};
+  const lab=el("span",{className:"cat-lab"}),radios=el("div",{className:"cx-radios"}),quick=el("div",{className:"cx-quick"}),list=el("div",{className:"cx-list"}),none=el("p",{className:"hint"});
+  const choices=(opt.noKeep?[]:[["none","Keep as Usual"]]).concat([["all","Cancel All"],["some","Cancel Some"]]);
+  const rs=choices.map(([v,t])=>{const r=el("input",{type:"radio",name:nm,value:v});r.onchange=()=>{cur.mode=v;draw()};radios.append(el("label",{className:"cx-rd"},r,el("span",{textContent:t})));return r});
+  const items=()=>{const d=dowFn();return d==null?[]:(state.weekly||[]).filter(w=>w.dow===d)};
+  function draw(){const d=dowFn(),its=items();
+    rs.forEach(r=>r.checked=r.value===cur.mode);
+    lab.replaceChildren((d==null?"Regular":"Regular "+DAYNAMES[d])+" Activities ",el("span",{className:"hint",textContent:opt.hint||"What happens to the weekly schedule that day?"}));
+    const has=its.length>0;radios.hidden=!has;none.hidden=has;none.textContent=d==null?(opt.dayHint||"Pick a date first."):"There are no weekly activities on "+DAYNAMES[d]+"s.";
+    if(opt.hideEmpty)box.hidden=!has;
+    quick.hidden=list.hidden=!has||cur.mode!=="some";
+    list.replaceChildren(...its.map(w=>{const cb=el("input",{type:"checkbox",value:w.id});cb.checked=cur.ids.includes(w.id);
+      cb.onchange=()=>{cur.ids=cb.checked?[...new Set([...cur.ids,w.id])]:cur.ids.filter(x=>x!==w.id)};
+      return el("label",{className:"cx-it"},cb,el("span",{className:"cx-tm",textContent:fmtTime(w.start)}),el("span",{textContent:w.title}))}))}
+  const qb=(t,fn)=>{const b=el("button",{type:"button",className:"btn ghost small",textContent:t});b.onclick=()=>{cur.ids=items().filter(fn).map(w=>w.id);draw()};return b};
+  quick.append(el("span",{textContent:"Quick pick:"}),qb("Evening Only",w=>(w.start||"")>="16:00"),qb("Adults Only",w=>{const a=evAuds(w);return a.length>0&&a.every(x=>x==="adults"||x==="seniors")}),qb("Clear",()=>false));
+  box.append(lab,radios,none,quick,list);draw();
+  return {box,draw,
+    get(){if(cur.mode==="all")return{mode:"all"};if(cur.mode==="some"){const ok=items().map(w=>w.id),ids=cur.ids.filter(i=>ok.includes(i));return ids.length?{mode:"some",ids}:{mode:"some",ids:[]}}return null},
+    set(c){cur={mode:c&&c.mode?c.mode:(opt.noKeep?"all":"none"),ids:[...((c&&c.ids)||[])]};draw()}};
+}
+const cxEmpty=c=>c&&c.mode==="some"&&!c.ids.length;
+const fcx=cxEditor(()=>/^\d{4}-\d{2}-\d{2}$/.test(f.date.value)?fromKey(f.date.value).getDay():null,{hideEmpty:true});
+$("f-cx").replaceWith(fcx.box);f.date.addEventListener("input",fcx.draw);f.date.addEventListener("change",fcx.draw);
 let editingId=null,delArmed=false;
 function openEvent(id){
   const e=id?state.events.find(x=>x.id===id):null;editingId=e?e.id:null;delArmed=false;
   $("dlgTitle").textContent=e?"Edit Event":"Add Event";
   f.title.value=e?e.title:"";f.date.value=e?e.date:selected;setCats(e?evCats(e):[]);setAuds(e?evAuds(e):[]);
   f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.loc._syncLoc();f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
-  $("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
+  fcx.set(e?e.cancels:null);$("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
-function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay13","overlay10"].forEach(i=>$(i).hidden=true)}
+function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay13","overlay14","overlay15","overlay10"].forEach(i=>$(i).hidden=true)}
 $("cancelBtn").onclick=closeDlg;$("nCancel").onclick=closeDlg;
-[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay13"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
+[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay13"),$("overlay14"),$("overlay15"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
 $("evForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const t=f.title.value.trim(),d=f.date.value,err=m=>{$("f-err").textContent=m;$("f-err").hidden=false};
@@ -2360,7 +2466,8 @@ $("evForm").addEventListener("submit",ev=>{
   if(f.end.value&&!f.start.value)return err("Add a start time, or clear the end time.");
   if(f.end.value&&f.start.value&&f.end.value<=f.start.value)return err("The end time needs to be after the start time.");
   if(f.url.value.trim()&&!safeUrl(f.url.value.trim()))return err("The link should start with https://");
-  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),auds:getAuds(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};rememberLocation(rec.loc);
+  const cxv=fcx.get();if(cxEmpty(cxv))return err("Check at least one regular activity to cancel, or choose Keep as Usual.");
+  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),auds:getAuds(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};if(cxv)rec.cancels=cxv;rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
   closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
@@ -2506,7 +2613,15 @@ function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),e
 function renderWeekly(){
   const wk=state.weekly||[];
   const sun=wk.filter(w=>w.dow===0);
-  $("sundayTimes").replaceChildren(...sun.map(wkItem));
+  {const t=fromKey(TODAY);t.setDate(t.getDate()+((7-t.getDay())%7));const sk=keyOf(t),cx=canceledOn(sk);
+    const reps=[...state.events.filter(e=>e.date===sk&&e.cancels),...(state.monthly||[]).filter(m=>m.title&&m.cancels&&moOn(m,sk)).map(m=>moInst(m,sk))];
+    const rows=[...sun.filter(w=>!cx.has(w.id)).map(w=>({w,li:wkItem(w)})),...reps.map(e=>{const li=wkItem({...e,note:e.desc||""});li.classList.add("wk-special");
+      li.lastChild.insertBefore(el("small",{className:"wk-sp",textContent:"Special Event"}),li.lastChild.firstChild.nextSibling);return{w:e,li}})];
+    rows.sort((a,b)=>(a.w.start||"").localeCompare(b.w.start||""));
+    const notes=(state.schedChanges||[]).filter(c=>c.date===sk&&c.note).map(c=>el("li",{className:"wk-change"},el("time",{}),el("span",{},el("small",{className:"wk-note keep-lines",textContent:c.note}))));
+    const items=rows.map(r=>r.li);if(!items.length)items.push(el("li",{className:"wk-change"},el("time",{}),el("span",{},el("span",{className:"wk-title",textContent:"No regular Sunday activities this week."}))));
+    $("sundayTimes").replaceChildren(...items,...notes);
+    const eb=document.querySelector(".sunday-head .eyebrow");if(eb)eb.textContent=(cx.size||reps.length)?"This Sunday · "+shortDate(sk).replace(/^\w+, /,""):"Every Sunday"}
   document.querySelectorAll("[data-weekly]").forEach(box=>{
     box.replaceChildren();
     for(let d=0;d<7;d++){const items=wk.filter(w=>w.dow===d);if(!items.length)continue;
@@ -2580,7 +2695,7 @@ $("wForm").addEventListener("submit",ev=>{
 /* recurring events editor */
 let mRowId=0;
 function moRow(m,open){
-  const id="mo"+(++mRowId);const row=el("div",{className:"nrow wrow mrow"+(open?" open":"")});row.dataset.mid=m.id||"";row._skip=[...(m.skip||[])];
+  const id="mo"+(++mRowId);const row=el("div",{className:"nrow wrow mrow"+(open?" open":"")});row.dataset.mid=m.id||"";row._skip=[...(m.skip||[])];row._moves=(m.moves||[]).map(x=>({...x}));
   const sum=el("b",{className:"w-sum"});
   const tog=el("button",{type:"button",className:"btn ghost small",textContent:open?"Done":"Edit"});
   tog.onclick=()=>{const o=row.classList.toggle("open");tog.textContent=o?"Done":"Edit";if(o)ti.focus()};
@@ -2610,14 +2725,17 @@ function moRow(m,open){
     prev.replaceChildren("Next dates: ",el("b",{textContent:nx.length?nx.map(k=>shortDate(k)).join("  ·  "):"none in the dates chosen"}));
     if(v.mode==="day"&&v.day>28)prev.append(" (months without a "+ordDay(v.day)+" are skipped)");
     if(v.mode==="nth"&&v.n===5)prev.append(" (only months with a 5th "+DAYNAMES[v.dow]+")");
-    skips.replaceChildren();if(row._skip.length){skips.append("Skipped:");row._skip.slice().sort().forEach(k=>{const b=el("button",{type:"button",title:"Put this date back",textContent:shortDate(k)+" ✕"});b.onclick=()=>{row._skip=row._skip.filter(x=>x!==k);upd()};skips.append(b)})}};
+    row._cx&&row._cx.draw();
+    skips.replaceChildren();if(row._moves.length){skips.append("Moved:");row._moves.slice().sort((a,b)=>a.from.localeCompare(b.from)).forEach(x=>{const b=el("button",{type:"button",title:"Undo this move",textContent:shortDate(x.from)+" → "+shortDate(x.to)+(x.start?" "+fmtTime(x.start):"")+" ✕"});b.onclick=()=>{row._moves=row._moves.filter(y=>y!==x);upd()};skips.append(b)});if(row._skip.length)skips.append(el("br"))}
+    if(row._skip.length){skips.append("Skipped:");row._skip.slice().sort().forEach(k=>{const b=el("button",{type:"button",title:"Put this date back",textContent:shortDate(k)+" ✕"});b.onclick=()=>{row._skip=row._skip.filter(x=>x!==k);upd()};skips.append(b)})}};
+  row._cx=cxEditor(()=>r1.checked?+dSel.value:null,{dayHint:"Only recurring events on a set weekday (like the last Wednesday) can replace weekly activities.",hint:"Applies every month this event happens"});row._cx.set(m.cancels||null);
   [ti,nSel,dSel,dayIn,r1,r2,st,fr,un].forEach(x=>{x.addEventListener("input",upd);x.addEventListener("change",upd)});upd();
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
   const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),
     el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministry ",pickHint()),cat),
     el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For ",pickHint()),aud),
     el("div",{className:"full m-rep"},el("span",{className:"cat-lab",textContent:"Repeats"}),rep1,rep2,prev,skips),
-    L("Starts",st),L("Ends (optional)",en),L("Location",locPicker(lo),"full"),L("Details",no,"full"),
+    L("Starts",st),L("Ends (optional)",en),row._cx.box,L("Location",locPicker(lo),"full"),L("Details",no,"full"),
     L("Starting month (optional)",fr),L("Ending month (optional)",un));
   row.append(head,f);return row;
 }
@@ -2645,13 +2763,55 @@ $("mForm").addEventListener("submit",ev=>{
     const from=q(".m-from").value,until=q(".m-until").value;
     if(from&&until&&until<from){show();return err("The ending month for “"+title+"” is before its starting month.")}
     const mode=row.querySelector('input[type=radio]:checked').value,cats=[...row.querySelectorAll(".m-cats input:checked")].map(i=>i.value),auds=[...row.querySelectorAll(".m-auds input:checked")].map(i=>i.value);
-    const rec={id:row.dataset.mid||("m"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title,mode,cats,auds,cat:cats[0]||"",start,end:/^\d{2}:\d{2}$/.test(end)?end:"",loc,note,from,until,skip:row._skip||[]};
+    const cxv=mode==="nth"?row._cx.get():null;if(cxEmpty(cxv)){show();return err("For “"+title+"”, check at least one regular activity to cancel, or choose Keep as Usual.")}
+    const rec={id:row.dataset.mid||("m"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title,mode,cats,auds,cat:cats[0]||"",start,end:/^\d{2}:\d{2}$/.test(end)?end:"",loc,note,from,until,skip:row._skip||[],moves:row._moves||[]};if(cxv)rec.cancels=cxv;
     if(mode==="day")rec.day=+q(".m-day").value;else{rec.n=+q(".m-n").value;rec.dow=+q(".m-dow").value}
     rememberLocation(loc);out.push(rec);
   }
   state.monthly=out;dirty=true;editing=true;closeDlg();renderAll();
   toast("Recurring events updated. Press “Save Changes” to publish them.");
 });
+
+/* move one date of a recurring event */
+let mvCtx=null;
+function openMove(mid,from){const m=(state.monthly||[]).find(x=>x.id===mid);if(!m)return;const ex=moMove(m,from);mvCtx={mid,from:ex?ex.from:from,at:from};
+  $("mv-meta").textContent=m.title+" is usually on "+longDate(mvCtx.from)+". Pick the new date for this one time.";
+  $("mv-date").value=from;$("mv-start").value=(ex&&ex.start)||m.start||"";$("mv-end").value=(ex&&ex.start?ex.end:m.end)||"";$("mv-err").hidden=true;$("overlay14").hidden=false;setTimeout(()=>$("mv-date").focus(),30)}
+$("mvCancel").onclick=closeDlg;
+$("mvForm").addEventListener("submit",ev=>{ev.preventDefault();const err=t=>{$("mv-err").textContent=t;$("mv-err").hidden=false};
+  const m=(state.monthly||[]).find(x=>x.id===mvCtx.mid);if(!m)return closeDlg();
+  const to=$("mv-date").value,st=$("mv-start").value,en=$("mv-end").value;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(to))return err("Pick the new date.");
+  if(en&&!st)return err("Add a start time, or clear the end time.");if(en&&st&&en<=st)return err("The end time needs to be after the start time.");
+  m.moves=(m.moves||[]).filter(x=>x.from!==mvCtx.from);
+  const sameTime=st===(m.start||"")&&en===(m.end||"");
+  if(!(to===mvCtx.from&&sameTime))m.moves.push(sameTime?{from:mvCtx.from,to}:{from:mvCtx.from,to,start:st,end:en});
+  dirty=true;editing=true;selected=to;const dd=fromKey(to);view=new Date(dd.getFullYear(),dd.getMonth(),1);closeDlg();renderAll();
+  toast(to===mvCtx.from&&sameTime?m.title+" is back on its usual date. Press “Save Changes” to publish.":m.title+" moved to "+shortDate(to)+" for this one time. Press “Save Changes” to publish.")});
+
+/* schedule changes: cancel regular activities with no replacement */
+function scRow(c){const row=el("div",{className:"nrow sc-row open"});row.dataset.sid=c.id||"";
+  const d=el("input",{type:"date",className:"sc-date",value:c.date||""});
+  const ed=cxEditor(()=>/^\d{4}-\d{2}-\d{2}$/.test(d.value)?fromKey(d.value).getDay():null,{noKeep:true,hint:"Hidden from the calendar that day"});ed.set(c.mode?c:null);row._cx=ed;
+  const no=el("textarea",{className:"sc-note",maxLength:300,placeholder:"Thanksgiving week — no Wednesday night activities. (optional)"});no.value=c.note||"";
+  const sum=el("b",{className:"w-sum"});const upd=()=>{sum.textContent=d.value?longDate(d.value):"New schedule change";ed.draw()};d.addEventListener("input",upd);d.addEventListener("change",upd);upd();
+  const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
+  row.append(el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},rm)),el("div",{className:"w-fields full"},el("label",{},"Date",d),ed.box,el("label",{className:"full"},"Note shown on the calendar (optional)",no)));
+  return row}
+function openChanges(){const box=$("scList");const list=(state.schedChanges||[]).filter(c=>c.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date));
+  box.replaceChildren(...list.map(scRow));if(!box.children.length)box.append(scRow({date:selected>=TODAY?selected:TODAY,mode:"all"}));
+  $("sc-err").hidden=true;$("overlay15").hidden=false}
+$("scAdd").onclick=()=>{const r=scRow({date:"",mode:"all"});$("scList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".sc-date").focus()};
+$("scCancel").onclick=closeDlg;
+document.querySelectorAll(".sc-edit").forEach(b=>b.onclick=()=>openChanges());
+$("scForm").addEventListener("submit",ev=>{ev.preventDefault();const err=t=>{$("sc-err").textContent=t;$("sc-err").hidden=false};const out=[];
+  for(const row of $("scList").querySelectorAll(".sc-row")){const d=row.querySelector(".sc-date").value,c=row._cx.get(),note=row.querySelector(".sc-note").value.replace(/\r/g,"").trim();
+    if(!d&&!note)continue;if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return err("Each schedule change needs a date. Remove any you don’t want.");
+    if(!(state.weekly||[]).some(w=>w.dow===fromKey(d).getDay()))return err(longDate(d)+" has no weekly activities to cancel.");
+    if(cxEmpty(c))return err("For "+longDate(d)+", check at least one activity to cancel, or choose Cancel All.");
+    out.push({id:row.dataset.sid||("c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),date:d,...c,note})}
+  state.schedChanges=out.sort((a,b)=>a.date.localeCompare(b.date));dirty=true;editing=true;closeDlg();renderAll();
+  toast(out.length?"Schedule changes updated. Press “Save Changes” to publish them.":"Schedule changes cleared. Press “Save Changes” to publish.")});
 
 /* staff */
 const autoIni=n=>{const w=n.replace(/\(.*?\)/g," ").replace(/\b(Dr|Rev|Mr|Mrs|Ms|Miss|Pastor)\.?\s/gi," ").replace(/\b(Jr|Sr|II|III|IV)\b\.?/g," ").trim().split(/\s+/).filter(Boolean);return w.length?(w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase():"?"};
