@@ -940,15 +940,5 @@
    "dow": 3
   }
  ],
- "schedChanges": [
-  {
-   "id": "cmw51aexldud0",
-   "date": "2026-11-11",
-   "mode": "some",
-   "ids": [
-    "vertical"
-   ],
-   "note": ""
-  }
- ]
+ "schedChanges": []
 }
