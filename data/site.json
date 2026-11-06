@@ -885,6 +885,7 @@
    "from": "",
    "until": "",
    "skip": [],
+   "moves": [],
    "n": 4,
    "dow": 1
   },
@@ -906,8 +907,37 @@
    "from": "2026-11",
    "until": "",
    "skip": [],
+   "moves": [],
    "n": 3,
    "dow": 1
+  },
+  {
+   "id": "mmw4g2ktwnobc",
+   "title": "Church Conference",
+   "mode": "nth",
+   "cats": [
+    "meetings"
+   ],
+   "auds": [
+    "adults"
+   ],
+   "cat": "meetings",
+   "start": "19:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "note": "",
+   "from": "2026-11",
+   "until": "",
+   "skip": [],
+   "moves": [],
+   "cancels": {
+    "mode": "some",
+    "ids": [
+     "seeds"
+    ]
+   },
+   "n": -1,
+   "dow": 3
   }
  ],
  "schedChanges": []
