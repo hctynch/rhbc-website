@@ -111,7 +111,7 @@
    "cat": "worship",
    "start": "11:00",
    "end": "",
-   "loc": "Sanctuary",
+   "loc": "",
    "desc": "Our annual Harvest Day Walk Offering will be during the Morning Worship Service. There are envelopes in your boxed set specifically for this offering, or a pew envelope can be used.",
    "url": "",
    "cats": [
@@ -119,7 +119,8 @@
    ],
    "auds": [
     "all"
-   ]
+   ],
+   "attach": "worship"
   },
   {
    "id": "emw41ok9naog5",
@@ -163,7 +164,15 @@
    ],
    "auds": [
     "all"
-   ]
+   ],
+   "cancels": {
+    "mode": "some",
+    "ids": [
+     "deepdive",
+     "wmvxceknqwzwr",
+     "wmvxceknqecrq"
+    ]
+   }
   },
   {
    "title": "Camp Cale Senior Adult Christmas Luncheon",

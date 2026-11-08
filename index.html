@@ -628,6 +628,10 @@ a.card:hover{border-color:var(--muted)}
 .ev-aud{display:inline-flex;align-items:center;white-space:nowrap;font-size:.78rem;font-weight:600;line-height:1;padding:6px 10px;border-radius:999px;background:var(--ink);color:var(--surface)}
 @media (max-width:600px){.ev-locrow{flex-direction:column;align-items:flex-start}}
 .cx-pick{display:grid;gap:8px}
+.att-sel{justify-self:start;max-width:100%}
+.tag.lbl-tag{color:var(--brand-hi);border-color:color-mix(in srgb,var(--brand-hi) 40%,transparent);background:color-mix(in srgb,var(--brand-hi) 7%,var(--surface))}
+.ev-body p.ev-lbl{color:var(--ink)}
+small.wk-lbl.wk-lbl{display:block;width:fit-content;margin:3px 0 2px;font-size:.72rem;font-weight:700;color:var(--brand-hi);border:1px solid color-mix(in srgb,var(--brand-hi) 40%,transparent);border-radius:3px;padding:1px 6px;background:color-mix(in srgb,var(--brand-hi) 7%,var(--surface))}
 .cx-radios{display:flex;flex-wrap:wrap;gap:8px}
 .cx-rd{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:7px!important;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-weight:600;font-size:.88rem;cursor:pointer;color:var(--muted)}
 .cx-rd input{margin:0;accent-color:var(--brand)}
@@ -1652,6 +1656,7 @@ textarea{min-height:84px;resize:vertical}
       <label>Date<input id="f-date" type="date" required></label>
       <div class="full cat-pick" role="group" aria-labelledby="f-cats-lab"><span class="cat-lab" id="f-cats-lab">Ministry <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-cats"></div></div>
       <div class="full cat-pick" role="group" aria-labelledby="f-auds-lab"><span class="cat-lab" id="f-auds-lab">Who It’s For <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-auds"></div></div>
+      <div id="f-att"></div>
       <div id="f-cx"></div>
       <label>Starts<input id="f-start" type="time"></label>
       <label>Ends<input id="f-end" type="time"></label>
@@ -2177,10 +2182,13 @@ function cxLine(c,dow){if(!c)return"";if(c.mode==="all")return"Replaces all regu
 function changeItem(c){const dow=fromKey(c.date).getDay(),n=cxNames(c,dow);if(!n.length)return null;
   return {id:"sc:"+c.id,scid:c.id,change:true,date:c.date,start:"",title:c.mode==="all"?"No Regular "+DAYNAMES[dow]+" Activities":(n.length===1?n[0]+" Canceled":"Some "+DAYNAMES[dow]+" Activities Canceled"),
     desc:[c.note||"",c.mode==="all"?"":"Canceled: "+andList(n)].filter(Boolean).join("\n"),cats:[],auds:[]}}
+/* an event can be shown as a label on a regular weekly activity (e.attach = weekly id) */
+function attachOK(e){if(!e.attach)return false;const w=(state.weekly||[]).find(x=>x.id===e.attach);return !!w&&w.dow===fromKey(e.date).getDay()&&!canceledOn(e.date).has(w.id)}
+const labelsFor=(wid,k)=>state.events.filter(e=>e.date===k&&e.attach===wid);
 function eventsOn(k){
-  const list=state.events.filter(e=>e.date===k&&evShown(e));
+  const list=state.events.filter(e=>e.date===k&&evShown(e)&&!(showWeekly&&attachOK(e)));
   if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))list.push(moInst(m,k));
-  if(showWeekly){const dow=fromKey(k).getDay(),cx=canceledOn(k);for(const w of state.weekly)if(w.dow===dow&&evShown(w)&&!cx.has(w.id))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w"});
+  if(showWeekly){const dow=fromKey(k).getDay(),cx=canceledOn(k);for(const w of state.weekly)if(w.dow===dow&&evShown(w)&&!cx.has(w.id))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w",wid:w.id,labels:labelsFor(w.id,k)});
     for(const c of state.schedChanges||[])if(c.date===k){const it=changeItem(c);if(it)list.push(it)}}
   return list.sort(sortEv);
 }
@@ -2329,6 +2337,7 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 function evRow(e,withDate){
   const h=el("h4",{textContent:e.title});if(e.sample)h.append(el("span",{className:"tag",textContent:"Example"}));
+  (e.labels||[]).forEach(l=>h.append(el("span",{className:"tag lbl-tag",textContent:l.title})));
   if(e.monthly)h.append(el("span",{className:"tag mo-tag",textContent:e.movedFrom?"Moved from "+shortDate(e.movedFrom).replace(/^\w+, /,""):e.mode==="day"?ordDay(+e.day)+" of Each Month":(e.n==-1?"Last":ORD[e.n])+" "+DAYNAMES[e.dow]+" of the Month"}));
   const when=el("div",{className:"when"});
   if(withDate)when.append(el("span",{className:"wd",textContent:shortDate(e.date)}),el("span",{className:"wsep",textContent:" · "}));
@@ -2337,6 +2346,8 @@ function evRow(e,withDate){
   const lc=wkLoc(e),au=wkAuds(e);if(lc||au)info.append(el("div",{className:"ev-meta"},lc,au));
   const body=el("div",{className:"ev-body"});
   if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
+  (e.labels||[]).forEach(l=>{if(l.desc)body.append(el("p",{className:"keep-lines ev-lbl"},el("b",{textContent:l.title+": "}),l.desc))});
+  if(e.attach&&!e.weekly){const w=(state.weekly||[]).find(x=>x.id===e.attach);if(w&&attachOK(e))body.append(el("p",{className:"ev-rep",textContent:"Part of "+w.title}))}
   if(e.cancels&&!e.change){const t=cxLine(e.cancels,fromKey(e.date).getDay());if(t)body.append(el("p",{className:"ev-rep",textContent:t}))}
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});
@@ -2348,6 +2359,7 @@ function evRow(e,withDate){
     right.append(b,mvb,sk)}
   else if(e.change){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openChanges();right.append(b)}
   else if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
+  else (e.labels||[]).forEach(l=>{const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Label"});b.title="Edit “"+l.title+"”";b.onclick=()=>openEvent(l.id);right.append(b)});
   return el("li",{className:"ev"+(e.change?" ev-change":"")},el("span",{className:"bar"+(e.weekly?" weekly":""),style:e.change?"":evBarStyle(e)}),info,right,body);
 }
 function renderDay(){
@@ -2443,6 +2455,19 @@ function cxEditor(dowFn,opt){opt=opt||{};
     get(){if(cur.mode==="all")return{mode:"all"};if(cur.mode==="some"){const ok=items().map(w=>w.id),ids=cur.ids.filter(i=>ok.includes(i));return ids.length?{mode:"some",ids}:{mode:"some",ids:[]}}return null},
     set(c){cur={mode:c&&c.mode?c.mode:(opt.noKeep?"all":"none"),ids:[...((c&&c.ids)||[])]};draw()}};
 }
+const fDow=()=>/^\d{4}-\d{2}-\d{2}$/.test(f.date.value)?fromKey(f.date.value).getDay():null;
+const fatt=(()=>{const box=el("div",{className:"full cx-pick"});
+  const r0=el("input",{type:"radio",name:"attmode",value:"own"}),r1=el("input",{type:"radio",name:"attmode",value:"label"}),sel=el("select",{className:"att-sel"});
+  box.append(el("span",{className:"cat-lab"},"Show on Calendar As ",el("span",{className:"hint",textContent:"Something that happens during a regular activity can be a label on it"})),
+    el("div",{className:"cx-radios"},el("label",{className:"cx-rd"},r0,el("span",{textContent:"Its Own Event"})),el("label",{className:"cx-rd"},r1,el("span",{textContent:"A Label on a Regular Activity"}))),sel);
+  let want="";
+  function draw(){const d=fDow(),its=d==null?[]:(state.weekly||[]).filter(w=>w.dow===d);box.hidden=!its.length;
+    const keep=sel.value||want;sel.replaceChildren(...its.map(w=>el("option",{value:w.id,textContent:fmtTime(w.start)+" · "+w.title})));
+    if(its.some(w=>w.id===keep))sel.value=keep;if(!its.length){r0.checked=true;r1.checked=false}sel.hidden=!r1.checked}
+  return {box,draw,r0,r1,sel,get:()=>!box.hidden&&r1.checked&&sel.value?sel.value:"",set(id){want=id||"";r1.checked=!!id;r0.checked=!id;sel.value="";draw()}}})();
+$("f-att").replaceWith(fatt.box);
+function syncEvForm(){fatt.draw();fcx.draw();if(fatt.get())fcx.box.hidden=true}
+[fatt.r0,fatt.r1,fatt.sel].forEach(x=>x.addEventListener("change",syncEvForm));f.date.addEventListener("input",syncEvForm);f.date.addEventListener("change",syncEvForm);
 const cxEmpty=c=>c&&c.mode==="some"&&!c.ids.length;
 const fcx=cxEditor(()=>/^\d{4}-\d{2}-\d{2}$/.test(f.date.value)?fromKey(f.date.value).getDay():null,{hideEmpty:true});
 $("f-cx").replaceWith(fcx.box);f.date.addEventListener("input",fcx.draw);f.date.addEventListener("change",fcx.draw);
@@ -2452,7 +2477,7 @@ function openEvent(id){
   $("dlgTitle").textContent=e?"Edit Event":"Add Event";
   f.title.value=e?e.title:"";f.date.value=e?e.date:selected;setCats(e?evCats(e):[]);setAuds(e?evAuds(e):[]);
   f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.loc._syncLoc();f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
-  fcx.set(e?e.cancels:null);$("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
+  fcx.set(e?e.cancels:null);fatt.set(e?e.attach:"");syncEvForm();$("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
 function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay13","overlay14","overlay15","overlay10"].forEach(i=>$(i).hidden=true)}
@@ -2466,8 +2491,8 @@ $("evForm").addEventListener("submit",ev=>{
   if(f.end.value&&!f.start.value)return err("Add a start time, or clear the end time.");
   if(f.end.value&&f.start.value&&f.end.value<=f.start.value)return err("The end time needs to be after the start time.");
   if(f.url.value.trim()&&!safeUrl(f.url.value.trim()))return err("The link should start with https://");
-  const cxv=fcx.get();if(cxEmpty(cxv))return err("Check at least one regular activity to cancel, or choose Keep as Usual.");
-  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),auds:getAuds(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};if(cxv)rec.cancels=cxv;rememberLocation(rec.loc);
+  const att=fatt.get();const cxv=att?null:fcx.get();if(cxEmpty(cxv))return err("Check at least one regular activity to cancel, or choose Keep as Usual.");
+  const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),auds:getAuds(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};if(cxv)rec.cancels=cxv;if(att){rec.attach=att;const w=state.weekly.find(x=>x.id===att);if(w&&!rec.start){rec.start=w.start;rec.end=w.end||""}}rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
   closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
@@ -2609,19 +2634,19 @@ var WK_PPL='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="
 function wkIco(cls,svg,txt){const n=el("small",{className:cls});n.insertAdjacentHTML("beforeend",svg);n.append(el("span",{textContent:txt}));return n}
 function wkLoc(w){return w.loc?wkIco("wk-loc wk-ic",WK_PIN,w.loc):null}
 function wkAuds(w){const a=evAuds(w).map(x=>AUDS[x]);if(!a.length)return null;return wkIco("wk-aud wk-ic",WK_PPL,"For "+(a.length>1?a.slice(0,-1).join(", ")+" & ":"")+a[a.length-1])}
-function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},el("span",{className:"wk-title",textContent:w.title}),wkLoc(w),wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
+function wkItem(w){return el("li",{},el("time",{textContent:fmtTime(w.start)}),el("span",{},el("span",{className:"wk-title",textContent:w.title}),...(w.labels||[]).map(l=>el("small",{className:"wk-lbl",textContent:l.title})),wkLoc(w),wkAuds(w),w.note&&!(evAuds(w).length===1&&w.note.trim().toLowerCase()===AUDS[evAuds(w)[0]].toLowerCase())?el("small",{className:"wk-note keep-lines",textContent:w.note}):null))}
 function renderWeekly(){
   const wk=state.weekly||[];
   const sun=wk.filter(w=>w.dow===0);
   {const t=fromKey(TODAY);t.setDate(t.getDate()+((7-t.getDay())%7));const sk=keyOf(t),cx=canceledOn(sk);
     const reps=[...state.events.filter(e=>e.date===sk&&e.cancels),...(state.monthly||[]).filter(m=>m.title&&m.cancels&&moOn(m,sk)).map(m=>moInst(m,sk))];
-    const rows=[...sun.filter(w=>!cx.has(w.id)).map(w=>({w,li:wkItem(w)})),...reps.map(e=>{const li=wkItem({...e,note:e.desc||""});li.classList.add("wk-special");
+    let lbl=0;const rows=[...sun.filter(w=>!cx.has(w.id)).map(w=>{const labels=labelsFor(w.id,sk);lbl+=labels.length;return{w,li:wkItem({...w,labels})}}),...reps.map(e=>{const li=wkItem({...e,note:e.desc||""});li.classList.add("wk-special");
       li.lastChild.insertBefore(el("small",{className:"wk-sp",textContent:"Special Event"}),li.lastChild.firstChild.nextSibling);return{w:e,li}})];
     rows.sort((a,b)=>(a.w.start||"").localeCompare(b.w.start||""));
     const notes=(state.schedChanges||[]).filter(c=>c.date===sk&&c.note).map(c=>el("li",{className:"wk-change"},el("time",{}),el("span",{},el("small",{className:"wk-note keep-lines",textContent:c.note}))));
     const items=rows.map(r=>r.li);if(!items.length)items.push(el("li",{className:"wk-change"},el("time",{}),el("span",{},el("span",{className:"wk-title",textContent:"No regular Sunday activities this week."}))));
     $("sundayTimes").replaceChildren(...items,...notes);
-    const eb=document.querySelector(".sunday-head .eyebrow");if(eb)eb.textContent=(cx.size||reps.length)?"This Sunday · "+shortDate(sk).replace(/^\w+, /,""):"Every Sunday"}
+    const eb=document.querySelector(".sunday-head .eyebrow");if(eb)eb.textContent=(cx.size||reps.length||lbl)?"This Sunday · "+shortDate(sk).replace(/^\w+, /,""):"Every Sunday"}
   document.querySelectorAll("[data-weekly]").forEach(box=>{
     box.replaceChildren();
     for(let d=0;d<7;d++){const items=wk.filter(w=>w.dow===d);if(!items.length)continue;
