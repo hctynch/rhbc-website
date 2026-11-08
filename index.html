@@ -3345,6 +3345,13 @@ function renderLive(){
   const key=mode==="picked"?"p"+picked.id:mode==="recent"?"r"+(latest?latest.id:""):mode;
   if(mode!=="none"&&liveShown!==key){$("lpFrame").replaceChildren(el("iframe",{src:mode==="picked"?vimeoSrc(picked,true):(mode==="recent"&&latest)?vimeoSrc(latest,false):liveEmbed(L.url),title:mode==="live"?"Live worship service":mode==="picked"?"Worship service, "+longDate(picked.date):"Most recent worship service",allow:"autoplay; encrypted-media; picture-in-picture; fullscreen",allowFullscreen:true,loading:"lazy",referrerPolicy:"strict-origin-when-cross-origin"}))}
   if(mode==="none"&&liveShown!=="none")$("lpFrame").replaceChildren();
+  /* a Vimeo event player opened before the stream begins keeps showing last week's recording,
+     so reload it shortly after the service starts (1 and 5 minutes in) */
+  if(!liveReloaded){liveReloaded=new Set();liveLoadMin=-1}
+  if(mode==="live"&&ls.svc&&L.mode!=="on"){const[hh,mm]=ls.svc.start.split(":").map(Number),st0=hh*60+mm,nm=nyNow().min;
+    if(liveShown!==key)liveLoadMin=nm;
+    const due=[1,5].filter(c=>liveLoadMin<st0+c&&nm>=st0+c&&!liveReloaded.has(c));
+    if(due.length&&liveShown===key){due.forEach(c=>liveReloaded.add(c));const fr=$("lpFrame").querySelector("iframe");if(fr){fr.src=liveEmbed(L.url);liveLoadMin=nm}}}
   if(liveShown!==key){liveShown=key;if(typeof renderServices==="function")setTimeout(renderServices,0)}if(mode==="none"){}
   else if(mode==="live")renderSermon(nyKey(),true);
   else{const v=mode==="picked"?picked:latest,dk=v?v.date:recent,lab=mode==="picked"?"Earlier Service":"Most Recent Service";
@@ -3354,6 +3361,7 @@ function renderLive(){
   const svc=liveService();
   $("liveOff").textContent=ls.on?"":(mode==="recent"||mode==="picked")?(svc?"Join us live every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":""):(L.mode==="off"?"":svc?"The live stream appears here every "+DAYNAMES[svc.dow]+" at "+fmtTime(svc.start)+".":"");
 }
+var liveLoadMin,liveReloaded;
 setInterval(renderLive,30000);
 /* pause the video when leaving the Worship Services page (pages switch without reloading) */
 function pauseWorshipVideo(){
