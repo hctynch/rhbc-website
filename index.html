@@ -2347,7 +2347,6 @@ function evRow(e,withDate){
   const body=el("div",{className:"ev-body"});
   if(e.desc)body.append(el("p",{className:"keep-lines",textContent:e.desc}));
   (e.labels||[]).forEach(l=>{if(l.desc)body.append(el("p",{className:"keep-lines ev-lbl"},el("b",{textContent:l.title+": "}),l.desc))});
-  if(e.attach&&!e.weekly){const w=(state.weekly||[]).find(x=>x.id===e.attach);if(w&&attachOK(e))body.append(el("p",{className:"ev-rep",textContent:"Part of "+w.title}))}
   if(e.cancels&&!e.change){const t=cxLine(e.cancels,fromKey(e.date).getDay());if(t)body.append(el("p",{className:"ev-rep",textContent:t}))}
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});

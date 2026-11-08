@@ -913,7 +913,7 @@
  ],
  "live": {
   "mode": "auto",
-  "before": 10,
+  "before": 2,
   "after": 90,
   "url": "https://vimeo.com/event/1270700"
  },
