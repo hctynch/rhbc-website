@@ -35,6 +35,23 @@
    ]
   },
   {
+   "id": "eelt5cn0dop1tw",
+   "title": "Baptist Men’s Breakfast",
+   "date": "2026-11-15",
+   "cat": "fellowship",
+   "start": "07:30",
+   "end": "",
+   "loc": "Special Function Room",
+   "desc": "Gentlemen, please join us for food, fellowship, and devotion.",
+   "url": "",
+   "cats": [
+    "fellowship"
+   ],
+   "auds": [
+    "adults"
+   ]
+  },
+  {
    "id": "e1a1a4b9501e83ga",
    "title": "Church Basketball Meeting",
    "date": "2026-11-15",
@@ -88,6 +105,23 @@
    ]
   },
   {
+   "id": "e7pxk7bc7ghhdh",
+   "title": "Harvest Day Walk Offering",
+   "date": "2026-11-22",
+   "cat": "worship",
+   "start": "11:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "Our annual Harvest Day Walk Offering will be during the Morning Worship Service. There are envelopes in your boxed set specifically for this offering, or a pew envelope can be used.",
+   "url": "",
+   "cats": [
+    "worship"
+   ],
+   "auds": [
+    "all"
+   ]
+  },
+  {
    "id": "emw41ok9naog5",
    "title": "Thanks & Praise Service",
    "date": "2026-11-25",
@@ -113,6 +147,23 @@
      "mf"
     ]
    }
+  },
+  {
+   "id": "eu40a7wh0acu0x",
+   "title": "Hanging of the Greens Service",
+   "date": "2026-11-29",
+   "cat": "worship",
+   "start": "18:00",
+   "end": "",
+   "loc": "Sanctuary",
+   "desc": "The church will be decorated, the window candles will be shining brightly, and cookies & punch will be served in the Vestibule.",
+   "url": "",
+   "cats": [
+    "worship"
+   ],
+   "auds": [
+    "all"
+   ]
   },
   {
    "title": "Camp Cale Senior Adult Christmas Luncheon",
