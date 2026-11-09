@@ -764,7 +764,7 @@ textarea{min-height:84px;resize:vertical}
 .ev.ev-cx h4{text-decoration:line-through;font-weight:500}
 .ev .cx-line{display:block;font-size:.82rem;font-weight:700;color:var(--brand-hi);margin-top:2px}
 .g-text{margin:0}
-.phero .hero-add{background-clip:padding-box;border-width:2px;padding:11px 17px}
+.phero .hero-add,.phero .doc-add{background-clip:padding-box;border-width:2px;padding:11px 17px}
 </style>
 
 <header class="top">
@@ -1585,7 +1585,7 @@ textarea{min-height:84px;resize:vertical}
 </div>
 
 <div class="view" data-route="bulletins" data-sec="resources" data-title="Weekly Bulletins" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>Weekly Bulletins</h1><p class="lede">Each Sunday’s order of worship and announcements. Bulletins open as PDFs.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Bulletins" hidden>Edit Bulletins</button><span class="editor-tools"><button class="btn primary" type="button" data-add="bulletins">+ Add Bulletin</button></span></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>Weekly Bulletins</h1><p class="lede">Each Sunday’s order of worship and announcements. Bulletins open as PDFs.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Bulletins" hidden>Edit Bulletins</button><button class="btn primary doc-add" type="button" data-add="bulletins" hidden>+ Add Bulletin</button></div></div></section>
   <div class="wrap pbody"><div class="prose" style="max-width:none">
     <p class="eyebrow">Most recent</p>
     <ul class="doclist" id="bulletinList"></ul>
@@ -1594,7 +1594,7 @@ textarea{min-height:84px;resize:vertical}
 </div>
 
 <div class="view" data-route="newsletters" data-sec="resources" data-title="Monthly Newsletters" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>The Rocky Hock Anchor</h1><p class="lede">Our monthly newsletter, keeping the church family up to date since 1996. Issues open as PDFs.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Newsletters" hidden>Edit Newsletters</button><span class="editor-tools"><button class="btn primary" type="button" data-add="newsletters">+ Add Newsletter</button></span></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Resources</p><h1>The Rocky Hock Anchor</h1><p class="lede">Our monthly newsletter, keeping the church family up to date since 1996. Issues open as PDFs.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Newsletters" hidden>Edit Newsletters</button><button class="btn primary doc-add" type="button" data-add="newsletters" hidden>+ Add Newsletter</button></div></div></section>
   <div class="wrap pbody"><div class="prose" style="max-width:none">
     <p class="eyebrow">Most recent</p>
     <ul class="doclist" id="newsList"></ul>
@@ -1971,13 +1971,13 @@ textarea{min-height:84px;resize:vertical}
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg3Title">
     <h3 id="dlg3Title">Add Bulletin</h3>
     <form id="dForm" class="form" novalidate>
-      <label class="full" id="d-date-wrap"><span id="d-date-label">Sunday date</span><input id="d-date" type="date"><input id="d-month" type="month" hidden></label>
-      <label class="full"><span id="d-title-label">Special title</span> <span class="hint" id="d-title-hint">Optional, e.g. “Easter Sunday” or “I Love America”</span><input id="d-title" maxlength="80"></label>
+      <label class="full" id="d-date-wrap"><span id="d-date-label">Sunday Date</span><input id="d-date" type="date"><input id="d-month" type="month" hidden></label>
+      <label class="full"><span id="d-title-label">Special Title</span> <span class="hint" id="d-title-hint">Optional</span><input id="d-title" maxlength="80"></label>
       <div class="full" style="display:grid;gap:8px">
         <span style="font-size:.85rem;font-weight:600">PDF</span>
         <div class="srcpick" id="d-srcpick">
-          <label id="d-up-opt"><input type="radio" name="d-src" value="upload" checked> Upload a file</label>
-          <label><input type="radio" name="d-src" value="link"> Paste a link</label>
+          <label id="d-up-opt"><input type="radio" name="d-src" value="upload" checked> Upload a File</label>
+          <label><input type="radio" name="d-src" value="link"> Paste a Link</label>
         </div>
         <input id="d-file" type="file" accept="application/pdf,.pdf">
         <input id="d-url" type="url" placeholder="https://…/bulletin.pdf" hidden>
@@ -1986,10 +1986,10 @@ textarea{min-height:84px;resize:vertical}
       <fieldset class="full serm-box" id="d-serm">
         <legend>Sermon <span class="hint">shown above the live stream</span></legend>
         <p class="hint" id="d-s-hint">Filled in from the PDF when you upload it. Check it, or type it in.</p>
-        <label>Sermon title<input id="d-s-title" maxlength="200"></label>
+        <label>Sermon Title<input id="d-s-title" maxlength="200"></label>
         <label>Scripture<input id="d-s-scr" maxlength="80" placeholder="Jonah 3:3–10"></label>
-        <label>Preacher or speaker<input id="d-s-by" maxlength="80" placeholder="Pastor Trey Rogers"></label>
-        <label>Sermon series <span class="hint">Optional</span><input id="d-s-series" maxlength="200"></label>
+        <label>Preacher or Speaker<input id="d-s-by" maxlength="80" placeholder="Pastor Trey Rogers"></label>
+        <label>Sermon Series <span class="hint">Optional</span><input id="d-s-series" maxlength="200"></label>
       </fieldset>
       <p class="err full" id="d-err" hidden></p>
       <div class="dialog-actions full">
@@ -2111,7 +2111,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(chgOpen){closeCh
 /* ---------- documents ---------- */
 const PDF='<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 1.5h6.5L14 5v11.5H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10.5 1.5V5H14M6.5 9h5M6.5 12h5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>';
 const U="https://rockyhockbaptistchurch.org/wp-content/uploads/";
-const KINDS={bulletins:{list:"bulletinList",one:"bulletin",dateLabel:"Sunday date"},newsletters:{list:"newsList",one:"newsletter",dateLabel:"Month"}};
+const KINDS={bulletins:{list:"bulletinList",one:"bulletin",dateLabel:"Sunday Date"},newsletters:{list:"newsList",one:"newsletter",dateLabel:"Month"}};
 const docHref=it=>it.a?fileUrl(it.a):safeUrl(it.u||"");
 const docTitle=(kind,it)=>{if(it.t)return it.t;if(!it.d)return "Untitled";if(kind==="bulletins")return fromKey(it.d.slice(0,10)).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});const [y,m]=it.d.split("-").map(Number);return new Date(y,m-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"})};
 function docLi(kind,it,i){
@@ -2484,6 +2484,16 @@ function locPicker(input){
   wrap.append(sel,input);fill();return wrap;
 }
 locPicker($("f-loc"));
+/* Special Day / Special Title: pick a name used before, or add a new one */
+(function(){const input=$("d-title"),sel=el("select",{className:"loc-sel",id:"d-title-sel"});sel.setAttribute("aria-label","Special day or title");
+  const wrap=el("span",{className:"loc-pick"});input.placeholder="Type the new name";input.classList.add("loc-new");
+  const used=()=>{const c=new Set();(state[docKind]||[]).forEach(x=>{const t=(x.t||"").trim();if(t)c.add(t)});return[...c]};
+  const fill=()=>{const v=input.value.trim(),list=used();if(v&&!list.some(k=>k.toLowerCase()===v.toLowerCase()))list.push(v);list.sort((a,b)=>a.localeCompare(b));
+    sel.replaceChildren(el("option",{value:"",textContent:"None"}),...list.map(k=>el("option",{value:k,textContent:k})),el("option",{value:"__new",textContent:"+ Add a New Name…"}));
+    const m=list.find(k=>k.toLowerCase()===v.toLowerCase());sel.value=m||"";input.hidden=true};
+  sel.onchange=()=>{dayAuto=false;if(sel.value==="__new"){input.value="";input.hidden=false;input.focus()}else{input.value=sel.value;input.hidden=true}};
+  input._sync=fill;input.replaceWith(wrap);wrap.append(sel,input);
+})();
 const f={title:$("f-title"),date:$("f-date"),start:$("f-start"),end:$("f-end"),loc:$("f-loc"),desc:$("f-desc"),url:$("f-url")};
 function audOpts(box,sel){for(const a in AUDS){const cb=el("input",{type:"checkbox",value:a});cb.checked=sel.includes(a);box.append(el("label",{className:"cat-opt aud"},cb,el("span",{textContent:AUDS[a]})))}return box}
 function catOpts(box,sel){for(const c in CATS){const cb=el("input",{type:"checkbox",value:c});cb.checked=sel.includes(c);box.append(el("label",{className:"cat-opt",style:"--cat:"+catVar(c)},cb,catIco(c),el("span",{textContent:CATS[c].label})))}return box}
@@ -2586,8 +2596,9 @@ function openDoc(kind,i){
   if(isB){let d=it&&it.d?it.d.slice(0,10):"";if(!d){const n=new Date(now);n.setDate(n.getDate()+((7-n.getDay())%7));d=keyOf(n)}$("d-date").value=d}
   else{$("d-month").value=it&&it.d?it.d.slice(0,7):today.slice(0,7)}
   $("d-title").value=it?(it.t||""):"";dayAuto=false;
-  $("d-title-label").textContent=isB?"Special day":"Special title";
-  $("d-title-hint").textContent=isB?"Optional, e.g. “Senior Adults Sunday.” Filled in from the PDF and shown under the date.":"Optional, e.g. “Christmas Issue”";
+  $("d-title-label").textContent=isB?"Special Day":"Special Title";
+  $("d-title-hint").textContent=isB?"Optional. Pick one used before, or add a new one. Filled in from the PDF when it finds one.":"Optional. Pick one used before, or add a new one.";
+  $("d-title")._sync();
   $("d-file").value="";$("d-url").value=it&&it.u?it.u:"";
   const canUp=!!assetsApi;$("d-up-opt").hidden=!canUp;
   document.querySelector('input[name="d-src"][value="'+(canUp&&!(it&&it.u)?"upload":"link")+'"]').checked=true;syncSrc();
@@ -2600,7 +2611,7 @@ function openDoc(kind,i){
 }
 document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>openDoc(b.dataset.add,-1));
 $("d-cancel").onclick=closeDlg;
-$("d-del").onclick=()=>{if(!docDelArmed){docDelArmed=true;$("d-del").textContent="Tap again to remove";return}
+$("d-del").onclick=()=>{if(!docDelArmed){docDelArmed=true;$("d-del").textContent="Tap Again to Remove";return}
   state[docKind].splice(docIdx,1);dirty=true;closeDlg();renderAll();toast("Removed. Save Changes to publish it.")};
 $("dForm").addEventListener("submit",async ev=>{
   ev.preventDefault();if(docBusy)return;
@@ -2633,7 +2644,7 @@ $("dForm").addEventListener("submit",async ev=>{
   const list=state[docKind]||(state[docKind]=[]);
   if(docIdx>=0)list.splice(docIdx,1);
   list.push(rec);list.sort((x,y)=>(y.d||"").localeCompare(x.d||""));
-  dirty=true;closeDlg();renderAll();toast((old?"Updated":"Added")+". Press “Save Changes” to publish it.");
+  dirty=true;editing=true;closeDlg();renderAll();toast((old?"Updated":"Added")+". Press “Save Changes” to publish it.");
 });
 
 /* careers */
@@ -2690,7 +2701,7 @@ $("jForm").addEventListener("submit",async ev=>{
   }
   const list=state.careers||(state.careers=[]);
   if(jobIdx>=0)list[jobIdx]=rec;else list.unshift(rec);
-  dirty=true;closeDlg();renderAll();toast((old?"Updated":"Added")+". Press “Save Changes” to publish it.");
+  dirty=true;editing=true;closeDlg();renderAll();toast((old?"Updated":"Added")+". Press “Save Changes” to publish it.");
 });
 
 /* weekly schedule */
@@ -3381,7 +3392,7 @@ $("d-file").addEventListener("change",async()=>{
   const keepSerm=!sermAuto&&ids.some(i=>$(i).value.trim()); /* don't overwrite what someone typed */
   const hint=$("d-s-hint");if(!keepSerm)hint.textContent="Reading the sermon from the PDF…";
   try{const lines=await pdfLines(f);
-    if(dayAuto||!$("d-title").value.trim()){$("d-title").value=parseSpecial(lines);dayAuto=true}
+    if(dayAuto||!$("d-title").value.trim()){$("d-title").value=parseSpecial(lines);dayAuto=true;$("d-title")._sync()}
     if(keepSerm)return;
     const r=parseSermon(lines);
     if(r){$("d-s-title").value=r.title;$("d-s-scr").value=r.scr;$("d-s-by").value=r.by;$("d-s-series").value=r.series;sermAuto=true;
@@ -3700,7 +3711,7 @@ $("saveBtn").onclick=async()=>{
 renderAll();show();
 
 /* staff sign-in (GitHub key) */
-if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".ms-edit,.hero-add,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
+if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".ms-edit,.hero-add,.doc-add,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
 $("staffLink").textContent=GH.ok?"Staff Sign Out":"Staff Sign In";
 $("staffLink").onclick=e=>{e.preventDefault();
   if(GH.ok){if(dirty&&!confirm("You have unsaved changes. Sign Out anyway?"))return;GH.forget();location.reload();return}
