@@ -2204,7 +2204,7 @@ const evShown=e=>{if(active.size&&!evCats(e).some(x=>active.has(x)))return false
   if(activeAud.size){const a=evAuds(e);if(!a.includes("all")&&!a.some(x=>activeAud.has(x)))return false}return true};
 const evBarStyle=e=>{const c=evCats(e);let st="--cat:"+evColor(e);
   if(c.length>1&&!e.weekly){const n=c.length;st+=";background:linear-gradient("+c.map((x,i)=>catVar(x)+" "+Math.round(i*100/n)+"% "+Math.round((i+1)*100/n)+"%").join(",")+")"}return st};
-let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(), activeAud=new Set(), showWeekly=true, showMonthly=true;
+let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(), activeAud=new Set(), showWeekly=true, showMonthly=true, showOther=true;
 /* recurring (monthly) events: {mode:"nth",n:1-5|-1,dow} or {mode:"day",day:1-31}; skips months without that day */
 const ORD=["","1st","2nd","3rd","4th","5th"];
 const ordDay=d=>d+(d%100>=11&&d%100<=13?"th":["th","st","nd","rd"][d%10]||"th");
@@ -2249,7 +2249,7 @@ function wkOn(w,k){const it={...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:tr
   if(ov){it.ov=ov;if(ov.start){it.start=ov.start;it.end=ov.end||""}if(ov.loc)it.loc=ov.loc;if(Array.isArray(ov.auds)){it.auds=ov.auds;it.aud=ov.auds[0]||""}it.labels=[...it.labels,{title:"Changed for this date only",ovr:true}]}
   return it}
 function eventsOn(k,withCx){
-  const list=state.events.filter(e=>e.date===k&&evShown(e)&&!(showWeekly&&attachOK(e)));
+  const list=showOther?state.events.filter(e=>e.date===k&&evShown(e)&&!(showWeekly&&attachOK(e))):[];
   if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))list.push(moInst(m,k));
   if(showWeekly){const dow=fromKey(k).getDay(),cx=canceledOn(k);for(const w of state.weekly)if(w.dow===dow&&evShown(w)){if(!cx.has(w.id))list.push(wkOn(w,k));else if(withCx)list.push({...wkOn(w,k),labels:[],canceled:cx.get(w.id)||"",cxOnly:true})}
     for(const c of state.schedChanges||[])if(c.date===k&&!(withCx&&c.mode==="some"&&!c.note)){const it=changeItem(c);if(it)list.push(it)}}
@@ -2331,7 +2331,7 @@ function renderFilters(){
     return r};
   f.append(row("Ministry",active,Object.keys(CATS),k=>CATS[k].label,"",catVar),row("Who It\u2019s For",activeAud,Object.keys(AUDS),k=>AUDS[k]," chip-aud",null));
   const sw=(label,on,fn)=>{const b=el("button",{type:"button",className:"fsw"},el("span",{className:"fsw-track"}),label);b.setAttribute("aria-pressed",String(on));b.onclick=fn;return b};
-  f.append(el("div",{className:"frow"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Monthly Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()})));
+  f.append(el("div",{className:"frow"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Monthly Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()}),sw("One-Time Events",showOther,()=>{showOther=!showOther;redraw()})));
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
@@ -2432,11 +2432,11 @@ function renderDay(){
 function renderUp(){
   const ul=$("upList");ul.replaceChildren();
   const end=new Date(now);end.setDate(end.getDate()+56);const ek=keyOf(end);
-  const evs=state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&evShown(e));
+  const evs=showOther?state.events.filter(e=>e.date>=TODAY&&e.date<=ek&&evShown(e)):[];
   if(showMonthly){const d=fromKey(TODAY);for(let i=0;i<=56;i++){const k=keyOf(d);for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))evs.push(moInst(m,k));d.setDate(d.getDate()+1)}}
   if(showWeekly)for(const c of state.schedChanges||[])if(c.date>=TODAY&&c.date<=ek){const it=changeItem(c);if(it)evs.push(it)}
   evs.sort(sortEv);
-  if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"No special events in the next eight weeks."}));
+  if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"Nothing in the next eight weeks with the filters you’ve chosen."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
 function renderAll(){renderWeekly();renderLive();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();if(typeof renderServices==="function")renderServices();
