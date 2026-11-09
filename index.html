@@ -2331,7 +2331,7 @@ function renderFilters(){
     return r};
   f.append(row("Ministry",active,Object.keys(CATS),k=>CATS[k].label,"",catVar),row("Who It\u2019s For",activeAud,Object.keys(AUDS),k=>AUDS[k]," chip-aud",null));
   const sw=(label,on,fn)=>{const b=el("button",{type:"button",className:"fsw"},el("span",{className:"fsw-track"}),label);b.setAttribute("aria-pressed",String(on));b.onclick=fn;return b};
-  f.append(el("div",{className:"frow"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Recurring Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()})));
+  f.append(el("div",{className:"frow"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Monthly Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()})));
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
@@ -2722,7 +2722,7 @@ function renderWeekly(){
   });
   document.querySelectorAll("[data-monthly]").forEach(box=>{
     const ms=(state.monthly||[]).filter(m=>m.title&&(!m.until||m.until>=TODAY.slice(0,7)));box.replaceChildren();box.hidden=!ms.length;if(!ms.length)return;
-    box.append(el("div",{className:"day"},el("h3",{textContent:"Recurring Events"}),el("ul",{},...ms.slice().sort((a,b)=>(a.mode===b.mode?0:a.mode==="nth"?-1:1)||(a.mode==="day"?(+a.day)-(+b.day):((+a.n===-1?6:+a.n)-(+b.n===-1?6:+b.n))||((+a.dow)-(+b.dow)))||(a.start||"").localeCompare(b.start||"")).map(m=>
+    box.append(el("div",{className:"day"},el("h3",{textContent:"Monthly Events"}),el("ul",{},...ms.slice().sort((a,b)=>(a.mode===b.mode?0:a.mode==="nth"?-1:1)||(a.mode==="day"?(+a.day)-(+b.day):((+a.n===-1?6:+a.n)-(+b.n===-1?6:+b.n))||((+a.dow)-(+b.dow)))||(a.start||"").localeCompare(b.start||"")).map(m=>
       el("li",{},el("time",{textContent:m.start?fmtTime(m.start):""}),el("span",{},el("span",{className:"wk-title",textContent:m.title}),el("small",{className:"wk-loc",textContent:moRule(m)}),wkLoc(m),wkAuds(m),m.note?el("small",{className:"wk-note keep-lines",textContent:m.note}):null))))));
   });
   const byId=Object.fromEntries(wk.map(w=>[w.id,w]));
@@ -2853,7 +2853,7 @@ $("mForm").addEventListener("submit",ev=>{
     const show=()=>{row.classList.add("open");row.querySelector(".nrow-tools button").textContent="Done";row.scrollIntoView({block:"nearest"})};
     const note=q(".m-note").value.replace(/\r/g,"").trim(),loc=normLoc(q(".w-loc").value);
     if(!title&&!start&&!note&&!loc)continue;
-    if(!title){show();return err("Each recurring event needs a name. Remove any you don’t want.")}
+    if(!title){show();return err("Each monthly event needs a name. Remove any you don’t want.")}
     if(end&&!start){show();return err("“"+title+"” has an end time but no start time.")}
     if(end&&start&&end<=start){show();return err("The end time for “"+title+"” needs to be after the start time.")}
     const from=q(".m-from").value,until=q(".m-until").value;
