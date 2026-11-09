@@ -883,7 +883,7 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- ============ CALENDAR ============ -->
 <div class="view" data-route="calendar" data-title="Calendar" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button><button class="btn primary hero-add" type="button" hidden>+ Add</button></div></div></section>
   <section class="band" style="padding-top:40px"><div class="wrap">
     <div id="restoreSlot"></div>
     <div class="cal">
@@ -2348,7 +2348,7 @@ function renderGrid(){
     for(const e of [...special,...weekly].slice(0,3)){const p=el("span",{className:"pill"+(e.weekly?" weekly":""),style:"--cat:"+evColor(e),textContent:e.title});p.title=e.title;cell.append(p)}
     if(evs.length>3)cell.append(el("span",{className:"more",textContent:"+"+(evs.length-3)+" more"}));
     if(special.length){const dots=el("span",{className:"dots"});for(const e of special.slice(0,4))dots.append(el("i",{style:"--cat:"+evColor(e)}));cell.append(dots)}
-    cell.onclick=()=>{selected=k;hideDpop();renderGrid();renderDay()};
+    cell.onclick=()=>{selected=k;hideDpop();renderGrid();renderDay();dayJump()};
     if(evs.length)cell.dataset.k=k;
     g.append(cell);
   }
@@ -2560,7 +2560,13 @@ $("evForm").addEventListener("submit",ev=>{
 $("delBtn").onclick=()=>{if(!delArmed){delArmed=true;$("delBtn").textContent="Tap again to delete";return}state.events=state.events.filter(x=>x.id!==editingId);dirty=true;closeDlg();renderAll();toast("Event removed. Save the calendar to publish the change.")};
 $("addBtn").onclick=openChooser;
 const toggles=[...document.querySelectorAll(".edit-toggle")];
-toggles.forEach(t=>t.onclick=()=>{editing=!editing;renderAll();if(editing)toast("Editing is on. Make your changes, then press “Save Changes”.")});
+toggles.forEach(t=>t.onclick=()=>{editing=!editing;renderAll();if(editing){toast("Editing is on. Make your changes, then press “Save Changes”.");if(t.closest('[data-route="calendar"]'))editJump()}});
+/* Edit Calendar scrolls to the calendar; while editing, tapping a day scrolls to its panel if it's off screen */
+function scrollToEl(n){if(!n)return;const hd=document.querySelector("header.top"),off=(hd?hd.getBoundingClientRect().height:0)+12;
+  window.scrollTo({top:Math.max(0,n.getBoundingClientRect().top+window.scrollY-off),behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+function editJump(){scrollToEl(document.querySelector(".cal-bar"))}
+function dayJump(){if(!editing||calMode==="agenda")return;const p=$("dayPanel"),r=p.getBoundingClientRect();if(r.top>innerHeight*.55)scrollToEl(p)}
+document.querySelectorAll(".hero-add").forEach(b=>b.onclick=openChooser);
 $("doneBtn").onclick=()=>{if(dirty){toast("Save or discard your changes first.");return}editing=false;renderAll()};
 $("discardBtn").onclick=()=>{state=normalize(JSON.parse(JSON.stringify(SAVED)));dirty=false;renderAll();toast("Changes discarded.")};
 
@@ -3693,7 +3699,7 @@ $("saveBtn").onclick=async()=>{
 renderAll();show();
 
 /* staff sign-in (GitHub key) */
-if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".ms-edit,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
+if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".ms-edit,.hero-add,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
 $("staffLink").textContent=GH.ok?"Staff Sign Out":"Staff Sign In";
 $("staffLink").onclick=e=>{e.preventDefault();
   if(GH.ok){if(dirty&&!confirm("You have unsaved changes. Sign Out anyway?"))return;GH.forget();location.reload();return}
