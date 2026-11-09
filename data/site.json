@@ -514,12 +514,23 @@
   {
    "d": "2026-06-14",
    "t": "",
-   "a": "bulletins/2026/20260614 RHBC Bulletin.pdf"
+   "a": "bulletins/2026/20260614 RHBC Bulletin.pdf",
+   "s": {
+    "title": "Nehemiah: Staying on Your Wall Until The Work Is Done – Part 7",
+    "scr": "Nehemiah 4:14–23",
+    "by": "Pastor Trey Rogers"
+   }
   },
   {
    "d": "2026-06-07",
    "t": "",
-   "a": "bulletins/2026/20260607 RHBC Bulletin.pdf"
+   "a": "bulletins/2026/20260607 RHBC Bulletin.pdf",
+   "s": {
+    "title": "Up: How to Put Up with Discouragement While Working on the Wall – Part 6",
+    "scr": "Nehemiah 4:7–15",
+    "by": "Pastor Trey Rogers",
+    "series": "Nehemiah: Staying on Your Wall Until The Work Is Done"
+   }
   },
   {
    "d": "2026-05-31",
@@ -543,7 +554,7 @@
   },
   {
    "d": "2026-05-10",
-   "t": "",
+   "t": "Mother’s Day",
    "a": "bulletins/2026/20260510 RHBC Bulletin.pdf",
    "s": {
     "title": "Nehemiah: Staying on Your Wall until the Work Is Done – Part 2 – “The King’s Letter” What to Do When God Turns Your Burden into a Mission",
@@ -573,7 +584,7 @@
   },
   {
    "d": "2026-04-19",
-   "t": "",
+   "t": "Revival",
    "a": "bulletins/2026/20260419 RHBC Bulletin.pdf",
    "s": {
     "title": "Claiming The Promises Of God",
@@ -593,7 +604,7 @@
   },
   {
    "d": "2026-04-05",
-   "t": "",
+   "t": "Easter",
    "a": "bulletins/2026/20260405 RHBC Bulletin.pdf",
    "s": {
     "title": "The Folded Napkin: What a Piece of Cloth Revealed about Our Coming King",
@@ -723,7 +734,7 @@
   },
   {
    "d": "2026-01-04",
-   "t": "",
+   "t": "Deacon Ordination",
    "a": "bulletins/2026/20260104 RHBC Bulletin.pdf",
    "s": {
     "title": "THE DEACONS: Called by God, Affirmed by the Church, and Commissioned to Serve our Congregation",
@@ -743,7 +754,7 @@
   },
   {
    "d": "2025-12-21",
-   "t": "",
+   "t": "Fourth Sunday of Advent",
    "a": "bulletins/2025/20251221 RHBC Bulletin.pdf",
    "s": {
     "title": "Home by Another Way: Three Gifts that Proclaimed the Full Work of Christ — From the Cradle to the Cross",
@@ -753,7 +764,7 @@
   },
   {
    "d": "2025-12-14",
-   "t": "",
+   "t": "Third Sunday of Advent",
    "a": "bulletins/2025/20251214 RHBC Bulletin.pdf",
    "s": {
     "title": "Koinōnia: The Biblical Blueprint For A Healthy Church",
@@ -763,7 +774,7 @@
   },
   {
    "d": "2025-12-07",
-   "t": "",
+   "t": "Second Sunday of Advent",
    "a": "bulletins/2025/20251207 RHBC Bulletin.pdf",
    "s": {
     "title": "Christmas in Revelation",
@@ -773,7 +784,7 @@
   },
   {
    "d": "2025-11-30",
-   "t": "",
+   "t": "First Sunday of Advent",
    "a": "bulletins/2025/20251130 RHBC Bulletin.pdf",
    "s": {
     "title": "John the Baptist",
@@ -803,7 +814,7 @@
   },
   {
    "d": "2025-11-09",
-   "t": "",
+   "t": "Revival",
    "a": "bulletins/2025/20251109 RHBC Bulletin.pdf",
    "s": {
     "title": "Remembering the Faith of the Past",
@@ -912,7 +923,7 @@
   },
   {
    "d": "2025-08-24",
-   "t": "",
+   "t": "Back to School Sunday",
    "a": "bulletins/2025/20250824 RHBC Bulletin.pdf",
    "s": {
     "title": "I Am the Door",
@@ -941,7 +952,7 @@
   },
   {
    "d": "2025-08-03",
-   "t": "",
+   "t": "Youth Sunday",
    "a": "bulletins/2025/20250803 RHBC Bulletin.pdf",
    "s": {
     "title": "I Am Mephibosheth: A Story of Grace & Glory – From Lo-Debar, to the Lord’s Table",
@@ -1011,7 +1022,7 @@
   },
   {
    "d": "2025-06-15",
-   "t": "",
+   "t": "Father’s Day",
    "a": "bulletins/2025/20250615 RHBC Bulletin.pdf",
    "s": {
     "title": "A Smoky Summons: Divine Echoes of Hope for Those Who Lost It All in the Ashes of Ziklag!",
@@ -1041,7 +1052,7 @@
   },
   {
    "d": "2025-05-25",
-   "t": "",
+   "t": "Memorial Day Tribute",
    "a": "bulletins/2025/20250525 RHBC Bulletin.pdf",
    "s": {
     "title": "No One Speaks Like Jesus",
@@ -1051,7 +1062,7 @@
   },
   {
    "d": "2025-05-18",
-   "t": "",
+   "t": "Graduate Sunday",
    "a": "bulletins/2025/20250518 RHBC Bulletin.pdf",
    "s": {
     "title": "O Brothers, Where Art Thou?",
@@ -1091,7 +1102,7 @@
   },
   {
    "d": "2025-04-20",
-   "t": "",
+   "t": "Easter",
    "a": "bulletins/2025/20250420 RHBC Bulletin.pdf",
    "s": {
     "title": "Do Not Fear, He Is Risen!",
@@ -1111,7 +1122,7 @@
   },
   {
    "d": "2025-04-06",
-   "t": "",
+   "t": "Revival",
    "a": "bulletins/2025/20250406 RHBC Bulletin.pdf",
    "s": {
     "title": "God’s Presence and Human Desperation",
@@ -1361,12 +1372,12 @@
   },
   {
    "d": "2024-10-06",
-   "t": "",
+   "t": "Life Action Revival",
    "a": "bulletins/2024/20241006 RHBC Bulletin.pdf"
   },
   {
    "d": "2024-09-29",
-   "t": "",
+   "t": "Life Action Revival",
    "a": "bulletins/2024/20240929 RHBC Bulletin.pdf",
    "s": {
     "title": "Encountering the Holy One",
@@ -1415,7 +1426,7 @@
   },
   {
    "d": "2024-08-25",
-   "t": "",
+   "t": "Back to School Sunday",
    "a": "bulletins/2024/20240825 RHBC Bulletin.pdf",
    "s": {
     "title": "Why Are You Here?",
@@ -1435,7 +1446,7 @@
   },
   {
    "d": "2024-08-11",
-   "t": "",
+   "t": "NC Baptist Children’s Homes Sunday",
    "a": "bulletins/2024/20240811 RHBC Bulletin.pdf",
    "s": {
     "by": "Ms. Brenda Gray & Residents from The NC Baptist Children’s Homes"
@@ -1508,7 +1519,7 @@
   },
   {
    "d": "2024-06-16",
-   "t": "",
+   "t": "Father’s Day",
    "a": "bulletins/2024/20240616 RHBC Bulletin.pdf",
    "s": {
     "title": "Children, Receive the Light",
@@ -1528,7 +1539,7 @@
   },
   {
    "d": "2024-06-02",
-   "t": "",
+   "t": "Graduate Sunday",
    "a": "bulletins/2024/20240602 RHBC Bulletin.pdf",
    "s": {
     "title": "Juicy Fruit: Finding Evidence of our Faith Beneath the Peel (Part 2)",
@@ -1608,7 +1619,7 @@
   },
   {
    "d": "2024-04-07",
-   "t": "",
+   "t": "Revival",
    "a": "bulletins/2024/20240407 RHBC Bulletin.pdf",
    "s": {
     "title": "Thinking Biblically about God",
@@ -1618,7 +1629,7 @@
   },
   {
    "d": "2024-03-31",
-   "t": "",
+   "t": "Easter",
    "a": "bulletins/2024/20240331 RHBC Bulletin.pdf",
    "s": {
     "title": "Angelic Pictures",
@@ -1718,7 +1729,7 @@
   },
   {
    "d": "2024-01-21",
-   "t": "",
+   "t": "Sanctity of Human Life Sunday",
    "a": "bulletins/2024/20240121 RHBC Bulletin.pdf",
    "s": {
     "title": "Life and the Gospel",
@@ -1858,12 +1869,12 @@
   },
   {
    "d": "2023-10-15",
-   "t": "",
+   "t": "Deacon-Led Service",
    "a": "bulletins/2023/20231015 RHBC Bulletin.pdf"
   },
   {
    "d": "2023-10-08",
-   "t": "",
+   "t": "Revival",
    "a": "bulletins/2023/20231008 RHBC Bulletin.pdf",
    "s": {
     "title": "Every Knee Will Bow",
@@ -1921,7 +1932,7 @@
   },
   {
    "d": "2023-08-27",
-   "t": "",
+   "t": "NC Baptist Children’s Homes Sunday",
    "a": "bulletins/2023/20230827 RHBC Bulletin.pdf",
    "s": {
     "by": "Ms. Brenda Gray & Residents from The NC Baptist Children’s Homes"
@@ -1929,7 +1940,7 @@
   },
   {
    "d": "2023-08-20",
-   "t": "",
+   "t": "Back to School Sunday",
    "a": "bulletins/2023/20230820 RHBC Bulletin.pdf",
    "s": {
     "title": "Standing and Striving as One",
@@ -2019,7 +2030,7 @@
   },
   {
    "d": "2023-06-18",
-   "t": "",
+   "t": "Father’s Day",
    "a": "bulletins/2023/20230618 RHBC Bulletin.pdf",
    "s": {
     "title": "The Most Effective Sermon Ever Preached",
@@ -2039,7 +2050,7 @@
   },
   {
    "d": "2023-06-04",
-   "t": "",
+   "t": "Graduate Sunday",
    "a": "bulletins/2023/20230604 RHBC Bulletin.pdf",
    "s": {
     "title": "The Prophet Who Wouldn’t Speak",
@@ -2069,7 +2080,7 @@
   },
   {
    "d": "2023-05-14",
-   "t": "",
+   "t": "Mother’s Day",
    "a": "bulletins/2023/20230514 RHBC Bulletin.pdf",
    "s": {
     "title": "Worship the Lord in Faithfulness",
@@ -2119,7 +2130,7 @@
   },
   {
    "d": "2023-04-09",
-   "t": "",
+   "t": "Easter",
    "a": "bulletins/2023/20230409 RHBC Bulletin.pdf",
    "s": {
     "title": "At the Tomb",
@@ -2249,7 +2260,7 @@
   },
   {
    "d": "2023-01-08",
-   "t": "",
+   "t": "Deacon Ordination",
    "a": "bulletins/2023/20230108 RHBC Bulletin.pdf",
    "s": {
     "title": "The Difference a Deacon Makes",
@@ -2259,7 +2270,7 @@
   },
   {
    "d": "2023-01-01",
-   "t": "",
+   "t": "New Year’s Day",
    "a": "bulletins/2023/20230101 RHBC Bulletin.pdf",
    "s": {
     "title": "Prayer",
@@ -2269,7 +2280,7 @@
   },
   {
    "d": "2022-12-25",
-   "t": "",
+   "t": "Christmas Day",
    "a": "bulletins/2022/20221225 RHBC Bulletin.pdf",
    "s": {
     "title": "The Gift",
@@ -2329,7 +2340,7 @@
   },
   {
    "d": "2022-11-13",
-   "t": "",
+   "t": "Veterans Day Service",
    "a": "bulletins/2022/20221113 RHBC Bulletin.pdf",
    "s": {
     "title": "Matthew’s Genealogy",
@@ -2437,7 +2448,7 @@
   },
   {
    "d": "2022-08-28",
-   "t": "",
+   "t": "Back to School Sunday",
    "a": "bulletins/2022/20220828 RHBC Bulletin.pdf",
    "s": {
     "by": "Dr. Tanya Turner, Superintendent, Perquimans County Schools"
@@ -2453,7 +2464,7 @@
   },
   {
    "d": "2022-08-14",
-   "t": "",
+   "t": "NC Baptist Children’s Homes Sunday",
    "a": "bulletins/2022/20220814 RHBC Bulletin.pdf",
    "s": {
     "by": "Ms. Brenda Gray & Residents from The NC Baptist Children’s Homes"
@@ -2519,7 +2530,7 @@
   },
   {
    "d": "2022-06-19",
-   "t": "",
+   "t": "Father’s Day",
    "a": "bulletins/2022/20220619 RHBC Bulletin.pdf",
    "s": {
     "by": "Mr. Tanner Thach"
@@ -2535,7 +2546,7 @@
   },
   {
    "d": "2022-06-05",
-   "t": "",
+   "t": "Graduate Sunday",
    "a": "bulletins/2022/20220605 RHBC Bulletin.pdf",
    "s": {
     "title": "Getting From Here To There",
@@ -2576,7 +2587,7 @@
   },
   {
    "d": "2022-05-08",
-   "t": "",
+   "t": "Mother’s Day",
    "a": "bulletins/2022/20220508 RHBC Bulletin.pdf",
    "s": {
     "title": "The Influence of Using Jesus’ Name",
@@ -2609,7 +2620,7 @@
   },
   {
    "d": "2022-04-17",
-   "t": "",
+   "t": "Easter",
    "a": "bulletins/2022/20220417 RHBC Bulletin.pdf",
    "s": {
     "title": "Jesus Christ: His Resurrection",
