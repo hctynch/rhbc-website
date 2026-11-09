@@ -635,9 +635,9 @@ a.card:hover{border-color:var(--muted)}
 @media (max-width:600px){.ev-locrow{flex-direction:column;align-items:flex-start}}
 .cx-pick{display:grid;gap:8px}
 .att-sel{justify-self:start;max-width:100%}
-.tag.lbl-tag{color:var(--brand-hi);border-color:color-mix(in srgb,var(--brand-hi) 40%,transparent);background:color-mix(in srgb,var(--brand-hi) 7%,var(--surface))}
+.ev h4 .tag.lbl-tag{display:block;width:fit-content;margin:2px 0 0;border:0;background:none;padding:0;text-transform:none;letter-spacing:0;font-size:.86rem;font-weight:700;color:var(--brand-hi)}
 .ev-body p.ev-lbl{color:var(--ink)}
-small.wk-lbl.wk-lbl{display:block;width:fit-content;margin:3px 0 2px;font-size:.72rem;font-weight:700;color:var(--brand-hi);border:1px solid color-mix(in srgb,var(--brand-hi) 40%,transparent);border-radius:3px;padding:1px 6px;background:color-mix(in srgb,var(--brand-hi) 7%,var(--surface))}
+small.wk-lbl.wk-lbl{display:block;width:fit-content;margin:1px 0;font-size:.82rem;font-weight:700;color:var(--brand-hi)}
 .cx-radios{display:flex;flex-wrap:wrap;gap:8px}
 .cx-rd{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:7px!important;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-weight:600;font-size:.88rem;cursor:pointer;color:var(--muted)}
 .cx-rd input{margin:0;accent-color:var(--brand)}
@@ -2190,7 +2190,11 @@ function changeItem(c){const dow=fromKey(c.date).getDay(),n=cxNames(c,dow);if(!n
     desc:[c.note||"",c.mode==="all"?"":"Canceled: "+andList(n)].filter(Boolean).join("\n"),cats:[],auds:[]}}
 /* an event can be shown as a label on a regular weekly activity (e.attach = weekly id) */
 function attachOK(e){if(!e.attach)return false;const w=(state.weekly||[]).find(x=>x.id===e.attach);return !!w&&w.dow===fromKey(e.date).getDay()&&!canceledOn(e.date).has(w.id)}
-const labelsFor=(wid,k)=>state.events.filter(e=>e.date===k&&e.attach===wid);
+/* the Sunday's special day name from its bulletin (e.g. Senior Adults Sunday) labels Morning Worship */
+function mainWorshipId(){const sun=(state.weekly||[]).filter(w=>w.dow===0);const w=sun.find(w=>w.id==="worship")||sun.find(w=>evCats(w).includes("worship")&&(w.start||"")>="10:00"&&(w.start||"")<="12:30")||sun.find(w=>/worship/i.test(w.title||""));return w?w.id:""}
+function labelsFor(wid,k){const out=state.events.filter(e=>e.date===k&&e.attach===wid);
+  if(wid&&wid===mainWorshipId()){const b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===k&&x.t);if(b&&!out.some(e=>e.title.trim().toLowerCase()===b.t.trim().toLowerCase()))out.unshift({title:b.t,special:true})}
+  return out}
 function eventsOn(k){
   const list=state.events.filter(e=>e.date===k&&evShown(e)&&!(showWeekly&&attachOK(e)));
   if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))list.push(moInst(m,k));
@@ -2364,7 +2368,7 @@ function evRow(e,withDate){
     right.append(b,mvb,sk)}
   else if(e.change){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openChanges();right.append(b)}
   else if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
-  else (e.labels||[]).forEach(l=>{const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Label"});b.title="Edit “"+l.title+"”";b.onclick=()=>openEvent(l.id);right.append(b)});
+  else (e.labels||[]).filter(l=>l.id).forEach(l=>{const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Label"});b.title="Edit “"+l.title+"”";b.onclick=()=>openEvent(l.id);right.append(b)});
   return el("li",{className:"ev"+(e.change?" ev-change":"")},el("span",{className:"bar"+(e.weekly?" weekly":""),style:e.change?"":evBarStyle(e)}),info,right,body);
 }
 function renderDay(){
