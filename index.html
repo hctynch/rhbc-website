@@ -168,7 +168,7 @@ p{margin:0}
 .hero h1 em{font-style:normal;color:var(--brand-hi)}
 .hero-copy{display:grid;gap:22px;min-width:0}
 .sunday-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
-.sunday-head .wk-edit{flex:none}
+.sunday-head .ms-edit{flex:none}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
 .sunday{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:26px;display:grid;gap:18px;min-width:0}
 .sunday h2{font-size:1.5rem}
@@ -728,6 +728,42 @@ textarea{min-height:84px;resize:vertical}
 .err{color:var(--c-music);font-size:.88rem}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.92rem;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
 .restore{background:var(--wash);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;font-size:.93rem}
+/* Manage Schedule, + Add chooser, Change menu */
+.tp{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0}
+.form .tp{gap:14px}
+.dialog.single .multi-only{display:none}
+.dialog:not(.single) .single-only{display:none!important}
+.dialog.single .nrow-head{display:none}
+.dialog.single .nlist .nrow{border:0;padding:0;background:none}
+.ms-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.ms-tabs button{border:0;background:none;padding:8px 14px;font:600 .95rem var(--body);color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.ms-tabs button[aria-selected="true"]{color:var(--brand-hi);border-color:var(--brand-hi)}
+.ms-grp{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--brand-hi);margin:14px 0 2px}
+.ms-row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:.95rem}
+.ms-row.long{grid-template-columns:minmax(0,1fr) auto}
+.ms-row .tm{font-weight:600;color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums}
+.ms-row .hint{display:block;color:var(--muted);font-size:.84rem}
+.ms-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.ms-add{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.ms-empty{color:var(--muted);padding:12px 0;margin:0}
+@media (max-width:480px){.ms-row{grid-template-columns:62px minmax(0,1fr) auto}}
+.choice{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px 14px;cursor:pointer;font:inherit}
+.choice:hover,.choice:focus-visible{border-color:var(--brand-hi);background:var(--wash)}
+.choice b{display:block;font-size:1rem}
+.choice span span{color:var(--muted);font-size:.87rem}
+.choice svg{color:var(--brand-hi)}
+.choices{display:grid;gap:8px}
+.chg-wrap{position:relative}
+.chg-menu{position:absolute;right:0;top:calc(100% + 4px);z-index:6;width:min(280px,calc(100vw - 40px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px;text-align:left}
+.chg-menu .h{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);padding:8px 10px 2px}
+.chg-menu .h small{display:block;letter-spacing:0;text-transform:none;font-weight:500;font-size:.78rem}
+.chg-menu button{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);padding:9px 10px;border-radius:6px;font:600 .92rem var(--body);cursor:pointer}
+.chg-menu button:hover,.chg-menu button:focus-visible{background:var(--wash);color:var(--brand-hi)}
+.chg-menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.ev.ev-cx>*:not(.ev-side){opacity:.55}
+.ev.ev-cx h4{text-decoration:line-through;font-weight:500}
+.ev .cx-line{display:block;font-size:.82rem;font-weight:700;color:var(--brand-hi);margin-top:2px}
+.g-text{margin:0}
 </style>
 
 <header class="top">
@@ -787,7 +823,7 @@ textarea{min-height:84px;resize:vertical}
         </div>
       </div>
       <aside class="sunday" aria-labelledby="sundayHead">
-        <div class="sunday-head"><div><p class="eyebrow">Every Sunday</p><h2 id="sundayHead">Join Us This Week</h2></div><button class="btn ghost small wk-edit" type="button" hidden>Edit Weekly Schedule</button></div>
+        <div class="sunday-head"><div><p class="eyebrow">Every Sunday</p><h2 id="sundayHead">Join Us This Week</h2></div><button class="btn ghost small ms-edit" type="button" hidden>Manage Schedule</button></div>
         <ul class="times" id="sundayTimes"></ul>
         <div class="addr-row"><p class="addr"><strong>113 Rocky Hock Church Road</strong><br><strong>Edenton, NC 27932</strong></p><a class="btn ghost small dir-btn" id="dirBtn" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rocky+Hock+Baptist+Church,+113+Rocky+Hock+Church+Road,+Edenton,+NC+27932" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Get Directions</a></div>
       </aside>
@@ -808,7 +844,7 @@ textarea{min-height:84px;resize:vertical}
     <div class="wrap">
       <div class="sec-head">
         <div><p class="eyebrow">Weekly schedule</p><h2 id="visitHead">Plan Your Visit</h2><p class="lede">Come as you are. A greeter will meet you at the door, and there’s a nursery for little ones on Sundays and Wednesdays.</p></div>
-        <div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><a class="btn ghost" href="#schedule">Full Schedule</a><a class="btn ghost" href="#directions">Directions</a></div>
+        <div class="linkrow"><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button><a class="btn ghost" href="#schedule">Full Schedule</a><a class="btn ghost" href="#directions">Directions</a></div>
       </div>
       <div class="week" data-weekly></div>
     </div>
@@ -847,7 +883,7 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- ============ CALENDAR ============ -->
 <div class="view" data-route="calendar" data-title="Calendar" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button><button class="btn ghost mo-edit sc-edit" type="button" hidden>Schedule Changes</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button></div></div></section>
   <section class="band" style="padding-top:40px"><div class="wrap">
     <div id="restoreSlot"></div>
     <div class="cal">
@@ -868,7 +904,7 @@ textarea{min-height:84px;resize:vertical}
         <div class="panel" id="dayPanel">
           <div class="panel-head">
             <div><p class="eyebrow" id="dayEyebrow">Selected day</p><h3 id="dayLabel"></h3></div>
-            <div class="editor-tools"><button class="btn primary small" id="addBtn" type="button">+ Add Event</button></div>
+            <div class="editor-tools"><button class="btn primary small" id="addBtn" type="button">+ Add</button></div>
           </div>
           <ul class="ev-list" id="dayList"></ul>
         </div>
@@ -1103,7 +1139,7 @@ textarea{min-height:84px;resize:vertical}
 </div>
 
 <div class="view" data-route="schedule" data-sec="about" data-title="Our Schedule" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost wk-edit" type="button" hidden>Edit Weekly Schedule</button><button class="btn ghost mo-edit" type="button" hidden>Edit Recurring Events</button><button class="btn ghost mo-edit sc-edit" type="button" hidden>Schedule Changes</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">About Us</p><h1>Our Schedule</h1><p class="lede">A nursery is provided for Sunday and Wednesday services.</p><div class="linkrow"><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button></div></div></section>
   <div class="wrap pbody"><div class="prose">
     <div class="week" data-weekly></div>
     <div class="week" data-monthly hidden></div>
@@ -1659,13 +1695,12 @@ textarea{min-height:84px;resize:vertical}
     <h3 id="dlgTitle">Event</h3>
     <form id="evForm" class="form" novalidate>
       <label class="full">Event name<input id="f-title" required maxlength="90"></label>
-      <label>Date<input id="f-date" type="date" required></label>
+      <label class="full">Date<input id="f-date" type="date" required></label>
+      <div class="tp"><label>Starts<input id="f-start" type="time"></label><label>Ends (optional)<input id="f-end" type="time"></label></div>
       <div class="full cat-pick" role="group" aria-labelledby="f-cats-lab"><span class="cat-lab" id="f-cats-lab">Ministry <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-cats"></div></div>
       <div class="full cat-pick" role="group" aria-labelledby="f-auds-lab"><span class="cat-lab" id="f-auds-lab">Who It’s For <span class="hint">Choose any that apply, or none</span></span><div class="cat-opts" id="f-auds"></div></div>
       <div id="f-att"></div>
       <div id="f-cx"></div>
-      <label>Starts<input id="f-start" type="time"></label>
-      <label>Ends<input id="f-end" type="time"></label>
       <label class="full">Location<input id="f-loc" maxlength="80" placeholder="Sanctuary, Multi-Purpose Building, Fellowship Hall…"></label>
       <label class="full">Details<textarea id="f-desc" maxlength="400"></textarea></label>
       <label class="full">Link (optional)<input id="f-url" type="url" placeholder="https://"></label>
@@ -1698,12 +1733,14 @@ textarea{min-height:84px;resize:vertical}
 <div id="overlay5" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg5Title">
     <h3 id="dlg5Title">Weekly Schedule</h3>
-    <p class="meta">These repeat every week. They fill the Every Sunday box, the weekly schedule, the ministry pages and the calendar. Click Edit on any event to change it. The list sorts itself by day and time when you apply.</p>
+    <p class="meta single-only" id="w-lead"></p>
+    <p class="meta multi-only">These repeat every week. They fill the Every Sunday box, the weekly schedule, the ministry pages and the calendar. Click Edit on any event to change it. The list sorts itself by day and time when you apply.</p>
     <form id="wForm" novalidate style="display:grid;gap:14px">
       <div id="wList" class="nlist"></div>
-      <button class="btn ghost" type="button" id="wAdd" style="justify-self:start">+ Add Weekly Event</button>
+      <button class="btn ghost multi-only" type="button" id="wAdd" style="justify-self:start">+ Add Weekly Event</button>
       <p class="err" id="w-err" hidden></p>
       <div class="dialog-actions">
+        <button class="btn danger single-only" type="button" id="wDel" hidden>Remove</button>
         <button class="btn ghost" type="button" id="wCancel">Cancel</button>
         <button class="btn primary" type="submit">Apply</button>
       </div>
@@ -1836,11 +1873,9 @@ textarea{min-height:84px;resize:vertical}
     <h3 id="dlg14Title">Move One Date</h3>
     <p class="meta" id="mv-meta"></p>
     <form id="mvForm" class="form" novalidate>
-      <label>New date<input id="mv-date" type="date" required></label>
-      <span></span>
-      <label>Starts<input id="mv-start" type="time"></label>
-      <label>Ends (optional)<input id="mv-end" type="time"></label>
-      <p class="hint full">Only this one date moves; every other month stays on its usual schedule. To put it back, choose “Undo Move” on the calendar or in Edit Recurring Events.</p>
+      <label class="full">New Date<input id="mv-date" type="date" required></label>
+      <div class="tp"><label>Starts<input id="mv-start" type="time"></label><label>Ends (optional)<input id="mv-end" type="time"></label></div>
+      <p class="hint full">Only this one date moves; every other month stays on its usual schedule. To put it back, choose Change ▾ → Undo Move on the calendar.</p>
       <p class="err full" id="mv-err" hidden></p>
       <div class="dialog-actions full">
         <button class="btn ghost" type="button" id="mvCancel">Cancel</button>
@@ -1853,12 +1888,14 @@ textarea{min-height:84px;resize:vertical}
 <div id="overlay15" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg15Title">
     <h3 id="dlg15Title">Schedule Changes</h3>
-    <p class="meta">Cancel regular weekly activities on a date without changing the weekly schedule, such as a holiday week. Canceled activities are hidden from the calendar that day and from Join Us This Week. For a special event that takes their place, add the event instead and choose what it replaces. To uncancel, remove the change.</p>
+    <p class="meta single-only" id="sc-lead"></p>
+    <p class="meta multi-only">Cancel regular weekly activities on a date without changing the weekly schedule, such as a holiday week. Canceled activities are hidden from the calendar that day and from Join Us This Week. For a special event that takes their place, add the event instead and choose what it replaces. To uncancel, remove the change.</p>
     <form id="scForm" novalidate style="display:grid;gap:14px">
       <div id="scList" class="nlist"></div>
-      <button class="btn ghost" type="button" id="scAdd" style="justify-self:start">+ Add Schedule Change</button>
+      <button class="btn ghost multi-only" type="button" id="scAdd" style="justify-self:start">+ Add Schedule Change</button>
       <p class="err" id="sc-err" hidden></p>
       <div class="dialog-actions">
+        <button class="btn danger single-only" type="button" id="scDel" hidden>Remove</button>
         <button class="btn ghost" type="button" id="scCancel">Cancel</button>
         <button class="btn primary" type="submit">Apply</button>
       </div>
@@ -1866,15 +1903,25 @@ textarea{min-height:84px;resize:vertical}
   </div>
 </div>
 
+<div id="overlay16" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <h3 id="g-title"></h3>
+    <p class="meta" id="g-lead" hidden></p>
+    <div id="g-body" style="display:grid;gap:14px;min-width:0"></div>
+  </div>
+</div>
+
 <div id="overlay13" class="overlay" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg13Title">
     <h3 id="dlg13Title">Recurring Events</h3>
-    <p class="meta">Events that repeat every month, like the 4th Monday, the 5th Sunday or the 15th. They show on the calendar, in Next Eight Weeks and on Our Schedule. Click Edit on any event to change it.</p>
+    <p class="meta single-only" id="m-lead"></p>
+    <p class="meta multi-only">Events that repeat every month, like the 4th Monday, the 5th Sunday or the 15th. They show on the calendar, in Next Eight Weeks and on Our Schedule. Click Edit on any event to change it.</p>
     <form id="mForm" novalidate style="display:grid;gap:14px">
       <div id="mList" class="nlist"></div>
-      <button class="btn ghost" type="button" id="mAdd" style="justify-self:start">+ Add Recurring Event</button>
+      <button class="btn ghost multi-only" type="button" id="mAdd" style="justify-self:start">+ Add Recurring Event</button>
       <p class="err" id="m-err" hidden></p>
       <div class="dialog-actions">
+        <button class="btn danger single-only" type="button" id="mDel" hidden>Remove</button>
         <button class="btn ghost" type="button" id="mCancel">Cancel</button>
         <button class="btn primary" type="submit">Apply</button>
       </div>
@@ -2011,6 +2058,7 @@ function normalize(st){
   if(!Array.isArray(st.weekly))st.weekly=JSON.parse(JSON.stringify(DEFAULT_WEEKLY));
   st.weekly=sortWk(st.weekly.filter(w=>w&&w.title&&w.dow>=0&&w.dow<=6));
   if(!Array.isArray(st.schedChanges))st.schedChanges=[];
+  if(!Array.isArray(st.overrides))st.overrides=[];st.overrides=st.overrides.filter(o=>o&&o.wid&&/^\d{4}-\d{2}-\d{2}$/.test(o.date||""));
   if(!Array.isArray(st.notices))st.notices=(st.notice&&st.notice.text)?[{text:st.notice.text,url:st.notice.url||"",until:""}]:[];
   delete st.notice;
   ["bulletins","newsletters"].forEach(k=>{if(Array.isArray(st[k]))st[k].sort((x,y)=>(y.d||"").localeCompare(x.d||""))});
@@ -2057,7 +2105,7 @@ document.querySelectorAll(".dd").forEach(d=>d.addEventListener("toggle",()=>{if(
 document.addEventListener("click",e=>{if(!e.target.closest(".dd")&&matchMedia("(min-width:981px)").matches)document.querySelectorAll(".dd[open]").forEach(o=>o.open=false)});
 $("nav").addEventListener("click",e=>{if(e.target.closest("a"))closeMenus()});
 document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>{const t=$(b.dataset.jump);if(t)t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDlg();document.querySelectorAll(".dd[open]").forEach(o=>o.open=false)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(chgOpen){closeChg();return}dlgRet=null;closeDlg();document.querySelectorAll(".dd[open]").forEach(o=>o.open=false)}});
 
 /* ---------- documents ---------- */
 const PDF='<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 1.5h6.5L14 5v11.5H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M10.5 1.5V5H14M6.5 9h5M6.5 12h5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>';
@@ -2177,11 +2225,11 @@ function moInst(m,k){const mv=moMove(m,k),r={...m,loc:m.loc||"",desc:m.note||"",
   if(mv){r.movedFrom=mv.from;if(mv.start){r.start=mv.start;r.end=mv.end||""}}return r}
 /* weekly activities replaced by a special event, a recurring event, or a plain schedule change */
 function cxIds(c,dow){if(!c||(c.mode!=="all"&&c.mode!=="some"))return[];const day=(state.weekly||[]).filter(w=>w.dow===dow).map(w=>w.id);return c.mode==="all"?day:(c.ids||[]).filter(i=>day.includes(i))}
-function canceledOn(k){const dow=fromKey(k).getDay(),out=new Map(),add=(c,by)=>cxIds(c,dow).forEach(i=>{if(!out.has(i))out.set(i,by)});
-  state.events.forEach(e=>{if(e.date===k&&e.cancels)add(e.cancels,e.title)});
-  (state.monthly||[]).forEach(m=>{if(m.title&&m.cancels&&moOn(m,k))add(m.cancels,m.title)});
-  (state.schedChanges||[]).forEach(c=>{if(c.date===k)add(c,"")});
-  return out}
+function canceledOn(k,src){const dow=fromKey(k).getDay(),out=new Map(),all=new Map(),add=(c,by,s)=>cxIds(c,dow).forEach(i=>{if(!out.has(i))out.set(i,by);if(!all.has(i))all.set(i,[]);all.get(i).push(s)});
+  state.events.forEach(e=>{if(e.date===k&&e.cancels)add(e.cancels,e.title,{t:"event",o:e})});
+  (state.monthly||[]).forEach(m=>{if(m.title&&m.cancels&&moOn(m,k))add(m.cancels,m.title,{t:"monthly",o:m})});
+  (state.schedChanges||[]).forEach(c=>{if(c.date===k)add(c,c.note||"",{t:"change",o:c})});
+  return src?all:out}
 const cxNames=(c,dow)=>{const ids=cxIds(c,dow);return (state.weekly||[]).filter(w=>ids.includes(w.id)).map(w=>w.title)};
 const andList=a=>a.length>1?a.slice(0,-1).join(", ")+" & "+a[a.length-1]:(a[0]||"");
 function cxLine(c,dow){if(!c)return"";if(c.mode==="all")return"Replaces all regular "+DAYNAMES[dow]+" activities";const n=cxNames(c,dow);return n.length?"Replaces "+andList(n):""}
@@ -2195,11 +2243,15 @@ function mainWorshipId(){const sun=(state.weekly||[]).filter(w=>w.dow===0);const
 function labelsFor(wid,k){const out=state.events.filter(e=>e.date===k&&e.attach===wid);
   if(wid&&wid===mainWorshipId()){const b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===k&&x.t);if(b&&!out.some(e=>e.title.trim().toLowerCase()===b.t.trim().toLowerCase()))out.unshift({title:b.t,special:true})}
   return out}
-function eventsOn(k){
+function ovFor(wid,k){return (state.overrides||[]).find(o=>o.wid===wid&&o.date===k)}
+function wkOn(w,k){const it={...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w",wid:w.id,labels:labelsFor(w.id,k)};const ov=ovFor(w.id,k);
+  if(ov){it.ov=ov;if(ov.start){it.start=ov.start;it.end=ov.end||""}if(ov.loc)it.loc=ov.loc;if(Array.isArray(ov.auds)){it.auds=ov.auds;it.aud=ov.auds[0]||""}it.labels=[...it.labels,{title:"Changed for this date only",ovr:true}]}
+  return it}
+function eventsOn(k,withCx){
   const list=state.events.filter(e=>e.date===k&&evShown(e)&&!(showWeekly&&attachOK(e)));
   if(showMonthly)for(const m of state.monthly||[])if(m.title&&evShown(m)&&moOn(m,k))list.push(moInst(m,k));
-  if(showWeekly){const dow=fromKey(k).getDay(),cx=canceledOn(k);for(const w of state.weekly)if(w.dow===dow&&evShown(w)&&!cx.has(w.id))list.push({...w,loc:w.loc||"",desc:w.note||"",date:k,weekly:true,id:"w",wid:w.id,labels:labelsFor(w.id,k)});
-    for(const c of state.schedChanges||[])if(c.date===k){const it=changeItem(c);if(it)list.push(it)}}
+  if(showWeekly){const dow=fromKey(k).getDay(),cx=canceledOn(k);for(const w of state.weekly)if(w.dow===dow&&evShown(w)){if(!cx.has(w.id))list.push(wkOn(w,k));else if(withCx)list.push({...wkOn(w,k),labels:[],canceled:cx.get(w.id)||"",cxOnly:true})}
+    for(const c of state.schedChanges||[])if(c.date===k&&!(withCx&&c.mode==="some"&&!c.note)){const it=changeItem(c);if(it)list.push(it)}}
   return list.sort(sortEv);
 }
 let canEditFlag=false;
@@ -2318,7 +2370,7 @@ function renderAgenda(){
     box.append(row);
   }
   if(!any)box.append(el("p",{className:"ag-empty",textContent:"Nothing scheduled in "+MONTHS[m]+" with the filters you’ve chosen."}));
-  const add=el("button",{type:"button",className:"btn primary small",textContent:"+ Add Event"});add.onclick=()=>openEvent(null);
+  const add=el("button",{type:"button",className:"btn primary small",textContent:"+ Add"});add.onclick=openChooser;
   box.append(el("div",{className:"editor-tools ag-tools"},add));
 }
 $("vMonth").onclick=()=>setCalMode("month");
@@ -2361,19 +2413,18 @@ function evRow(e,withDate){
   const u=safeUrl(e.url||"");if(u)body.append(el("p",{},el("a",{href:u,target:"_blank",rel:"noopener",textContent:"More Info →"})));
   const right=el("div",{className:"ev-side"});
   evCats(e).forEach(c=>right.append(el("span",{className:"ev-cat",style:"--cat:"+catVar(c)},catIco(c),CATS[c].label)));
-  if(e.monthly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Series"});b.onclick=()=>openMonthly(e.mid);
-    const sk=el("button",{type:"button",className:"btn ghost small edit",textContent:"Skip This Date"});sk.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;m.skip=[...(m.skip||[]),e.date];dirty=true;editing=true;renderAll();toast(e.title+" skipped on "+shortDate(e.date)+". Press “Save Changes” to publish.")};const mvb=el("button",{type:"button",className:"btn ghost small edit",textContent:e.movedFrom?"Undo Move":"Move This Date"});
-    mvb.onclick=()=>{const m=(state.monthly||[]).find(x=>x.id===e.mid);if(!m)return;
-      if(e.movedFrom){m.moves=(m.moves||[]).filter(x=>x.to!==e.date);dirty=true;editing=true;renderAll();toast(e.title+" is back on "+shortDate(e.movedFrom)+". Press “Save Changes” to publish.")}else openMove(e.mid,e.date)};
-    right.append(b,mvb,sk)}
-  else if(e.change){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openChanges();right.append(b)}
+  if(e.cxOnly){info.append(el("span",{className:"cx-line",textContent:"Canceled this date"+(e.canceled?" · "+e.canceled:"")}));
+    const rb=el("button",{type:"button",className:"btn ghost small edit",textContent:"Restore"});rb.onclick=()=>restoreWk(e.wid,e.date);right.append(rb);
+    return el("li",{className:"ev ev-cx"},el("span",{className:"bar weekly",style:evBarStyle(e)}),info,right)}
+  if(e.monthly)right.append(chgMenu(e));
+  else if(e.weekly&&!e.change)right.append(chgMenu(e));
+  else if(e.change){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openChangeOne(e.scid,null);right.append(b)}
   else if(!e.weekly){const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit"});b.onclick=()=>openEvent(e.id);right.append(b)}
-  else (e.labels||[]).filter(l=>l.id).forEach(l=>{const b=el("button",{type:"button",className:"btn ghost small edit",textContent:"Edit Label"});b.title="Edit “"+l.title+"”";b.onclick=()=>openEvent(l.id);right.append(b)});
   return el("li",{className:"ev"+(e.change?" ev-change":"")},el("span",{className:"bar"+(e.weekly?" weekly":""),style:e.change?"":evBarStyle(e)}),info,right,body);
 }
 function renderDay(){
   $("dayLabel").textContent=longDate(selected);$("dayEyebrow").textContent=selected===TODAY?"Today":"Selected day";
-  const ul=$("dayList");ul.replaceChildren();const evs=eventsOn(selected);
+  const ul=$("dayList");ul.replaceChildren();const evs=eventsOn(selected,editing&&canEditFlag);
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"Nothing scheduled this day."}));
   for(const e of evs)ul.append(evRow(e,false));
 }
@@ -2483,15 +2534,15 @@ $("f-cx").replaceWith(fcx.box);f.date.addEventListener("input",fcx.draw);f.date.
 let editingId=null,delArmed=false;
 function openEvent(id){
   const e=id?state.events.find(x=>x.id===id):null;editingId=e?e.id:null;delArmed=false;
-  $("dlgTitle").textContent=e?"Edit Event":"Add Event";
+  dlgRet=null;$("dlgTitle").textContent=e?"Edit "+e.title:"Add a One-Time Event";
   f.title.value=e?e.title:"";f.date.value=e?e.date:selected;setCats(e?evCats(e):[]);setAuds(e?evAuds(e):[]);
   f.start.value=e?(e.start||""):"";f.end.value=e?(e.end||""):"";f.loc.value=e?(e.loc||""):"";f.loc._syncLoc();f.desc.value=e?(e.desc||""):"";f.url.value=e?(e.url||""):"";
   fcx.set(e?e.cancels:null);fatt.set(e?e.attach:"");syncEvForm();$("delBtn").hidden=!e;$("delBtn").textContent="Delete";$("f-err").hidden=true;
   $("overlay").hidden=false;setTimeout(()=>f.title.focus(),30);
 }
-function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay13","overlay14","overlay15","overlay10"].forEach(i=>$(i).hidden=true)}
-$("cancelBtn").onclick=closeDlg;$("nCancel").onclick=closeDlg;
-[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay13"),$("overlay14"),$("overlay15"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeDlg()}));
+function closeDlg(){["overlay","overlay2","overlay3","overlay4","overlay5","overlay6","overlay7","overlay8","overlay9","overlay11","overlay12","overlay13","overlay14","overlay15","overlay16","overlay10"].forEach(i=>$(i).hidden=true);closeChg()}
+$("cancelBtn").onclick=cancelDlg;$("nCancel").onclick=closeDlg;
+[$("overlay"),$("overlay2"),$("overlay3"),$("overlay4"),$("overlay5"),$("overlay6"),$("overlay7"),$("overlay8"),$("overlay9"),$("overlay11"),$("overlay12"),$("overlay13"),$("overlay14"),$("overlay15"),$("overlay16"),$("overlay10")].forEach(o=>o.addEventListener("click",e=>{if(e.target===o){dlgRet=null;closeDlg()}}));
 $("evForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const t=f.title.value.trim(),d=f.date.value,err=m=>{$("f-err").textContent=m;$("f-err").hidden=false};
@@ -2504,10 +2555,10 @@ $("evForm").addEventListener("submit",ev=>{
   const rec={id:editingId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),title:t,date:d,cats:getCats(),auds:getAuds(),cat:getCats()[0]||"",start:f.start.value||"",end:f.end.value||"",loc:normLoc(f.loc.value),desc:f.desc.value.trim(),url:f.url.value.trim()};if(cxv)rec.cancels=cxv;if(att){rec.attach=att;const w=state.weekly.find(x=>x.id===att);if(w&&!rec.start){rec.start=w.start;rec.end=w.end||""}}rememberLocation(rec.loc);
   const i=state.events.findIndex(x=>x.id===rec.id);if(i>=0)state.events[i]=rec;else state.events.push(rec);
   state.events.sort(sortEv);dirty=true;selected=d;const dd=fromKey(d);view=new Date(dd.getFullYear(),dd.getMonth(),1);
-  closeDlg();renderAll();toast(i>=0?"Event updated. Save the calendar to publish it.":"Event added. Save the calendar to publish it.");
+  editing=true;closeDlg();renderAll();savedDlg();toast(i>=0?"Event updated. Press “Save Changes” to publish it.":"Event added. Press “Save Changes” to publish it.");
 });
 $("delBtn").onclick=()=>{if(!delArmed){delArmed=true;$("delBtn").textContent="Tap again to delete";return}state.events=state.events.filter(x=>x.id!==editingId);dirty=true;closeDlg();renderAll();toast("Event removed. Save the calendar to publish the change.")};
-$("addBtn").onclick=()=>openEvent(null);
+$("addBtn").onclick=openChooser;
 const toggles=[...document.querySelectorAll(".edit-toggle")];
 toggles.forEach(t=>t.onclick=()=>{editing=!editing;renderAll();if(editing)toast("Editing is on. Make your changes, then press “Save Changes”.")});
 $("doneBtn").onclick=()=>{if(dirty){toast("Save or discard your changes first.");return}editing=false;renderAll()};
@@ -2649,7 +2700,7 @@ function renderWeekly(){
   const sun=wk.filter(w=>w.dow===0);
   {const t=fromKey(TODAY);t.setDate(t.getDate()+((7-t.getDay())%7));const sk=keyOf(t),cx=canceledOn(sk);
     const reps=[...state.events.filter(e=>e.date===sk&&e.cancels),...(state.monthly||[]).filter(m=>m.title&&m.cancels&&moOn(m,sk)).map(m=>moInst(m,sk))];
-    let lbl=0;const rows=[...sun.filter(w=>!cx.has(w.id)).map(w=>{const labels=labelsFor(w.id,sk);lbl+=labels.length;return{w,li:wkItem({...w,labels})}}),...reps.map(e=>{const li=wkItem({...e,note:e.desc||""});li.classList.add("wk-special");
+    let lbl=0;const rows=[...sun.filter(w=>!cx.has(w.id)).map(w=>{const it=wkOn(w,sk);lbl+=it.labels.length;return{w:it,li:wkItem({...it,note:w.note})}}),...reps.map(e=>{const li=wkItem({...e,note:e.desc||""});li.classList.add("wk-special");
       li.lastChild.insertBefore(el("small",{className:"wk-sp",textContent:"Special Event"}),li.lastChild.firstChild.nextSibling);return{w:e,li}})];
     rows.sort((a,b)=>(a.w.start||"").localeCompare(b.w.start||""));
     const notes=(state.schedChanges||[]).filter(c=>c.date===sk&&c.note).map(c=>el("li",{className:"wk-change"},el("time",{}),el("span",{},el("small",{className:"wk-note keep-lines",textContent:c.note}))));
@@ -2695,18 +2746,19 @@ function wkRow(w,open){
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
   const upd=()=>{sum.textContent=DAYNAMES[+day.value]+(st.value?" · "+fmtTime(st.value):"")+(ti.value.trim()?" — "+ti.value.trim():"")};
   day.onchange=upd;st.oninput=upd;ti.oninput=upd;upd();
-  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministry ",pickHint()),cat),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For ",pickHint()),aud),L("Day",day),L("Starts",st),L("Ends (optional)",en),el("span"),L("Location",locPicker(lo),"full"),L("Details",no,"full"));
+  const f=el("div",{className:"w-fields full"},L("Name",ti,"full"),L("Day",day),L("Location",locPicker(lo)),el("div",{className:"tp"},L("Starts",st),L("Ends (optional)",en)),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministry ",pickHint()),cat),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For ",pickHint()),aud),L("Details",no,"full"));
   row.append(head,f);
   return row;
 }
 function openWeekly(){
+  wSingle=null;dlgRet=null;$("overlay5").querySelector(".dialog").classList.remove("single");$("dlg5Title").textContent="Weekly Schedule";
   const box=$("wList");box.replaceChildren(...(state.weekly||[]).map(w=>wkRow(w,false)));
   if(!box.children.length)box.append(wkRow({dow:3},true));
   $("w-err").hidden=true;$("overlay5").hidden=false;
 }
 $("wAdd").onclick=()=>{const r=wkRow({dow:3},true);$("wList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".w-title").focus()};
-$("wCancel").onclick=closeDlg;
-document.querySelectorAll(".wk-edit,.wk-edit2").forEach(b=>b.onclick=openWeekly);
+$("wCancel").onclick=cancelDlg;
+
 $("wForm").addEventListener("submit",ev=>{
   ev.preventDefault();
   const err=m=>{$("w-err").textContent=m;$("w-err").hidden=false};
@@ -2722,8 +2774,9 @@ $("wForm").addEventListener("submit",ev=>{
     rememberLocation(loc);
     out.push({id:row.dataset.wid||("w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),dow,start,end:/^\d{2}:\d{2}$/.test(end)?end:"",title,loc,note,cats,auds,cat:cats[0]||""});
   }
-  state.weekly=sortWk(out);dirty=true;editing=true;closeDlg();renderAll();
-  toast("Weekly schedule updated. Press “Save Changes” to publish it.");
+  if(wSingle){if(!out.length)return err("Give it a name and a start time.");state.weekly=sortWk([...state.weekly.filter(w=>w.id!==wSingle.id),...out])}else state.weekly=sortWk(out);
+  dirty=true;editing=true;closeDlg();renderAll();
+  toast(wSingle?(wSingle.id?out[0].title+" updated for every week.":out[0].title+" added every "+DAYNAMES[out[0].dow]+".")+" Press “Save Changes” to publish.":"Weekly schedule updated. Press “Save Changes” to publish it.");savedDlg();
 });
 
 /* recurring events editor */
@@ -2765,24 +2818,26 @@ function moRow(m,open){
   row._cx=cxEditor(()=>r1.checked?+dSel.value:null,{dayHint:"Only recurring events on a set weekday (like the last Wednesday) can replace weekly activities.",hint:"Applies every month this event happens"});row._cx.set(m.cancels||null);
   [ti,nSel,dSel,dayIn,r1,r2,st,fr,un].forEach(x=>{x.addEventListener("input",upd);x.addEventListener("change",upd)});upd();
   const L=(txt,inp,cls)=>el("label",{className:cls||""},txt,inp);
-  const f=el("div",{className:"w-fields full"},L("Event name",ti,"full"),
+  const f=el("div",{className:"w-fields full"},L("Name",ti,"full"),
+    el("div",{className:"full m-rep"},el("span",{className:"cat-lab",textContent:"Repeats"}),rep1,rep2,prev,skips),
+    el("div",{className:"tp"},L("Starts",st),L("Ends (optional)",en)),L("Location",locPicker(lo),"full"),
     el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Ministry ",pickHint()),cat),
     el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For ",pickHint()),aud),
-    el("div",{className:"full m-rep"},el("span",{className:"cat-lab",textContent:"Repeats"}),rep1,rep2,prev,skips),
-    L("Starts",st),L("Ends (optional)",en),row._cx.box,L("Location",locPicker(lo),"full"),L("Details",no,"full"),
+    row._cx.box,L("Details",no,"full"),
     L("Starting month (optional)",fr),L("Ending month (optional)",un));
   row.append(head,f);return row;
 }
 let moFocus=null;
 function openMonthly(focusId){
+  mSingle=null;dlgRet=null;$("overlay13").querySelector(".dialog").classList.remove("single");$("dlg13Title").textContent="Recurring Events";
   const box=$("mList");box.replaceChildren(...(state.monthly||[]).map(m=>moRow(m,m.id===focusId)));
   if(!box.children.length)box.append(moRow({mode:"nth",n:4,dow:1},true));
   $("m-err").hidden=true;$("overlay13").hidden=false;
   const o=box.querySelector(".mrow.open");if(o)setTimeout(()=>o.scrollIntoView({block:"nearest"}),30);
 }
 $("mAdd").onclick=()=>{const r=moRow({mode:"nth",n:4,dow:1},true);$("mList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".m-title").focus()};
-$("mCancel").onclick=closeDlg;
-document.querySelectorAll(".mo-edit").forEach(b=>b.onclick=()=>openMonthly(null));
+$("mCancel").onclick=cancelDlg;
+
 $("mForm").addEventListener("submit",ev=>{
   ev.preventDefault();const err=m=>{$("m-err").textContent=m;$("m-err").hidden=false};
   const out=[];
@@ -2802,16 +2857,17 @@ $("mForm").addEventListener("submit",ev=>{
     if(mode==="day")rec.day=+q(".m-day").value;else{rec.n=+q(".m-n").value;rec.dow=+q(".m-dow").value}
     rememberLocation(loc);out.push(rec);
   }
-  state.monthly=out;dirty=true;editing=true;closeDlg();renderAll();
-  toast("Recurring events updated. Press “Save Changes” to publish them.");
+  if(mSingle){if(!out.length)return err("Give it a name.");const L=(state.monthly||[]).slice(),i=L.findIndex(x=>x.id===mSingle.id);if(i>=0)L[i]=out[0];else L.push(out[0]);state.monthly=L}else state.monthly=out;
+  dirty=true;editing=true;closeDlg();renderAll();
+  toast(mSingle?(mSingle.id?out[0].title+" updated for every month.":out[0].title+" added: "+moRule(out[0])+".")+" Press “Save Changes” to publish.":"Recurring events updated. Press “Save Changes” to publish them.");savedDlg();
 });
 
 /* move one date of a recurring event */
 let mvCtx=null;
-function openMove(mid,from){const m=(state.monthly||[]).find(x=>x.id===mid);if(!m)return;const ex=moMove(m,from);mvCtx={mid,from:ex?ex.from:from,at:from};
+function openMove(mid,from){const m=(state.monthly||[]).find(x=>x.id===mid);if(!m)return;dlgRet=null;const ex=moMove(m,from);mvCtx={mid,from:ex?ex.from:from,at:from};
   $("mv-meta").textContent=m.title+" is usually on "+longDate(mvCtx.from)+". Pick the new date for this one time.";
   $("mv-date").value=from;$("mv-start").value=(ex&&ex.start)||m.start||"";$("mv-end").value=(ex&&ex.start?ex.end:m.end)||"";$("mv-err").hidden=true;$("overlay14").hidden=false;setTimeout(()=>$("mv-date").focus(),30)}
-$("mvCancel").onclick=closeDlg;
+$("mvCancel").onclick=cancelDlg;
 $("mvForm").addEventListener("submit",ev=>{ev.preventDefault();const err=t=>{$("mv-err").textContent=t;$("mv-err").hidden=false};
   const m=(state.monthly||[]).find(x=>x.id===mvCtx.mid);if(!m)return closeDlg();
   const to=$("mv-date").value,st=$("mv-start").value,en=$("mv-end").value;
@@ -2820,7 +2876,7 @@ $("mvForm").addEventListener("submit",ev=>{ev.preventDefault();const err=t=>{$("
   m.moves=(m.moves||[]).filter(x=>x.from!==mvCtx.from);
   const sameTime=st===(m.start||"")&&en===(m.end||"");
   if(!(to===mvCtx.from&&sameTime))m.moves.push(sameTime?{from:mvCtx.from,to}:{from:mvCtx.from,to,start:st,end:en});
-  dirty=true;editing=true;selected=to;const dd=fromKey(to);view=new Date(dd.getFullYear(),dd.getMonth(),1);closeDlg();renderAll();
+  dirty=true;editing=true;selected=to;const dd=fromKey(to);view=new Date(dd.getFullYear(),dd.getMonth(),1);dlgRet=null;closeDlg();renderAll();
   toast(to===mvCtx.from&&sameTime?m.title+" is back on its usual date. Press “Save Changes” to publish.":m.title+" moved to "+shortDate(to)+" for this one time. Press “Save Changes” to publish.")});
 
 /* schedule changes: cancel regular activities with no replacement */
@@ -2832,20 +2888,175 @@ function scRow(c){const row=el("div",{className:"nrow sc-row open"});row.dataset
   const rm=el("button",{type:"button",className:"btn ghost small",textContent:"Remove"});rm.onclick=()=>row.remove();
   row.append(el("div",{className:"nrow-head full"},sum,el("div",{className:"nrow-tools"},rm)),el("div",{className:"w-fields full"},el("label",{},"Date",d),ed.box,el("label",{className:"full"},"Note shown on the calendar (optional)",no)));
   return row}
-function openChanges(){const box=$("scList");const list=(state.schedChanges||[]).filter(c=>c.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date));
+function openChanges(){scSingle=null;dlgRet=null;$("overlay15").querySelector(".dialog").classList.remove("single");$("dlg15Title").textContent="Schedule Changes";const box=$("scList");const list=(state.schedChanges||[]).filter(c=>c.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date));
   box.replaceChildren(...list.map(scRow));if(!box.children.length)box.append(scRow({date:selected>=TODAY?selected:TODAY,mode:"all"}));
   $("sc-err").hidden=true;$("overlay15").hidden=false}
 $("scAdd").onclick=()=>{const r=scRow({date:"",mode:"all"});$("scList").append(r);r.scrollIntoView({block:"nearest"});r.querySelector(".sc-date").focus()};
-$("scCancel").onclick=closeDlg;
-document.querySelectorAll(".sc-edit").forEach(b=>b.onclick=()=>openChanges());
+$("scCancel").onclick=cancelDlg;
+
 $("scForm").addEventListener("submit",ev=>{ev.preventDefault();const err=t=>{$("sc-err").textContent=t;$("sc-err").hidden=false};const out=[];
   for(const row of $("scList").querySelectorAll(".sc-row")){const d=row.querySelector(".sc-date").value,c=row._cx.get(),note=row.querySelector(".sc-note").value.replace(/\r/g,"").trim();
     if(!d&&!note)continue;if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return err("Each schedule change needs a date. Remove any you don’t want.");
     if(!(state.weekly||[]).some(w=>w.dow===fromKey(d).getDay()))return err(longDate(d)+" has no weekly activities to cancel.");
     if(cxEmpty(c))return err("For "+longDate(d)+", check at least one activity to cancel, or choose Cancel All.");
     out.push({id:row.dataset.sid||("c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),date:d,...c,note})}
-  state.schedChanges=out.sort((a,b)=>a.date.localeCompare(b.date));dirty=true;editing=true;closeDlg();renderAll();
-  toast(out.length?"Schedule changes updated. Press “Save Changes” to publish them.":"Schedule changes cleared. Press “Save Changes” to publish.")});
+  if(scSingle){if(!out.length)return err("Pick a date.");state.schedChanges=[...(state.schedChanges||[]).filter(c=>c.id!==scSingle.id),...out]}else state.schedChanges=out;
+  state.schedChanges.sort((a,b)=>a.date.localeCompare(b.date));dirty=true;editing=true;if(scSingle&&out[0]){selected=out[0].date;const dd=fromKey(selected);view=new Date(dd.getFullYear(),dd.getMonth(),1)}closeDlg();renderAll();
+  toast(scSingle?"Activities canceled on "+shortDate(out[0].date)+". Press “Save Changes” to publish.":out.length?"Schedule changes updated. Press “Save Changes” to publish them.":"Schedule changes cleared. Press “Save Changes” to publish.");savedDlg()});
+
+var CH_ICO={
+  ev:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M12 14v4M10 16h4"/></svg>',
+  wk:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg>',
+  mo:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><circle cx="16" cy="16" r="1.6" fill="currentColor"/></svg>',
+  no:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>'
+};
+/* Manage Schedule (Weekly | Monthly | Changes), + Add chooser, and the Change ▾ menu on the calendar */
+var dlgRet=null,wSingle=null,mSingle=null,scSingle=null,chgOpen=null,msTab="week";
+function cancelDlg(){const r=dlgRet;dlgRet=null;closeDlg();if(r)r.fn()}
+function savedDlg(){const r=dlgRet;dlgRet=null;if(r&&r.save)r.fn()}
+function newId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function armDel(b,fn,label){label=label||"Remove";b.textContent=label;delete b.dataset.armed;b.onclick=()=>{if(!b.dataset.armed){b.dataset.armed="1";b.textContent="Tap Again to Remove";return}fn()}}
+function gBtn(t,cls,fn){const b=el("button",{type:"button",className:"btn "+cls,textContent:t});b.onclick=fn;return b}
+function gOpen(title,lead,nodes){closeDlg();$("g-title").textContent=title;$("g-lead").textContent=lead||"";$("g-lead").hidden=!lead;$("g-body").replaceChildren(...nodes);$("overlay16").hidden=false}
+function gForm(fields,saveLabel,onSave,onDel,cancelLabel,extra){const f=el("form",{className:"form",noValidate:true});fields.forEach(x=>f.append(x));
+  const er=el("p",{className:"err full",hidden:true});f.append(er);const acts=el("div",{className:"dialog-actions full"});
+  if(onDel){const d=el("button",{type:"button",className:"btn danger"});armDel(d,onDel);acts.append(d)}
+  if(extra)acts.append(extra);
+  acts.append(gBtn(cancelLabel||"Cancel","ghost",cancelDlg),el("button",{type:"submit",className:"btn primary",textContent:saveLabel}));f.append(acts);
+  f.onsubmit=ev=>{ev.preventDefault();const m=onSave();if(m){er.textContent=m;er.hidden=false}};return f}
+function published(msg){dirty=true;editing=true;closeDlg();renderAll();toast(msg+" Press “Save Changes” to publish.")}
+function goDate(k){selected=k;const d=fromKey(k);view=new Date(d.getFullYear(),d.getMonth(),1)}
+
+/* one item at a time in the weekly / monthly / schedule-change editors */
+function openWeeklyOne(id,ret){const w=id?(state.weekly||[]).find(x=>x.id===id):null;if(id&&!w)return;
+  closeDlg();wSingle={id:w?w.id:null};dlgRet=ret||null;$("overlay5").querySelector(".dialog").classList.add("single");
+  $("dlg5Title").textContent=w?"Edit "+w.title:"Add a Weekly Activity";
+  $("w-lead").textContent=w?"Changes apply to every week. To change just one date, use Change ▾ on the calendar.":"It will show every week on the calendar, Our Schedule and Join Us This Week.";
+  const row=wkRow(w||{dow:fromKey(selected).getDay()},true);$("wList").replaceChildren(row);
+  const del=$("wDel");del.hidden=!w;if(w)armDel(del,()=>removeWk(w.id));
+  $("w-err").hidden=true;$("overlay5").hidden=false;$("overlay5").querySelector(".dialog").scrollTop=0;setTimeout(()=>row.querySelector(".w-title").focus(),30)}
+function removeWk(id){const w=state.weekly.find(x=>x.id===id);state.weekly=state.weekly.filter(x=>x.id!==id);state.overrides=(state.overrides||[]).filter(o=>o.wid!==id);
+  published((w?w.title:"The activity")+" was removed from the weekly schedule.");savedDlg()}
+function openMonthlyOne(id,ret){const m=id?(state.monthly||[]).find(x=>x.id===id):null;if(id&&!m)return;
+  closeDlg();mSingle={id:m?m.id:null};dlgRet=ret||null;$("overlay13").querySelector(".dialog").classList.add("single");
+  $("dlg13Title").textContent=m?"Edit "+m.title:"Add a Monthly Event";
+  $("m-lead").textContent=m?"Changes apply to every month. To skip or move just one date, use Change ▾ on the calendar.":"For example, the last Wednesday or the 4th Monday of each month.";
+  const row=moRow(m||{mode:"nth",n:4,dow:1},true);$("mList").replaceChildren(row);
+  const del=$("mDel");del.hidden=!m;if(m)armDel(del,()=>removeMo(m.id));
+  $("m-err").hidden=true;$("overlay13").hidden=false;$("overlay13").querySelector(".dialog").scrollTop=0;setTimeout(()=>row.querySelector(".m-title").focus(),30)}
+function removeMo(id){const m=(state.monthly||[]).find(x=>x.id===id);state.monthly=(state.monthly||[]).filter(x=>x.id!==id);
+  published((m?m.title:"The event")+" was removed from the monthly schedule.");savedDlg()}
+function openChangeOne(id,ret){const c=id?(state.schedChanges||[]).find(x=>x.id===id):null;if(id&&!c)return;
+  closeDlg();scSingle={id:c?c.id:null};dlgRet=ret||null;$("overlay15").querySelector(".dialog").classList.add("single");
+  $("dlg15Title").textContent=c?"Edit Schedule Change":"Cancel Activities for a Specified Date";
+  $("sc-lead").textContent="Cancel weekly activities on one date without changing the weekly schedule, such as a holiday week. If a special event takes their place, add the event instead and choose what it replaces.";
+  $("scList").replaceChildren(scRow(c||{date:selected>=TODAY?selected:TODAY,mode:"all"}));
+  const del=$("scDel");del.hidden=!c;if(c)armDel(del,()=>removeSc(c.id));
+  $("sc-err").hidden=true;$("overlay15").hidden=false}
+function removeSc(id){const c=(state.schedChanges||[]).find(x=>x.id===id);state.schedChanges=(state.schedChanges||[]).filter(x=>x.id!==id);
+  published("Regular activities are back on"+(c?" "+shortDate(c.date):"")+".");savedDlg()}
+$("overlay5").querySelector(".dialog").classList.remove("single");
+
+/* Manage Schedule */
+function manage(tab){msTab=tab||msTab;dlgRet=null;const re={fn:()=>manage(msTab),save:true};
+  const upc=(state.schedChanges||[]).filter(c=>c.date>=TODAY).length+(state.overrides||[]).filter(o=>o.date>=TODAY&&(state.weekly||[]).some(w=>w.id===o.wid)).length;
+  const tabs=el("div",{className:"ms-tabs",role:"tablist"});
+  [["week","Weekly"],["mo","Monthly"],["chg","Changes"+(upc?" ("+upc+")":"")]].forEach(([k,t])=>{const b=el("button",{type:"button",role:"tab",textContent:t});b.setAttribute("aria-selected",String(k===msTab));b.onclick=()=>manage(k);tabs.append(b)});
+  const pane=el("div",{role:"tabpanel"}),row=(a,b,acts,long)=>el("div",{className:"ms-row"+(long?" long":"")},...(a?[a]:[]),b,el("span",{className:"ms-acts"},...acts));
+  if(msTab==="week"){const by={};(state.weekly||[]).forEach(w=>(by[w.dow]=by[w.dow]||[]).push(w));
+    Object.keys(by).sort().forEach(d=>{pane.append(el("div",{className:"ms-grp",textContent:DAYNAMES[d]}));
+      by[d].forEach(w=>pane.append(row(el("span",{className:"tm",textContent:fmtTime(w.start)}),el("span",{textContent:w.title}),[gBtn("Edit","ghost small",()=>openWeeklyOne(w.id,re))])))});
+    if(!(state.weekly||[]).length)pane.append(el("p",{className:"ms-empty",textContent:"No weekly activities yet."}));
+    pane.append(el("div",{className:"ms-add"},gBtn("+ Add Weekly Activity","ghost small",()=>openWeeklyOne(null,re))))}
+  else if(msTab==="mo"){const L=(state.monthly||[]).filter(m=>m.title);
+    if(!L.length)pane.append(el("p",{className:"ms-empty",textContent:"No monthly events yet."}));
+    L.forEach(m=>pane.append(row(null,el("span",{},el("b",{textContent:m.title}),el("span",{className:"hint",textContent:moRule(m)+(m.start?" · "+fmtTime(m.start):"")+(m.until&&m.until<TODAY.slice(0,7)?" · Ended":"")})),[gBtn("Edit","ghost small",()=>openMonthlyOne(m.id,re))],true)));
+    pane.append(el("div",{className:"ms-add"},gBtn("+ Add Monthly Event","ghost small",()=>openMonthlyOne(null,re))))}
+  else{const items=[];
+    (state.schedChanges||[]).filter(c=>c.date>=TODAY).forEach(c=>{const dow=fromKey(c.date).getDay(),n=cxNames(c,dow);
+      items.push({d:c.date,node:row(null,el("span",{},el("b",{textContent:longDate(c.date)}),el("span",{className:"hint",textContent:(c.mode==="all"?"All "+DAYNAMES[dow]+" activities canceled":(n.length?andList(n):"Nothing")+" canceled")+(c.note?" · "+c.note:"")})),[gBtn("Edit","ghost small",()=>openChangeOne(c.id,re))],true)})});
+    (state.overrides||[]).filter(o=>o.date>=TODAY).forEach(o=>{const w=(state.weekly||[]).find(x=>x.id===o.wid);if(!w)return;
+      const what=[o.start?fmtTime(o.start)+(o.end?" – "+fmtTime(o.end):""):"",o.loc||"",Array.isArray(o.auds)?(o.auds.length?"For "+andList(o.auds.map(a=>AUDS[a])):"For everyone"):""].filter(Boolean).join(" · ");
+      items.push({d:o.date,node:row(null,el("span",{},el("b",{textContent:longDate(o.date)}),el("span",{className:"hint",textContent:w.title+" changed: "+what})),[gBtn("Undo","ghost small",()=>{state.overrides=state.overrides.filter(x=>x!==o);dirty=true;editing=true;renderAll();manage("chg");toast(w.title+" is back to normal on "+shortDate(o.date)+". Press “Save Changes” to publish.")})],true)})});
+    items.sort((a,b)=>a.d.localeCompare(b.d)).forEach(x=>pane.append(x.node));
+    if(!items.length)pane.append(el("p",{className:"ms-empty",textContent:"No changes coming up. Use this for holiday weeks, weather or building work when nothing replaces the regular activities."}));
+    pane.append(el("div",{className:"ms-add"},gBtn("+ Cancel Activities for a Specified Date","ghost small",()=>openChangeOne(null,re))))}
+  gOpen("Manage Schedule","",[tabs,pane,el("div",{className:"dialog-actions"},gBtn("Done","primary",()=>{dlgRet=null;closeDlg()}))]);
+  const sel=tabs.querySelector('[aria-selected="true"]');if(sel)setTimeout(()=>sel.focus(),30)}
+document.querySelectorAll(".ms-edit").forEach(b=>b.onclick=()=>manage("week"));
+
+/* + Add */
+function openChooser(){dlgRet=null;const re={fn:openChooser,save:false};const box=el("div",{className:"choices"});
+  const ch=(ico,t,s,fn)=>{const b=el("button",{type:"button",className:"choice"});b.innerHTML=CH_ICO[ico];b.append(el("span",{},el("b",{textContent:t}),el("span",{textContent:s})));b.onclick=fn;box.append(b)};
+  ch("ev","A One-Time Event","Blood Drive, Luncheon, Special Service",()=>{closeDlg();openEvent(null);dlgRet=re});
+  ch("wk","A Weekly Activity","Sunday School, Choir Practice, Bible Study",()=>openWeeklyOne(null,re));
+  ch("mo","A Monthly Event","Church Conference, Deacons’ Meeting",()=>openMonthlyOne(null,re));
+  ch("no","Cancel Activities for a Specified Date","Holiday Week, Weather, Building Work",()=>openChangeOne(null,re));
+  gOpen("What Would You Like to Add?","",[box,el("div",{className:"dialog-actions"},gBtn("Cancel","ghost",closeDlg))]);setTimeout(()=>box.firstChild.focus(),30)}
+
+/* Change ▾ on a weekly or monthly item */
+function closeChg(){if(chgOpen){chgOpen.m.remove();chgOpen.b.setAttribute("aria-expanded","false");chgOpen=null}}
+document.addEventListener("click",e=>{if(chgOpen&&!chgOpen.wrap.contains(e.target))closeChg()});
+function chgMenu(e){const wrap=el("div",{className:"chg-wrap edit"}),k=e.date;
+  const b=el("button",{type:"button",className:"btn ghost small",textContent:"Change ▾"});b.setAttribute("aria-haspopup","menu");b.setAttribute("aria-expanded","false");
+  b.onclick=ev=>{ev.stopPropagation();if(chgOpen&&chgOpen.wrap===wrap){closeChg();return}closeChg();
+    const m=el("div",{className:"chg-menu",role:"menu"});
+    const head=(t,s)=>m.append(el("div",{className:"h"},t,el("small",{textContent:s})));
+    const item=(t,fn)=>{const x=el("button",{type:"button",role:"menuitem",textContent:t});x.onclick=()=>{closeChg();fn()};m.append(x)};
+    head("Just This Date",longDate(k)+" only");
+    if(e.weekly){
+      item("Cancel This Date",()=>cancelDate(e.wid,k));
+      item("Add a Label",()=>labelForm(e.wid,k,null));
+      (e.labels||[]).filter(l=>l.id).forEach(l=>item("Edit Label: "+l.title,()=>labelForm(e.wid,k,l.id)));
+      if(e.ov)item("Undo This Date’s Change",()=>{state.overrides=state.overrides.filter(o=>o!==e.ov);dirty=true;editing=true;renderAll();toast(e.title+" is back to its usual time and place on "+shortDate(k)+". Press “Save Changes” to publish.")});
+      else item("Change Time, Place or For Who",()=>overrideForm(e.wid,k));
+      m.append(el("hr"));head("Every Week","Changes the regular schedule");
+      item("Edit "+e.title,()=>openWeeklyOne(e.wid,null));item("Remove From Schedule",()=>confirmRemove("weekly",e.wid))}
+    else{const mo=()=>(state.monthly||[]).find(x=>x.id===e.mid);
+      item("Skip This Month",()=>{const x=mo();if(!x)return;if(e.movedFrom){x.moves=(x.moves||[]).filter(y=>y.to!==k);x.skip=[...(x.skip||[]),e.movedFrom]}else x.skip=[...(x.skip||[]),k];dirty=true;editing=true;renderAll();toast(e.title+" skipped this month. Press “Save Changes” to publish.")});
+      if(e.movedFrom)item("Undo Move",()=>{const x=mo();if(!x)return;x.moves=(x.moves||[]).filter(y=>y.to!==k);dirty=true;editing=true;goDate(e.movedFrom);renderAll();toast(e.title+" is back on "+shortDate(e.movedFrom)+". Press “Save Changes” to publish.")});
+      else item("Move This Date",()=>openMove(e.mid,k));
+      m.append(el("hr"));head("Every Month","Changes every month");
+      item("Edit "+e.title,()=>openMonthlyOne(e.mid,null));item("Remove From Schedule",()=>confirmRemove("monthly",e.mid))}
+    wrap.append(m);chgOpen={wrap,m,b};b.setAttribute("aria-expanded","true");
+    const r=m.getBoundingClientRect();if(r.bottom>innerHeight-8)m.scrollIntoView({block:"nearest",behavior:"smooth"});
+    const f=m.querySelector("button");if(f)f.focus({preventScroll:true})};
+  wrap.append(b);return wrap}
+
+/* one-date actions */
+function cancelDate(wid,k){const w=state.weekly.find(x=>x.id===wid);if(!w)return;dlgRet=null;
+  const no=el("input",{maxLength:200,placeholder:"Choir off for Thanksgiving"});
+  gOpen("Cancel "+w.title+"?","",[gForm([el("p",{className:"full g-text",textContent:"Cancel "+w.title+" on "+longDate(k)+" only. Every other week stays the same."}),el("label",{className:"full"},"Note Shown on the Calendar (optional)",no)],"Cancel This Date",()=>{
+    const n=no.value.trim(),ex=n?null:(state.schedChanges||[]).find(c=>c.date===k&&c.mode==="some"&&!c.note);
+    if(ex)ex.ids=[...new Set([...(ex.ids||[]),wid])];else state.schedChanges.push({id:newId("c"),date:k,mode:"some",ids:[wid],note:n});
+    state.schedChanges.sort((a,b)=>a.date.localeCompare(b.date));published(w.title+" canceled on "+shortDate(k)+".")},null,"Never Mind")]);setTimeout(()=>no.focus(),30)}
+function restoreWk(wid,k){const dow=fromKey(k).getDay(),srcs=canceledOn(k,true).get(wid)||[],w=state.weekly.find(x=>x.id===wid);let mo="";
+  const dayIds=()=>state.weekly.filter(x=>x.dow===dow).map(x=>x.id);
+  srcs.forEach(s=>{const o=s.o;
+    if(s.t==="change"){if(o.mode==="all"){o.mode="some";o.ids=dayIds()}o.ids=(o.ids||[]).filter(i=>i!==wid);if(!o.ids.length)state.schedChanges=state.schedChanges.filter(x=>x!==o);return}
+    if(!o.cancels)return;if(s.t==="monthly")mo=o.title;
+    if(o.cancels.mode==="all")o.cancels={mode:"some",ids:dayIds()};o.cancels.ids=(o.cancels.ids||[]).filter(i=>i!==wid);if(!o.cancels.ids.length)delete o.cancels});
+  dirty=true;editing=true;renderAll();toast((w?w.title:"The activity")+" is back on "+shortDate(k)+(mo?". It will also stay on during "+mo+" every month":"")+". Press “Save Changes” to publish.")}
+function labelForm(wid,k,lid){const w=state.weekly.find(x=>x.id===wid);if(!w)return;const l=lid?state.events.find(x=>x.id===lid):null;dlgRet=null;
+  const ti=el("input",{maxLength:90,value:l?l.title:"",placeholder:"Harvest Day Offering"}),de=el("textarea",{maxLength:400});de.value=l?(l.desc||""):"";
+  const more=l?gBtn("More Options","ghost",()=>{closeDlg();openEvent(l.id)}):null;
+  gOpen((l?"Edit Label on ":"Add a Label to ")+w.title,longDate(k)+" only. The label shows in red under the name.",[gForm([el("label",{className:"full"},"Label",ti),el("label",{className:"full"},"Details (optional)",de)],l?"Apply":"Add Label",()=>{
+    const t=ti.value.trim();if(!t)return"Type the label.";
+    if(l){l.title=t;l.desc=de.value.trim()}else state.events.push({id:newId("e"),title:t,date:k,cats:evCats(w),auds:evAuds(w),cat:evCats(w)[0]||"",start:w.start||"",end:w.end||"",loc:"",desc:de.value.trim(),url:"",attach:wid});
+    state.events.sort(sortEv);published("Label "+(l?"updated":"added")+" on "+w.title+", "+shortDate(k)+".")},
+    l?()=>{state.events=state.events.filter(x=>x!==l);published("Label removed.")}:null,null,more)]);setTimeout(()=>ti.focus(),30)}
+function overrideForm(wid,k){const w=state.weekly.find(x=>x.id===wid);if(!w)return;dlgRet=null;const ex=ovFor(wid,k);
+  const st=el("input",{type:"time",value:(ex&&ex.start)||w.start||""}),en=el("input",{type:"time",value:ex&&ex.start?(ex.end||""):(w.end||"")}),lo=el("input",{maxLength:80,value:(ex&&ex.loc)||w.loc||""});
+  const aud=audOpts(el("div",{className:"cat-opts",role:"group",ariaLabel:"Who It’s For"}),ex&&Array.isArray(ex.auds)?ex.auds:evAuds(w));const lp=locPicker(lo);
+  gOpen("Change Time, Place or For Who",w.title+" on "+longDate(k)+" only. Every other week stays the same.",[gForm([el("div",{className:"tp"},el("label",{},"Starts",st),el("label",{},"Ends (optional)",en)),el("label",{className:"full"},"Location",lp),el("div",{className:"full cat-pick"},el("span",{className:"cat-lab"},"Who It’s For"),aud)],"Change This Date",()=>{
+    if(!st.value)return"Add a start time.";if(en.value&&en.value<=st.value)return"The end time needs to be after the start time.";
+    const L=normLoc(lo.value),A=[...aud.querySelectorAll("input:checked")].map(i=>i.value),sameA=A.slice().sort().join()===evAuds(w).slice().sort().join(),sameT=st.value===(w.start||"")&&en.value===(w.end||""),sameL=L===(w.loc||"");
+    if(sameT&&sameL&&sameA)return"Change the time, place or who it’s for, or press Cancel.";
+    rememberLocation(L);state.overrides=(state.overrides||[]).filter(o=>!(o.wid===wid&&o.date===k));
+    state.overrides.push({id:newId("o"),wid,date:k,start:sameT?"":st.value,end:sameT?"":en.value,loc:sameL?"":L,auds:sameA?null:A});
+    published(w.title+" changed for "+shortDate(k)+" only.")})])}
+function confirmRemove(kind,id){const wk=kind==="weekly",x=((wk?state.weekly:state.monthly)||[]).find(y=>y.id===id);if(!x)return;dlgRet=null;
+  gOpen("Remove "+x.title+"?","",[gForm([el("p",{className:"full g-text",textContent:"Remove "+x.title+" from the "+(wk?"weekly":"monthly")+" schedule? It will disappear from every "+(wk?"week":"month")+". To skip just one date, use "+(wk?"Cancel This Date":"Skip This Month")+" instead."})],"Remove",()=>{wk?removeWk(id):removeMo(id)},null,"Keep It")])}
 
 /* staff */
 const autoIni=n=>{const w=n.replace(/\(.*?\)/g," ").replace(/\b(Dr|Rev|Mr|Mrs|Ms|Miss|Pastor)\.?\s/gi," ").replace(/\b(Jr|Sr|II|III|IV)\b\.?/g," ").trim().split(/\s+/).filter(Boolean);return w.length?(w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase():"?"};
@@ -3482,7 +3693,7 @@ $("saveBtn").onclick=async()=>{
 renderAll();show();
 
 /* staff sign-in (GitHub key) */
-if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".wk-edit,.ls-edit,.mo-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
+if(GH.ok){toggles.forEach(t=>t.hidden=false);document.querySelectorAll(".ms-edit,.ls-edit").forEach(b=>b.hidden=false);canEditFlag=true;assetsApi=GH.assets;renderNotice();renderPhotos();renderAll();}
 $("staffLink").textContent=GH.ok?"Staff Sign Out":"Staff Sign In";
 $("staffLink").onclick=e=>{e.preventDefault();
   if(GH.ok){if(dirty&&!confirm("You have unsaved changes. Sign Out anyway?"))return;GH.forget();location.reload();return}
