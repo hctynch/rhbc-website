@@ -3222,7 +3222,7 @@ function prWeeklyPage(o){
   const page=el("section",{className:"pr-page land"});page.append(prHead("Weekly Schedule"));
   const by={};(state.weekly||[]).filter(w=>evShown(w)).forEach(w=>(by[w.dow]=by[w.dow]||[]).push(w));
   const days=Object.keys(by).sort();const g=el("div",{className:"pr-wkp"});g.style.gridTemplateColumns="repeat("+days.length+",minmax(0,1fr))";
-  days.forEach(d=>{const col=el("div",{className:"pr-wkc"},el("h3",{textContent:"Every "+DAYNAMES[d]}));
+  days.forEach(d=>{const col=el("div",{className:"pr-wkc"},el("h3",{textContent:(days.length>4?"":"Every ")+DAYNAMES[d]}));
     by[d].slice().sort((a,b)=>(a.start||"").localeCompare(b.start||"")).forEach(w=>{const r=el("div",{className:"pr-wki"},el("span",{className:"t",textContent:prT(w.start)+(w.end?" – "+prT(w.end):"")}),el("b",{textContent:w.title}));
       if(o.loc&&w.loc)r.append(el("span",{className:"l",textContent:w.loc}));
       const a=evAuds(w).map(x=>AUDS[x]);if(a.length)r.append(el("span",{className:"l",textContent:"For "+(a.length>1?a.slice(0,-1).join(", ")+" & ":"")+a[a.length-1]}));
