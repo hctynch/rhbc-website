@@ -1986,6 +1986,7 @@ textarea{min-height:84px;resize:vertical}
       <fieldset class="full serm-box" id="d-serm">
         <legend>Sermon <span class="hint">shown above the live stream</span></legend>
         <p class="hint" id="d-s-hint">Filled in from the PDF when you upload it. Check it, or type it in.</p>
+        <button class="btn ghost small" type="button" id="d-read" style="justify-self:start">Read From PDF</button>
         <label>Sermon Title<input id="d-s-title" maxlength="200"></label>
         <label>Scripture<input id="d-s-scr" maxlength="80" placeholder="Jonah 3:3–10"></label>
         <label>Preacher or Speaker<input id="d-s-by" maxlength="80" placeholder="Pastor Trey Rogers"></label>
@@ -2607,6 +2608,7 @@ function openDoc(kind,i){
   $("d-serm").hidden=!isB;const sm=(it&&it.s)||{};sermAuto=false;
   $("d-s-title").value=sm.title||"";$("d-s-scr").value=sm.scr||"";$("d-s-by").value=sm.by||"";$("d-s-series").value=sm.series||"";
   $("d-s-hint").textContent="Filled in from the PDF when you upload it. Check it, or type it in.";
+  $("d-read").hidden=!(it&&(it.a||it.u));$("d-read").disabled=false;$("d-read").textContent="Read From PDF";
   $("overlay3").hidden=false;
 }
 document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>openDoc(b.dataset.add,-1));
@@ -3328,7 +3330,7 @@ function parseSermon(L){
   for(let j=i+1;j<L.length&&W.length<12;j++){const s=clean(L[j]);if(!s)continue;if(stop.test(s))break;W.push(s)}
   const res={title:"",scr:"",by:"",series:""};
   const txt=W.join("\n");
-  let m=WHO.exec(txt);if(m)res.by=m[0].trim().replace(/\s+(Title|Scripture|Sermon|Message)$/,"").replace(/[,;]$/,"");
+  let m=WHO.exec(txt);if(m)res.by=m[0].trim().replace(/\s*(Title|Scripture|Sermon|Message|Text|Series|Passage)$/,"").replace(/[,;]$/,"");
   // scripture: labeled, else first reference
   m=/Scripture\s*[:\-–]\s*([^\n]+)/i.exec(txt);let sc=m?m[1]:"";const r=REF.exec(sc||txt);if(r)sc=r[0];
   if(sc)res.scr=sc.replace(/\s*:\s*/g,":").replace(/\s*[-–—]\s*/g,"–").replace(/\s*,\s*/g,", ").replace(/\s+/g," ").trim();
@@ -3386,20 +3388,36 @@ async function pdfLines(file){
     for(const it of tc.items){cur+=it.str;if(it.hasEOL){out.push(cur);cur=""}}if(cur)out.push(cur)}
   return out;
 }
-$("d-file").addEventListener("change",async()=>{
-  const f=$("d-file").files[0];if(!f||docKind!=="bulletins")return;
+/* match a name from the PDF to one used before ("Graduates Sunday" -> "Graduate Sunday") */
+function normName(x){return (x||"").toLowerCase().replace(/[’'"“”]/g,"").replace(/&/g," and ").replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w&&w!=="the").map(w=>w.length>3?w.replace(/s$/,""):w).join(" ").replace(/ (sunday|service|day)$/,"").trim()}
+var PREFERRED_NAMES=["Graduate Sunday"]; /* always used for these, even before they appear in the list */
+function matchName(x){const n=normName(x);if(!n)return "";return (state[docKind]||[]).map(b=>(b.t||"").trim()).concat(docKind==="bulletins"?PREFERRED_NAMES:[]).find(t=>t&&normName(t)===n)||""}
+/* read the special day and sermon from a PDF; force = the Read From PDF button (fills even if something is typed) */
+async function fillFromPdf(src,force){
   const ids=["d-s-title","d-s-scr","d-s-by","d-s-series"];
-  const keepSerm=!sermAuto&&ids.some(i=>$(i).value.trim()); /* don't overwrite what someone typed */
-  const hint=$("d-s-hint");if(!keepSerm)hint.textContent="Reading the sermon from the PDF…";
-  try{const lines=await pdfLines(f);
-    if(dayAuto||!$("d-title").value.trim()){$("d-title").value=parseSpecial(lines);dayAuto=true;$("d-title")._sync()}
+  const keepSerm=!force&&!sermAuto&&ids.some(i=>$(i).value.trim()); /* don't overwrite what someone typed */
+  const hint=$("d-s-hint"),th=$("d-title-hint");if(!keepSerm)hint.textContent="Reading the sermon from the PDF…";
+  try{const lines=await pdfLines(src);
+    if(force||dayAuto||!$("d-title").value.trim()){const x=(parseSpecial(lines)||"").replace(/[“”"]/g,"").replace(/\s+/g," ").trim();
+      if(force&&!x)th.textContent="No special day was found in the PDF.";
+      if(x||!force){const m=matchName(x);$("d-title").value=m||x;dayAuto=true;$("d-title")._sync();
+        th.textContent=m&&m!==x?"The PDF says “"+x+"”, so “"+m+"” was picked to match the name used before.":x?"Found in the PDF. Change it if needed.":"No special day was found in the PDF."}}
     if(keepSerm)return;
     const r=parseSermon(lines);
-    if(r){$("d-s-title").value=r.title;$("d-s-scr").value=r.scr;$("d-s-by").value=r.by;$("d-s-series").value=r.series;sermAuto=true;
-      hint.textContent="Filled in from the bulletin. Please check it before adding."+(r.title&&r.scr&&r.by?"":" Some parts weren’t found, so type those in.")}
-    else hint.textContent="The sermon wasn’t found in this PDF. Type it in if you’d like it shown."}
+    if(r){ids.forEach((i,k)=>{const v=[r.title,r.scr,r.by,r.series][k];if(v||!force)$(i).value=v});sermAuto=true;
+      hint.textContent="Filled in from the bulletin. Please check it before saving."+(r.title&&r.scr&&r.by?"":" Some parts weren’t found, so type those in.")}
+    else hint.textContent=lines.join("").trim()?"The sermon wasn’t found in this PDF. Type it in if you’d like it shown.":"This PDF is saved as a picture, so its words can’t be read. Type the sermon in if you’d like it shown."}
   catch(e){hint.textContent="This PDF couldn’t be read. Type the sermon in if you’d like it shown."}
-});
+}
+$("d-file").addEventListener("change",()=>{const f=$("d-file").files[0];if(!f||docKind!=="bulletins")return;$("d-read").hidden=false;fillFromPdf(f,false)});
+$("d-read").onclick=async()=>{const b=$("d-read"),f=$("d-file").files[0],it=docIdx>=0?state[docKind][docIdx]:null;
+  b.disabled=true;b.textContent="Reading…";
+  try{let src=f;
+    if(!src&&it){const h=docHref(it);if(!h)throw 0;const r=await fetch(h);if(!r.ok)throw 0;src=await r.blob()}
+    if(!src){$("d-s-hint").textContent="Choose the PDF first.";return}
+    await fillFromPdf(src,true)}
+  catch(e){$("d-s-hint").textContent=it&&it.u&&!it.a?"That linked PDF can’t be opened from here. Upload the file instead to read it.":"The PDF couldn’t be opened. Try again."}
+  finally{b.disabled=false;b.textContent="Read From PDF"}};
 const nyKey=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 function curSermon(t){
   t=t||nyKey();const b=(state.bulletins||[]).find(x=>x.d&&x.d.slice(0,10)===t);
