@@ -3184,7 +3184,7 @@ function confirmRemove(kind,id){const wk=kind==="weekly",x=((wk?state.weekly:sta
 
 /* Print Schedule: month calendar pages or a list of events, printed or saved as a PDF */
 var prOpt=null;
-function prDefaults(){return{layout:"month",range:"this",month:TODAY.slice(0,7),year:String(fromKey(TODAY).getFullYear()),from:TODAY,to:"",wk:showWeekly,mo:showMonthly,ot:showOther,loc:false,det:false,wkMode:"each",wkWhere:"under",listWk:"in",listStyle:"day"}}
+function prDefaults(){return{layout:"month",range:"this",month:TODAY.slice(0,7),year:String(fromKey(TODAY).getFullYear()),from:TODAY,to:"",wk:showWeekly,mo:showMonthly,ot:showOther,loc:false,det:false,wkMode:"once",wkWhere:"page",listWk:"page",listStyle:"table"}}
 function prRange(o){const t=fromKey(TODAY);let a,b;
   if(o.range==="this"){a=new Date(t.getFullYear(),t.getMonth(),1);b=new Date(t.getFullYear(),t.getMonth()+1,0)}
   else if(o.range==="next"){a=new Date(t.getFullYear(),t.getMonth()+1,1);b=new Date(t.getFullYear(),t.getMonth()+2,0)}
@@ -3282,7 +3282,7 @@ function prShow(o){const [a,b]=prRange(o);let v=$("printView");if(!v){v=el("div"
   ps.textContent=o.layout==="month"?"@page{size:letter landscape;margin:.35in}":"@page{size:letter portrait;margin:.5in}";
   const sheets=el("div",{className:"pr-sheets mk-"+(o.mark||"none")});
   const pb=gBtn("Print or Save as PDF","primary",()=>window.print());
-  const label=el("b",{textContent:(o.layout==="month"?"Month Calendar":"List of Events")+" · "+prRangeLabel(a,b)});
+  const label=el("b",{textContent:(o.layout==="month"?"Monthly Calendar":"List of Events")+" · "+prRangeLabel(a,b)});
   v.replaceChildren(el("div",{className:"pr-bar"},gBtn("← Back to Options","ghost small",()=>{prClose();openPrint()}),label,gBtn("Close","ghost small",prClose),pb,
     el("small",{textContent:"To save a PDF, choose “Save as PDF” as the printer. "+(o.layout==="month"?"Each month prints on its own landscape page.":"The list prints on portrait pages.")})),sheets);
   v.hidden=false;document.body.classList.add("pr-on");document.documentElement.style.overflow="hidden";
@@ -3297,17 +3297,17 @@ function openPrint(){dlgRet=null;const o=prOpt||prDefaults();
   const radio=(name,val,label,sub)=>{const i=el("input",{type:"radio",name,value:val});i.checked=String(o[name])===val;return el("label",{},i,el("span",{},label,sub?el("small",{textContent:sub}):""))};
   const box=(name,label)=>{const i=el("input",{type:"checkbox",name});i.checked=!!o[name];return el("label",{},i,el("span",{},label))};
   const grp=(label,...kids)=>el("div",{className:"full pr-opts"},el("span",{className:"pr-l",textContent:label}),el("div",{className:"pr-ch"},...kids));
-  const lay=grp("Layout",radio("layout","month","Month Calendar","One month per page"),radio("layout","list","List of Events","In date order"));
+  const lay=grp("Layout",radio("layout","month","Monthly Calendar","One month per page"),radio("layout","list","List of Events","In date order"));
   const rs=el("select",{id:"pr-range"});[["this","This Month"],["next","Next Month"],["month","Pick a Month"],["year","Whole Year"],["range","Date Range"]].forEach(([v,t])=>rs.append(el("option",{value:v,textContent:t})));rs.value=o.range;
   const mo=el("input",{type:"month",id:"pr-month",value:o.month}),ys=el("select",{id:"pr-year"});const cy=fromKey(TODAY).getFullYear();[cy-1,cy,cy+1].forEach(y=>ys.append(el("option",{value:String(y),textContent:String(y)})));ys.value=o.year;
   const fr=el("input",{type:"date",id:"pr-from",value:o.from}),to=el("input",{type:"date",id:"pr-to",value:o.to});
   const mL=el("label",{className:"full"},"Month",mo),yL=el("label",{className:"full"},"Year",ys),rL=el("div",{className:"tp"},el("label",{},"From",fr),el("label",{},"To",to));
   const dates=el("label",{className:"full"},"Dates",rs);
   const inc=grp("Include",box("wk","Weekly Services"),box("mo","Monthly Events"),box("ot","One-Time Events"));
-  const wkm=grp("Weekly Services on the Calendar",radio("wkMode","each","On Each Day","Every service in its box"),radio("wkMode","once","Listed Once","So days stay roomy"));
-  const wkw=grp("Where to List Weekly Services",radio("wkWhere","under","Under Each Month","A short list at the bottom of each page"),radio("wkWhere","page","On Their Own Page","A Weekly Schedule page before the months"));
-  const lwk=grp("Weekly Services in the List",radio("listWk","in","In the List","Every week, on each date"),radio("listWk","page","On Their Own Page","A Weekly Schedule page first; the list shows only changes"));
-  const lst=grp("List Style",radio("listStyle","day","Grouped by Day","Date as a heading"),radio("listStyle","table","Table","Date, Time and Event columns"));
+  const wkm=grp("Weekly Services on the Calendar",radio("wkMode","once","Listed Once","So days stay roomy"),radio("wkMode","each","On Each Day","Every service in its box"));
+  const wkw=grp("Where to List Weekly Services",radio("wkWhere","page","On Their Own Page","A Weekly Schedule page before the months"),radio("wkWhere","under","Under Each Month","A short list at the bottom of each page"));
+  const lwk=grp("Weekly Services in the List",radio("listWk","page","On Their Own Page","A Weekly Schedule page first; the list shows only changes"),radio("listWk","in","In the List","Every week, on each date"));
+  const lst=grp("List Style",radio("listStyle","table","Table","Date, Time and Event columns"),radio("listStyle","day","Grouped by Day","Date as a heading"));
   const fixed=el("label",{className:"pr-fixed"},el("input",{type:"checkbox",checked:true,disabled:true}),el("span",{},"Date, Time & Event",el("small",{textContent:"Always included"})));
   const detBox=box("det","Include Details");
   const det=grp("Detail",fixed,box("loc","Include Location"),detBox);
