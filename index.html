@@ -772,9 +772,11 @@ textarea{min-height:84px;resize:vertical}
 #printView .pr-bar .btn.ghost{background:transparent;color:#fff;border-color:#6b656e}
 #printView .pr-bar small{flex-basis:100%;color:#cfc9d1;font-size:.8rem}
 #printView .pr-sheets{display:grid;justify-content:center;gap:24px;padding:24px 16px 48px}
-.pr-page{background:#fff;color:#1d1b1f;box-shadow:0 2px 12px rgb(0 0 0/.18);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden}
-.pr-page.land{width:10.3in;height:7.8in;padding:.25in .3in}
-.pr-page.port{width:7.5in;min-height:10in;padding:.35in .4in}
+.pr-page{box-sizing:content-box;background:#fff;color:#1d1b1f;box-shadow:0 2px 12px rgb(0 0 0/.18);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden}
+.pr-page *{box-sizing:border-box}
+.pr-body{flex:1;min-height:0;overflow:hidden}
+.pr-page.land{width:10.3in;height:7.75in;padding:.3in .35in}
+.pr-page.port{width:7.5in;height:9.95in;padding:.45in .45in}
 .pr-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:2px solid #8C1007;padding-bottom:6px;margin-bottom:8px}
 .pr-head h1{margin:0;font:400 26pt/1 var(--display);color:#1d1b1f}
 .pr-head .who{text-align:right;font-size:9pt;line-height:1.3;color:#5b565e}
@@ -793,7 +795,11 @@ textarea{min-height:84px;resize:vertical}
 .pr-cell .more{display:block;color:#5b565e;font-style:italic}
 .pr-wk{margin-top:6px;font-size:7.4pt;line-height:1.35;display:grid;grid-template-columns:repeat(auto-fit,minmax(2.3in,1fr));gap:2px 14px;border-top:1px solid #bdb6b3;padding-top:5px}
 .pr-wk b{color:#8C1007}
-.pr-foot{margin-top:5px;font-size:7pt;color:#7a747d;display:flex;justify-content:space-between}
+.pr-foot{margin-top:auto;padding-top:5px;border-top:1px solid #dcd6d3;font-size:7.5pt;color:#7a747d;display:flex;justify-content:space-between;gap:12px;flex:none}
+.pr-foot .pg{font-weight:700;color:#3a363d;white-space:nowrap}
+.pr-note{flex:none;margin:6px 0 4px;font-size:8pt;color:#3a363d}
+.pr-note.red,.pr-note .red{color:#8C1007;font-weight:700}
+.pr-grid,.pr-wkp{margin-bottom:6px}
 .pr-list{font-size:10pt;line-height:1.35}
 .pr-day{break-inside:avoid;padding:6px 0 5px;border-bottom:1px solid #dcd6d3}
 .pr-day h3{margin:0 0 3px;font:700 10.5pt var(--body);color:#8C1007}
@@ -825,8 +831,7 @@ textarea{min-height:84px;resize:vertical}
   body.pr-on #printView .pr-sheets{display:block;padding:0;zoom:1!important}
   body.pr-on .pr-page{box-shadow:none;margin:0;break-after:page}
   body.pr-on .pr-page:last-child{break-after:auto}
-  body.pr-on .pr-page.port{min-height:0;width:auto;padding:0}
-  body.pr-on .pr-page.land{padding:0;width:10.3in;height:7.75in}
+  body.pr-on .pr-page{padding:0}
 }
 
 .pr-fixed{opacity:1;border-color:var(--brand-hi)!important;background:var(--wash)!important;cursor:default!important}
@@ -3178,7 +3183,7 @@ function confirmRemove(kind,id){const wk=kind==="weekly",x=((wk?state.weekly:sta
 
 /* Print Schedule: month calendar pages or a list of events, printed or saved as a PDF */
 var prOpt=null;
-function prDefaults(){return{layout:"month",range:"this",month:TODAY.slice(0,7),year:String(fromKey(TODAY).getFullYear()),from:TODAY,to:"",wk:showWeekly,mo:showMonthly,ot:showOther,loc:false,det:false,wkMode:"each",wkWhere:"under",listStyle:"day"}}
+function prDefaults(){return{layout:"month",range:"this",month:TODAY.slice(0,7),year:String(fromKey(TODAY).getFullYear()),from:TODAY,to:"",wk:showWeekly,mo:showMonthly,ot:showOther,loc:false,det:false,wkMode:"once",wkWhere:"page",listWk:"page",listStyle:"table"}}
 function prRange(o){const t=fromKey(TODAY);let a,b;
   if(o.range==="this"){a=new Date(t.getFullYear(),t.getMonth(),1);b=new Date(t.getFullYear(),t.getMonth()+1,0)}
   else if(o.range==="next"){a=new Date(t.getFullYear(),t.getMonth()+1,1);b=new Date(t.getFullYear(),t.getMonth()+2,0)}
@@ -3195,7 +3200,7 @@ const prRangeLabel=(a,b)=>{const A=fromKey(a),B=fromKey(b),f=(d,y)=>d.toLocaleDa
   if(a.endsWith("-01-01")&&b.endsWith("-12-31")&&a.slice(0,4)===b.slice(0,4))return a.slice(0,4);
   return f(A,A.getFullYear()!==B.getFullYear())+" – "+f(B,true)};
 function prHead(title){return el("div",{className:"pr-head"},el("h1",{textContent:title}),el("div",{className:"who"},el("b",{textContent:"Rocky Hock Baptist Church"}),"Church Schedule"))}
-function prFoot(){return el("div",{className:"pr-foot"},el("span",{textContent:"Printed "+fromKey(TODAY).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+". Times can change; check the calendar for the latest."}),el("span",{textContent:location.host||""}))}
+function prFoot(){return el("div",{className:"pr-foot"},el("span",{textContent:"Printed "+fromKey(TODAY).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})+". Times can change; check the calendar for the latest."}),el("span",{className:"pg"}))}
 function prMonthPage(y,m,o,a,b){
   const first=new Date(y,m,1),last=new Date(y,m+1,0),weeks=Math.ceil((first.getDay()+last.getDate())/7);
   const page=el("section",{className:"pr-page land"});page.append(prHead(first.toLocaleDateString("en-US",{month:"long",year:"numeric"})));
@@ -3212,7 +3217,7 @@ function prMonthPage(y,m,o,a,b){
           c.append(row)})}}
     g.append(c)}
   page.append(g);
-  if(once&&o.wkWhere==="page")page.append(el("div",{className:"pr-wk"},el("div",{},el("b",{textContent:"Weekly services "}),"are listed on the Weekly Schedule page.")));
+  if(once&&o.wkWhere==="page")page.append(el("p",{className:"pr-note red",textContent:"Weekly services are listed on the Weekly Schedule page."}));
   else if(once){const by={};(state.weekly||[]).filter(evShown).forEach(w=>(by[w.dow]=by[w.dow]||[]).push(w));
     const box=el("div",{className:"pr-wk"});Object.keys(by).sort().forEach(d=>box.append(el("div",{},el("b",{textContent:"Every "+DAYNAMES[d]+": "}),by[d].map(w=>prT(w.start)+" "+w.title).join(" · "))));
     page.append(box)}
@@ -3226,70 +3231,94 @@ function prWeeklyPage(o){
       if(o.loc&&w.loc)r.append(el("span",{className:"l",textContent:w.loc}));
       const a=evAuds(w).map(x=>AUDS[x]);if(a.length)r.append(el("span",{className:"l",textContent:"For "+(a.length>1?a.slice(0,-1).join(", ")+" & ":"")+a[a.length-1]}));
       col.append(r)});g.append(col)});
-  page.append(g,el("div",{className:"pr-wk"},el("div",{},"Check the calendar for holiday weeks and other dates when regular activities are canceled or changed.")),prFoot());return page}
+  page.append(g,el("p",{className:"pr-note",textContent:"Check the calendar for holiday weeks and other dates when regular activities are canceled or changed."}),prFoot());return page}
 function prAg(it,o){const li=evRow(it);const w=li.querySelector(".when");if(w)w.remove();
   if((o.mark||"none")==="icon"){const bar=li.querySelector(".bar");if(bar){const c=evCats(it)[0];const ic=el("span",{className:"pr-ico"});ic.setAttribute("style",bar.getAttribute("style")||"");if(c)ic.append(catIco(c));bar.replaceWith(ic)}}
   li.querySelectorAll(".edit,.chg-wrap,button").forEach(x=>x.remove());
   if(!o.loc){const l=li.querySelector(".wk-loc");if(l)l.remove()}
-  const b=li.querySelector(".ev-body");if(b){if(!o.det)b.remove();else b.querySelectorAll("a").forEach(a=>{const p=a.closest("p");if(p)p.remove()})}
+  const b=li.querySelector(".ev-body");if(b){if(!o.det){[...b.children].forEach(x=>{if(!x.classList.contains("ev-rep"))x.remove()});if(!b.children.length)b.remove()}else b.querySelectorAll("a").forEach(a=>{const p=a.closest("p");if(p)p.remove()})}
   const m=li.querySelector(".ev-meta");if(m&&!m.children.length)m.remove();
   return li}
 function prFit(root){root.querySelectorAll(".pr-cell").forEach(c=>{const its=[...c.querySelectorAll(".it")];if(c.scrollHeight<=c.clientHeight+1)return;
   let n=0;const more=el("span",{className:"more"});c.append(more);
   while(c.scrollHeight>c.clientHeight+1&&its.length){its.pop().remove();n++;more.textContent="+"+n+" more"}})}
-function prListPages(o,a,b){
-  const page=el("section",{className:"pr-page port"});page.append(prHead(prRangeLabel(a,b)));
-  const days=[];for(let d=fromKey(a);keyOf(d)<=b;d.setDate(d.getDate()+1)){const k=keyOf(d),L=prItems(k,o);if(L.length)days.push([k,L])}
+function prListBlocks(o,a,b){
+  const sep=o.wk&&o.listWk==="page",table=o.listStyle==="table";
+  const days=[];for(let d=fromKey(a);keyOf(d)<=b;d.setDate(d.getDate()+1)){const k=keyOf(d);let L=prItems(k,o);if(sep)L=L.filter(it=>!it.weekly||it.change||it.ov||(it.labels||[]).some(x=>!x.ovr));if(L.length)days.push([k,L])}
   const full=d=>fromKey(d).toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
-  if(!days.length)page.append(el("p",{className:"pr-empty",textContent:"Nothing is on the calendar for these dates with the choices you made."}));
-  else if(o.listStyle==="table"){const tb=el("tbody");
-    days.forEach(([k,L])=>L.forEach((it,i)=>{tb.append(el("tr",{className:i?"":"first"},el("td",{className:"d",textContent:i?"":fromKey(k).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}),el("td",{className:"t",textContent:it.change?"Schedule Change":fmtRange(it)}),el("td",{className:"e"},el("ul",{className:"ev-list"},prAg(it,o)))))}));
-    page.append(el("table",{className:"pr-tbl"},el("thead",{},el("tr",{},el("th",{textContent:"Date"}),el("th",{textContent:"Time"}),el("th",{textContent:"Event"}))),tb))}
-  else{const box=el("div",{className:"pr-list"});days.forEach(([k,L])=>{const d=el("div",{className:"pr-day"},el("h3",{textContent:full(k)}));
-      L.forEach(it=>d.append(el("div",{className:"pr-row"},el("span",{className:"t",textContent:it.change?"Schedule Change":fmtRange(it)}),el("ul",{className:"ev-list"},prAg(it,o)))));box.append(d)});
-    page.append(box)}
-  page.append(prFoot());return [page]}
+  const tm=it=>it.change?"Schedule Change":fmtRange(it);
+  return days.map(([k,L])=>table?
+    el("tbody",{},...L.map((it,i)=>el("tr",{className:i?"":"first"},el("td",{className:"d",textContent:i?"":fromKey(k).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}),el("td",{className:"t",textContent:tm(it)}),el("td",{className:"e"},el("ul",{className:"ev-list"},prAg(it,o))))))
+    :el("div",{className:"pr-day"},el("h3",{textContent:full(k)}),...L.map(it=>el("div",{className:"pr-row"},el("span",{className:"t",textContent:tm(it)}),el("ul",{className:"ev-list"},prAg(it,o))))))}
+function prWeeklyBlocks(o){
+  const by={};(state.weekly||[]).filter(w=>evShown(w)).forEach(w=>(by[w.dow]=by[w.dow]||[]).push(w));
+  return Object.keys(by).sort().map(d=>el("div",{className:"pr-day"},el("h3",{textContent:"Every "+DAYNAMES[d]}),
+    ...by[d].slice().sort((x,y)=>(x.start||"").localeCompare(y.start||"")).map(w=>{const it={...w,loc:w.loc||"",desc:w.note||"",date:"",weekly:true,id:"w",wid:w.id,labels:[]};
+      return el("div",{className:"pr-row"},el("span",{className:"t",textContent:fmtRange(it)}),el("ul",{className:"ev-list"},prAg(it,o)))})))}
+/* lay blocks (one per day) onto portrait pages; a day never splits unless it is taller than a whole page */
+function prPaged(sheets,title,blocks,table,note,empty){
+  let page,body,holder,count=0;
+  const newPage=()=>{page=el("section",{className:"pr-page port"});page.append(prHead(title+(count?" (continued)":"")));body=el("div",{className:"pr-body"});
+    holder=table?el("table",{className:"pr-tbl"},el("thead",{},el("tr",{},el("th",{textContent:"Date"}),el("th",{textContent:"Time"}),el("th",{textContent:"Event"})))):el("div",{className:"pr-list"});
+    body.append(holder);page.append(body,prFoot());sheets.append(page);count++};
+  const fits=()=>body.scrollHeight<=body.clientHeight+1;
+  const n=()=>table?holder.querySelectorAll("tbody").length:holder.children.length;
+  const rows=bl=>table?[...bl.children]:[...bl.querySelectorAll(":scope>.pr-row")];
+  newPage();
+  if(!blocks.length)holder.append(el("p",{className:"pr-empty",textContent:empty}));
+  for(let bl of blocks){holder.append(bl);if(fits())continue;
+    if(n()>1){bl.remove();newPage();holder.append(bl);if(fits())continue}
+    /* one day taller than a page: split it by rows, repeating its heading */
+    while(!fits()){const R=rows(bl);if(R.length<2)break;const rest=[];while(!fits()&&rows(bl).length>1){const r=rows(bl).pop();rest.unshift(r);r.remove()}
+      if(!rest.length)break;newPage();
+      if(table){const nb=el("tbody");rest.forEach(r=>nb.append(r));const f=nb.querySelector("td.d");if(f&&!f.textContent){const src=bl.querySelector("td.d");f.textContent=(src?src.textContent:"")+" (cont.)"}holder.append(nb);bl=nb}
+      else{const nb=el("div",{className:"pr-day"},el("h3",{textContent:bl.querySelector("h3").textContent+" (continued)"}),...rest);holder.append(nb);bl=nb}}}
+  if(note){const ft=page.querySelector(".pr-foot");page.insertBefore(note,ft);if(!fits()){const last=table?[...holder.querySelectorAll("tbody")].pop():holder.lastElementChild;if(last&&n()>1){last.remove();note.remove();newPage();holder.append(last);page.insertBefore(note,page.querySelector(".pr-foot"))}}}
+}
+function prNumber(sheets){const P=sheets.querySelectorAll(".pr-page");P.forEach((p,i)=>{const s=p.querySelector(".pr-foot .pg");if(s)s.textContent="Page "+(i+1)+" of "+P.length})}
 function prShow(o){const [a,b]=prRange(o);let v=$("printView");if(!v){v=el("div",{id:"printView"});document.body.append(v)}
   let ps=$("prPageStyle");if(!ps){ps=el("style",{id:"prPageStyle"});document.head.append(ps)}
   ps.textContent=o.layout==="month"?"@page{size:letter landscape;margin:.35in}":"@page{size:letter portrait;margin:.5in}";
   const sheets=el("div",{className:"pr-sheets mk-"+(o.mark||"none")});
-  if(o.layout==="month"){const A=fromKey(a),B=fromKey(b);if(o.wk&&o.wkMode==="once"&&o.wkWhere==="page")sheets.append(prWeeklyPage(o));for(let d=new Date(A.getFullYear(),A.getMonth(),1);d<=B;d=new Date(d.getFullYear(),d.getMonth()+1,1))sheets.append(prMonthPage(d.getFullYear(),d.getMonth(),o,a,b))}
-  else prListPages(o,a,b).forEach(p=>sheets.append(p));
-  const n=o.layout==="month"?sheets.children.length:0;
   const pb=gBtn("Print or Save as PDF","primary",()=>window.print());
-  let mk=null;if(window.__PR_TEST&&o.layout==="list"){mk=el("select",{id:"pr-mark",ariaLabel:"Color marker"});[["solid","Solid Bar"],["light","Light Bar for Weekly"],["none","No Bar"],["icon","Ministry Icon"]].forEach(([v,t])=>mk.append(el("option",{value:v,textContent:"Test Marker: "+t})));mk.value=o.mark||"none";mk.onchange=()=>{o.mark=mk.value;prOpt=o;prShow(o)}}
-  v.replaceChildren(el("div",{className:"pr-bar"},gBtn("← Back to Options","ghost small",()=>{prClose();openPrint()}),el("b",{textContent:(o.layout==="month"?"Month Calendar":"List of Events")+" · "+prRangeLabel(a,b)+(n>1?" · "+n+" pages":"")}),...(mk?[mk]:[]),gBtn("Close","ghost small",prClose),pb,
+  const label=el("b",{textContent:(o.layout==="month"?"Monthly Calendar":"List of Events")+" · "+prRangeLabel(a,b)});
+  v.replaceChildren(el("div",{className:"pr-bar"},gBtn("← Back to Options","ghost small",()=>{prClose();openPrint()}),label,gBtn("Close","ghost small",prClose),pb,
     el("small",{textContent:"To save a PDF, choose “Save as PDF” as the printer. "+(o.layout==="month"?"Each month prints on its own landscape page.":"The list prints on portrait pages.")})),sheets);
   v.hidden=false;document.body.classList.add("pr-on");document.documentElement.style.overflow="hidden";
-  const fit=()=>{const w=o.layout==="month"?10.3*96+0.6*96:7.5*96+0.8*96;sheets.style.zoom=String(Math.min(1,(innerWidth-32)/w))};fit();window.onresize=fit;
-  requestAnimationFrame(()=>prFit(sheets));pb.focus()}
+  if(o.layout==="month"){const A=fromKey(a),B=fromKey(b);if(o.wk&&o.wkMode==="once"&&o.wkWhere==="page")sheets.append(prWeeklyPage(o));for(let d=new Date(A.getFullYear(),A.getMonth(),1);d<=B;d=new Date(d.getFullYear(),d.getMonth()+1,1))sheets.append(prMonthPage(d.getFullYear(),d.getMonth(),o,a,b));prFit(sheets)}
+  else{const sep=o.wk&&o.listWk==="page";
+    if(sep)prPaged(sheets,"Weekly Schedule",prWeeklyBlocks(o),false,el("p",{className:"pr-note",textContent:"Check the calendar for holiday weeks and other dates when regular activities are canceled or changed."}),"");
+    prPaged(sheets,prRangeLabel(a,b),prListBlocks(o,a,b),o.listStyle==="table",sep?el("p",{className:"pr-note"},el("span",{className:"red",textContent:"Weekly services are listed on the Weekly Schedule page."})," Only changes to them are shown here."):null,"Nothing is on the calendar for these dates with the choices you made.")}
+  prNumber(sheets);const n=sheets.children.length;if(n>1)label.textContent+=" · "+n+" pages";
+  const fit=()=>{const w=o.layout==="month"?11*96+32:8.3*96+32;sheets.style.zoom=String(Math.min(1,(innerWidth-32)/w))};fit();window.onresize=fit;pb.focus()}
 function prClose(){const v=$("printView");if(v)v.hidden=true;document.body.classList.remove("pr-on");document.documentElement.style.overflow="";window.onresize=null}
 function openPrint(){dlgRet=null;const o=prOpt||prDefaults();
   const radio=(name,val,label,sub)=>{const i=el("input",{type:"radio",name,value:val});i.checked=String(o[name])===val;return el("label",{},i,el("span",{},label,sub?el("small",{textContent:sub}):""))};
   const box=(name,label)=>{const i=el("input",{type:"checkbox",name});i.checked=!!o[name];return el("label",{},i,el("span",{},label))};
   const grp=(label,...kids)=>el("div",{className:"full pr-opts"},el("span",{className:"pr-l",textContent:label}),el("div",{className:"pr-ch"},...kids));
-  const lay=grp("Layout",radio("layout","month","Month Calendar","One month per page"),radio("layout","list","List of Events","In date order"));
+  const lay=grp("Layout",radio("layout","month","Monthly Calendar","One month per page"),radio("layout","list","List of Events","In date order"));
   const rs=el("select",{id:"pr-range"});[["this","This Month"],["next","Next Month"],["month","Pick a Month"],["year","Whole Year"],["range","Date Range"]].forEach(([v,t])=>rs.append(el("option",{value:v,textContent:t})));rs.value=o.range;
   const mo=el("input",{type:"month",id:"pr-month",value:o.month}),ys=el("select",{id:"pr-year"});const cy=fromKey(TODAY).getFullYear();[cy-1,cy,cy+1].forEach(y=>ys.append(el("option",{value:String(y),textContent:String(y)})));ys.value=o.year;
   const fr=el("input",{type:"date",id:"pr-from",value:o.from}),to=el("input",{type:"date",id:"pr-to",value:o.to});
   const mL=el("label",{className:"full"},"Month",mo),yL=el("label",{className:"full"},"Year",ys),rL=el("div",{className:"tp"},el("label",{},"From",fr),el("label",{},"To",to));
   const dates=el("label",{className:"full"},"Dates",rs);
   const inc=grp("Include",box("wk","Weekly Services"),box("mo","Monthly Events"),box("ot","One-Time Events"));
-  const wkm=grp("Weekly Services on the Calendar",radio("wkMode","each","On Each Day","Every service in its box"),radio("wkMode","once","Listed Once","So days stay roomy"));
-  const wkw=grp("Where to List Weekly Services",radio("wkWhere","under","Under Each Month","A short list at the bottom of each page"),radio("wkWhere","page","On Their Own Page","A Weekly Schedule page before the months"));
-  const lst=grp("List Style",radio("listStyle","day","Grouped by Day","Date as a heading"),radio("listStyle","table","Table","Date, Time and Event columns"));
+  const wkm=grp("Weekly Services on the Calendar",radio("wkMode","once","Listed Once","So days stay roomy"),radio("wkMode","each","On Each Day","Every service in its box"));
+  const wkw=grp("Where to List Weekly Services",radio("wkWhere","page","On Their Own Page","A Weekly Schedule page before the months"),radio("wkWhere","under","Under Each Month","A short list at the bottom of each page"));
+  const lwk=grp("Weekly Services in the List",radio("listWk","page","On Their Own Page","A Weekly Schedule page first; the list shows only changes"),radio("listWk","in","In the List","Every week, on each date"));
+  const lst=grp("List Style",radio("listStyle","table","Table","Date, Time and Event columns"),radio("listStyle","day","Grouped by Day","Date as a heading"));
   const fixed=el("label",{className:"pr-fixed"},el("input",{type:"checkbox",checked:true,disabled:true}),el("span",{},"Date, Time & Event",el("small",{textContent:"Always included"})));
   const detBox=box("det","Include Details");
   const det=grp("Detail",fixed,box("loc","Include Location"),detBox);
-  const f=gForm([lay,dates,mL,yL,rL,inc,wkm,wkw,lst,det],"Preview",()=>{
+  const f=gForm([lay,dates,mL,yL,rL,inc,wkm,wkw,lwk,lst,det],"Preview",()=>{
     const v=n=>{const c=f.querySelector('input[name="'+n+'"]:checked');return c?c.value:o[n]},cb=n=>f.querySelector('input[name="'+n+'"]').checked;
-    const n={layout:v("layout"),range:rs.value,month:mo.value,year:ys.value,from:fr.value,to:to.value,wk:cb("wk"),mo:cb("mo"),ot:cb("ot"),wkMode:v("wkMode"),wkWhere:v("wkWhere"),listStyle:v("listStyle"),loc:cb("loc"),det:cb("det")};
+    const n={layout:v("layout"),range:rs.value,month:mo.value,year:ys.value,from:fr.value,to:to.value,wk:cb("wk"),mo:cb("mo"),ot:cb("ot"),wkMode:v("wkMode"),wkWhere:v("wkWhere"),listWk:v("listWk"),listStyle:v("listStyle"),loc:cb("loc"),det:cb("det")};
     if(!n.wk&&!n.mo&&!n.ot)return"Choose at least one kind of event to include.";
     if(n.range==="month"&&!/^\d{4}-\d{2}$/.test(n.month))return"Pick a month.";
     if(n.range==="range"){if(!n.from||!n.to)return"Pick both dates.";if(n.to<n.from)return"The “To” date needs to be after the “From” date.";if((fromKey(n.to)-fromKey(n.from))/864e5>400)return"Pick a range of about a year or less."}
     prOpt=n;closeDlg();prShow(n)},null,"Cancel");
   const sync=()=>{const L=(f.querySelector('input[name="layout"]:checked')||{}).value,wk=f.querySelector('input[name="wk"]').checked;
-    mL.hidden=rs.value!=="month";yL.hidden=rs.value!=="year";rL.hidden=rs.value!=="range";wkm.hidden=L!=="month"||!wk;wkw.hidden=wkm.hidden||(f.querySelector('input[name="wkMode"]:checked')||{}).value!=="once";lst.hidden=L!=="list";detBox.hidden=L!=="list"};
+    mL.hidden=rs.value!=="month";yL.hidden=rs.value!=="year";rL.hidden=rs.value!=="range";wkm.hidden=L!=="month"||!wk;wkw.hidden=wkm.hidden||(f.querySelector('input[name="wkMode"]:checked')||{}).value!=="once";lst.hidden=L!=="list";lwk.hidden=L!=="list"||!wk;detBox.hidden=L!=="list"};
   f.addEventListener("change",sync);sync();
   gOpen("Print Schedule","Choose what to print. You’ll see a preview first.",[f])}
 document.querySelectorAll(".pr-btn").forEach(b=>b.onclick=openPrint);
