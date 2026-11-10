@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <link rel="icon" href="images/logo.png">
-<title>TEST · Print Schedule · Rocky Hock Baptist Church</title><meta name="robots" content="noindex,nofollow"><script>window.__PR_TEST=true</script>
+<title>TEST · Print Schedule · Rocky Hock Baptist Church</title><meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Rocky Hock Baptist Church, 113 Rocky Hock Church Road, Edenton, NC. Sunday School 9:45 AM, Worship 11:00 AM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3229,7 +3229,7 @@ function prWeeklyPage(o){
       col.append(r)});g.append(col)});
   page.append(g,el("div",{className:"pr-wk"},el("div",{},"Check the calendar for holiday weeks and other dates when regular activities are canceled or changed.")),prFoot());return page}
 function prAg(it,o){const li=evRow(it);const w=li.querySelector(".when");if(w)w.remove();
-  if((o.mark||"solid")==="icon"){const bar=li.querySelector(".bar");if(bar){const c=evCats(it)[0];const ic=el("span",{className:"pr-ico"});ic.setAttribute("style",bar.getAttribute("style")||"");if(c)ic.append(catIco(c));bar.replaceWith(ic)}}
+  if((o.mark||"none")==="icon"){const bar=li.querySelector(".bar");if(bar){const c=evCats(it)[0];const ic=el("span",{className:"pr-ico"});ic.setAttribute("style",bar.getAttribute("style")||"");if(c)ic.append(catIco(c));bar.replaceWith(ic)}}
   li.querySelectorAll(".edit,.chg-wrap,button").forEach(x=>x.remove());
   if(!o.loc){const l=li.querySelector(".wk-loc");if(l)l.remove()}
   const b=li.querySelector(".ev-body");if(b){if(!o.det)b.remove();else b.querySelectorAll("a").forEach(a=>{const p=a.closest("p");if(p)p.remove()})}
@@ -3253,12 +3253,12 @@ function prListPages(o,a,b){
 function prShow(o){const [a,b]=prRange(o);let v=$("printView");if(!v){v=el("div",{id:"printView"});document.body.append(v)}
   let ps=$("prPageStyle");if(!ps){ps=el("style",{id:"prPageStyle"});document.head.append(ps)}
   ps.textContent=o.layout==="month"?"@page{size:letter landscape;margin:.35in}":"@page{size:letter portrait;margin:.5in}";
-  const sheets=el("div",{className:"pr-sheets mk-"+(o.mark||"solid")});
+  const sheets=el("div",{className:"pr-sheets mk-"+(o.mark||"none")});
   if(o.layout==="month"){const A=fromKey(a),B=fromKey(b);if(o.wk&&o.wkMode==="once"&&o.wkWhere==="page")sheets.append(prWeeklyPage(o));for(let d=new Date(A.getFullYear(),A.getMonth(),1);d<=B;d=new Date(d.getFullYear(),d.getMonth()+1,1))sheets.append(prMonthPage(d.getFullYear(),d.getMonth(),o,a,b))}
   else prListPages(o,a,b).forEach(p=>sheets.append(p));
   const n=o.layout==="month"?sheets.children.length:0;
   const pb=gBtn("Print or Save as PDF","primary",()=>window.print());
-  let mk=null;if(window.__PR_TEST&&o.layout==="list"){mk=el("select",{id:"pr-mark",ariaLabel:"Color marker"});[["solid","Solid Bar"],["light","Light Bar for Weekly"],["none","No Bar"],["icon","Ministry Icon"]].forEach(([v,t])=>mk.append(el("option",{value:v,textContent:"Test Marker: "+t})));mk.value=o.mark||"solid";mk.onchange=()=>{o.mark=mk.value;prOpt=o;prShow(o)}}
+  let mk=null;if(window.__PR_TEST&&o.layout==="list"){mk=el("select",{id:"pr-mark",ariaLabel:"Color marker"});[["solid","Solid Bar"],["light","Light Bar for Weekly"],["none","No Bar"],["icon","Ministry Icon"]].forEach(([v,t])=>mk.append(el("option",{value:v,textContent:"Test Marker: "+t})));mk.value=o.mark||"none";mk.onchange=()=>{o.mark=mk.value;prOpt=o;prShow(o)}}
   v.replaceChildren(el("div",{className:"pr-bar"},gBtn("← Back to Options","ghost small",()=>{prClose();openPrint()}),el("b",{textContent:(o.layout==="month"?"Month Calendar":"List of Events")+" · "+prRangeLabel(a,b)+(n>1?" · "+n+" pages":"")}),...(mk?[mk]:[]),gBtn("Close","ghost small",prClose),pb,
     el("small",{textContent:"To save a PDF, choose “Save as PDF” as the printer. "+(o.layout==="month"?"Each month prints on its own landscape page.":"The list prints on portrait pages.")})),sheets);
   v.hidden=false;document.body.classList.add("pr-on");document.documentElement.style.overflow="hidden";
