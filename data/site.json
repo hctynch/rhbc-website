@@ -3349,7 +3349,8 @@
     "text": "Register for CentriFuge",
     "url": "https://app.sharefaith.com/App/Form/83ac6f0f-0d99-419f-b8ad-8d891014149c"
    },
-   "links": []
+   "links": [],
+   "hidden": true
   },
   {
    "id": "sp-ck",
@@ -3359,7 +3360,8 @@
     "text": "Register for CentriKid",
     "url": "https://app.sharefaith.com/App/Form/2d4e8e7a-f7b2-402d-bfaf-3a7bf36268f9"
    },
-   "links": []
+   "links": [],
+   "hidden": true
   },
   {
    "id": "sp-bb",
@@ -3523,5 +3525,6 @@
    "dow": 3
   }
  ],
- "schedChanges": []
+ "schedChanges": [],
+ "overrides": []
 }
