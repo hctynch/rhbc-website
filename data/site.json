@@ -3342,28 +3342,6 @@
  ],
  "specials": [
   {
-   "id": "sp-cf",
-   "title": "CentriFuge Camp",
-   "desc": "For 6th – 12th graders. Every part of camp points back to God’s Word, led by trained staff, with program, meals and lodging provided so leaders can focus on their students.",
-   "reg": {
-    "text": "Register for CentriFuge",
-    "url": "https://app.sharefaith.com/App/Form/83ac6f0f-0d99-419f-b8ad-8d891014149c"
-   },
-   "links": [],
-   "hidden": true
-  },
-  {
-   "id": "sp-ck",
-   "title": "CentriKid Camp",
-   "desc": "A high-energy, gospel-centered overnight camp for 2nd – 6th graders, with track times, recreation, worship, Bible study and church group time.",
-   "reg": {
-    "text": "Register for CentriKid",
-    "url": "https://app.sharefaith.com/App/Form/2d4e8e7a-f7b2-402d-bfaf-3a7bf36268f9"
-   },
-   "links": [],
-   "hidden": true
-  },
-  {
    "id": "sp-bb",
    "title": "Church League Basketball",
    "desc": "A chance for kids, youth and parents to play basketball in a church setting that honors God, with good Christian fellowship as the main goal. Teams for K–2 co-ed, 3–5 co-ed, middle school boys, middle and high school girls, and high school boys.",
@@ -3382,6 +3360,26 @@
      "a": "files/2026-11-03-1-2026-church-basketball-league-schedule.pdf"
     }
    ]
+  },
+  {
+   "id": "sp-cf",
+   "title": "CentriFuge Camp",
+   "desc": "For 6th – 12th graders. Every part of camp points back to God’s Word, led by trained staff, with program, meals and lodging provided so leaders can focus on their students.",
+   "reg": {
+    "text": "Register for CentriFuge",
+    "url": "https://app.sharefaith.com/App/Form/83ac6f0f-0d99-419f-b8ad-8d891014149c"
+   },
+   "links": []
+  },
+  {
+   "id": "sp-ck",
+   "title": "CentriKid Camp",
+   "desc": "A high-energy, gospel-centered overnight camp for 2nd – 6th graders, with track times, recreation, worship, Bible study and church group time.",
+   "reg": {
+    "text": "Register for CentriKid",
+    "url": "https://app.sharefaith.com/App/Form/2d4e8e7a-f7b2-402d-bfaf-3a7bf36268f9"
+   },
+   "links": []
   }
  ],
  "staff": [
