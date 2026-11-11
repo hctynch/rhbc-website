@@ -352,6 +352,16 @@ a.card:hover{border-color:var(--muted)}
 .special .linkrow{margin-top:2px}
 .sp-tools{display:none;flex-wrap:wrap;gap:8px;border-top:1px dashed var(--line);padding-top:12px}
 .editing .sp-tools{display:flex}
+.sp-hidden{display:none;gap:14px;margin-top:30px;padding-top:20px;border-top:2px dashed var(--line)}
+.editing .sp-hidden{display:grid}
+.sp-hidden>h2{margin:0!important;font-size:1.25rem}
+.sp-hidden>.meta{margin:0;color:var(--muted)}
+.special.is-hidden{opacity:.62;border-top-color:var(--line);background:var(--bg)}
+.special.is-hidden:hover,.special.is-hidden:focus-within{opacity:1}
+.sp-badge{justify-self:start;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--line);color:var(--ink)}
+.sp-check{display:flex!important;align-items:flex-start;gap:10px;font-weight:600}
+.sp-check input{width:auto!important;margin-top:3px}
+.sp-check .hint{display:block;font-weight:400}
 .lrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
 .lrow .lfile{grid-column:1/-1;font-size:.85rem}
 @media (max-width:520px){.lrow{grid-template-columns:1fr}}
@@ -1911,9 +1921,10 @@ textarea{min-height:84px;resize:vertical}
         <div id="sp-links" style="display:grid;gap:8px"></div>
         <button class="btn ghost small" type="button" id="sp-add-link" style="justify-self:start">+ Add a Button</button>
       </div>
+      <label class="full sp-check"><input type="checkbox" id="sp-show" checked><span>Show on the Special Events Page<span class="hint">Uncheck to hide it from visitors and keep it under Hidden Events, ready to show again next time.</span></span></label>
       <p class="err full" id="sp-err" hidden></p>
       <div class="dialog-actions full">
-        <button class="btn danger" type="button" id="sp-del">Remove event</button>
+        <button class="btn danger" type="button" id="sp-del">Delete Event</button>
         <button class="btn ghost" type="button" id="sp-cancel">Cancel</button>
         <button class="btn primary" type="submit" id="sp-apply">Add</button>
       </div>
@@ -3416,21 +3427,34 @@ const linkHref=u=>{if(!u)return"";if(/^#[a-z0-9-]+$/i.test(u))return u;return sa
 const linkOf=l=>l.a?"/_blob/"+l.a:linkHref(l.url);
 function renderSpecials(){
   const box=$("specialList");box.replaceChildren();const L=state.specials||[];
-  if(!L.length){box.append(el("p",{className:"empty-note",textContent:"No special events are listed right now. Check the church calendar."}));return}
-  L.forEach((ev,i)=>{
-    const card=el("article",{className:"special"},el("h2",{textContent:ev.title}));
-    if(ev.desc)card.append(el("p",{className:"keep-lines",textContent:ev.desc}));
+  const vis=[],hid=[];L.forEach((ev,i)=>(ev.hidden?hid:vis).push(i));
+  if(!vis.length)box.append(el("p",{className:"empty-note",textContent:"No special events are listed right now. Check the church calendar."}));
+  const ext=h=>h.charAt(0)!=="#";
+  const card=(i,grp)=>{
+    const ev=L[i],k=grp.indexOf(i);
+    const c=el("article",{className:"special"+(ev.hidden?" is-hidden":"")});
+    if(ev.hidden)c.append(el("span",{className:"sp-badge",textContent:"Hidden"}));
+    c.append(el("h2",{textContent:ev.title}));
+    if(ev.desc)c.append(el("p",{className:"keep-lines",textContent:ev.desc}));
     const row=el("div",{className:"linkrow"});
-    const ext=h=>h.charAt(0)!=="#";
     if(ev.reg&&ev.reg.url){const h=linkHref(ev.reg.url);if(h){const a=el("a",{className:"btn primary",href:h,textContent:ev.reg.text||"Register"});if(ext(h)){a.target="_blank";a.rel="noopener"}row.append(a)}}
     (ev.links||[]).forEach(l=>{const h=linkOf(l);if(!h)return;const a=el("a",{className:"btn ghost",href:h,textContent:l.text||"More information"});if(ext(h)){a.target="_blank";a.rel="noopener"}row.append(a)});
-    if(row.children.length)card.append(row);
+    if(row.children.length)c.append(row);
     const t=el("div",{className:"sp-tools"});
     const eb=el("button",{type:"button",className:"btn ghost small",textContent:"Edit"});eb.onclick=()=>openSpecial(i);
-    const up=el("button",{type:"button",className:"btn ghost small",textContent:"↑ Up",disabled:i===0});up.onclick=()=>{[L[i-1],L[i]]=[L[i],L[i-1]];dirty=true;renderAll()};
-    const dn=el("button",{type:"button",className:"btn ghost small",textContent:"↓ Down",disabled:i===L.length-1});dn.onclick=()=>{[L[i+1],L[i]]=[L[i],L[i+1]];dirty=true;renderAll()};
-    t.append(eb,up,dn);card.append(t);box.append(card);
-  });
+    const hb=el("button",{type:"button",className:"btn "+(ev.hidden?"primary":"ghost")+" small",textContent:ev.hidden?"Show on Site":"Hide"});
+    hb.onclick=()=>{if(ev.hidden)delete ev.hidden;else ev.hidden=true;dirty=true;renderAll();toast((ev.hidden?"“"+ev.title+"” is hidden from visitors.":"“"+ev.title+"” will show on the site.")+" Press “Save Changes” to publish.")};
+    const sw=j=>{const a=grp[k],b=grp[j];[L[a],L[b]]=[L[b],L[a]];dirty=true;renderAll()};
+    const up=el("button",{type:"button",className:"btn ghost small",textContent:"↑ Up",disabled:k===0});up.onclick=()=>sw(k-1);
+    const dn=el("button",{type:"button",className:"btn ghost small",textContent:"↓ Down",disabled:k===grp.length-1});dn.onclick=()=>sw(k+1);
+    t.append(eb,hb,up,dn);c.append(t);return c;
+  };
+  vis.forEach(i=>box.append(card(i,vis)));
+  if(canEditFlag){
+    const hs=el("section",{className:"sp-hidden"},el("h2",{textContent:"Hidden Events ("+hid.length+")"}),
+      el("p",{className:"meta",textContent:hid.length?"Only staff see these. Press “Show on Site” to bring one back, or Edit to update its dates and links first.":"Press “Hide” on an event that’s over to keep it here for next time instead of deleting it."}));
+    hid.forEach(i=>hs.append(card(i,hid)));box.append(hs);
+  }
 }
 function linkRow(l){
   const row=el("div",{className:"lrow"});
@@ -3449,14 +3473,15 @@ function openSpecial(i){
   $("sp-title").value=ev?ev.title:"";$("sp-desc").value=ev?(ev.desc||""):"";
   $("sp-reg-text").value=ev&&ev.reg?(ev.reg.text||""):"";$("sp-reg-url").value=ev&&ev.reg?(ev.reg.url||""):"";
   $("sp-links").replaceChildren(...((ev&&ev.links)||[]).map(linkRow));
-  $("sp-del").hidden=!ev;$("sp-del").textContent="Remove event";$("sp-err").hidden=true;
+  $("sp-show").checked=!(ev&&ev.hidden);
+  $("sp-del").hidden=!ev;$("sp-del").textContent="Delete Event";$("sp-err").hidden=true;
   $("overlay8").hidden=false;setTimeout(()=>$("sp-title").focus(),30);
 }
 $("addSpecial").onclick=()=>openSpecial(-1);
 $("sp-add-link").onclick=()=>{const r=linkRow({});$("sp-links").append(r);r.querySelector(".l-text").focus()};
 $("sp-cancel").onclick=closeDlg;
-$("sp-del").onclick=()=>{if(!spDelArmed){spDelArmed=true;$("sp-del").textContent="Tap again to remove";return}
-  state.specials.splice(spIdx,1);dirty=true;closeDlg();renderAll();toast("Event removed. Press “Save Changes” to publish.")};
+$("sp-del").onclick=()=>{if(!spDelArmed){spDelArmed=true;$("sp-del").textContent="Tap Again to Delete";return}
+  state.specials.splice(spIdx,1);dirty=true;closeDlg();renderAll();toast("Event deleted. Press “Save Changes” to publish.")};
 $("spForm").addEventListener("submit",async ev=>{
   ev.preventDefault();if(spBusy)return;
   const err=m=>{$("sp-err").textContent=m;$("sp-err").hidden=false};
@@ -3483,8 +3508,9 @@ $("spForm").addEventListener("submit",async ev=>{
   }
   const old=spIdx>=0?state.specials[spIdx]:null;
   const rec={id:old?old.id:"sp"+Date.now().toString(36),title,desc:$("sp-desc").value.replace(/\r/g,"").trim(),reg:ru?{text:rt||"Register",url:ru}:null,links};
+  if(!$("sp-show").checked)rec.hidden=true;
   if(old)state.specials[spIdx]=rec;else state.specials.push(rec);
-  dirty=true;editing=true;closeDlg();renderAll();toast(old?"Event updated. Press “Save Changes” to publish.":"Event added. Press “Save Changes” to publish.");
+  dirty=true;editing=true;closeDlg();renderAll();toast((old?"Event updated":"Event added")+(rec.hidden?" as hidden":"")+". Press “Save Changes” to publish.");
 });
 
 /* photos */
