@@ -2169,6 +2169,20 @@ const SECTIONS={
   give:{label:"Giving",items:[["give","Give Online"],["contact","Contact Us"]]}
 };
 function el(tag,props,...kids){const n=document.createElement(tag);if(props)for(const k in props){if(k==="style")n.setAttribute("style",props[k]);else n[k]=props[k]}for(const c of kids){if(c==null)continue;n.append(c)}return n}
+/* each section loads on its own: if one fails, clear the visitor's remembered choices and try once more; if it still fails, only that section shows a message */
+var RLOG=window.__RHBC_LOG=window.__RHBC_LOG||[],PREF_RESET=false;
+function safe(name,fn,boxId){
+  try{fn();return true}catch(e){
+    console.error("[RHBC] "+name+" failed:",e);RLOG.push(name+" failed: "+e.message);
+    if(!PREF_RESET){PREF_RESET=true;let had=false;
+      try{had=localStorage.getItem("rhbc-calview")!==null;localStorage.removeItem("rhbc-calview")}catch(x){}
+      if(had){RLOG.push("Cleared the visitor’s remembered choices (Calendar view) and tried again");
+        try{if(typeof calMode!=="undefined"&&calMode!=="month"){calMode="month";$("vMonth").setAttribute("aria-pressed","true");$("vAgenda").setAttribute("aria-pressed","false");document.querySelector(".cal").classList.remove("agmode");$("agView").hidden=true;try{localStorage.removeItem("rhbc-calview")}catch(x){}}
+          fn();RLOG.push(name+" loaded on the second try");return true}catch(e2){console.error("[RHBC] "+name+" failed again:",e2);RLOG.push(name+" failed again: "+e2.message)}}}
+    const b=boxId&&$(boxId);if(b)b.replaceChildren(el("p",{className:"empty-note load-err",textContent:"This section couldn’t load right now. Please refresh the page, or check back soon."}));
+    RLOG.push(b?name+" shows “couldn’t load” in its spot; the rest of the page is unaffected":name+" was skipped; the rest of the page is unaffected");
+    return false}
+}
 document.querySelectorAll(".view[data-sec] .side").forEach(side=>{
   const v=side.closest(".view"),sec=SECTIONS[v.dataset.sec],route=v.dataset.parent||v.dataset.route;if(!sec)return;
   const nav=el("nav",{className:"side-nav"},el("p",{className:"eyebrow",textContent:sec.label}));
@@ -2427,7 +2441,7 @@ function renderFilters(){
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
-  if(typeof renderAgenda==="function"&&$("agView"))renderAgenda();
+  if(typeof renderAgenda==="function"&&$("agView"))safe("Calendar Agenda View",renderAgenda,"agView");
   const g=$("grid");g.replaceChildren();
   const first=new Date(view);first.setDate(1-first.getDay());
   for(let i=0;i<42;i++){
@@ -2449,7 +2463,7 @@ function renderGrid(){
 var calMode="month";try{if(localStorage.getItem("rhbc-calview")==="agenda")calMode="agenda"}catch(e){}
 function setCalMode(m){calMode=m;try{localStorage.setItem("rhbc-calview",m)}catch(e){}
   document.querySelector(".cal").classList.toggle("agmode",m==="agenda");$("agView").hidden=m!=="agenda";
-  $("vMonth").setAttribute("aria-pressed",String(m==="month"));$("vAgenda").setAttribute("aria-pressed",String(m==="agenda"));renderAgenda()}
+  $("vMonth").setAttribute("aria-pressed",String(m==="month"));$("vAgenda").setAttribute("aria-pressed",String(m==="agenda"));safe("Calendar Agenda View",renderAgenda,"agView")}
 function renderAgenda(){
   const box=$("agView");if(calMode!=="agenda"){box.replaceChildren();return}
   box.replaceChildren();const y=view.getFullYear(),m=view.getMonth(),days=new Date(y,m+1,0).getDate();let any=false;
@@ -2531,7 +2545,7 @@ function renderUp(){
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"Nothing in the next eight weeks with the filters you’ve chosen."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
-function renderAll(){renderWeekly();renderLive();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();if(typeof renderServices==="function")renderServices();
+function renderAll(){safe("Weekly Schedule",renderWeekly);safe("Live Stream",renderLive);safe("Staff",renderStaff,"staffList");safe("Special Events",renderSpecials,"specialList");safe("Photos",renderPhotos,"gallery");safe("Notices",renderNotice);safe("Coming Up",renderNext,"nextUp");safe("Bulletins and Newsletters",renderDocs);safe("Job Openings",renderJobs,"jobList");safe("Calendar Filters",renderFilters,"filters");safe("Calendar",renderGrid,"grid");safe("Selected Day",renderDay,"dayList");safe("Upcoming Events",renderUp,"upList");if(typeof renderServices==="function")safe("Worship Services",renderServices,"svcList");
   $("savebar").hidden=!editing;$("saveMsg").textContent=dirty?"You have unsaved changes":"Editing is on";
   toggles.forEach(t=>t.textContent=editing?"Editing…":t.dataset.label);
   $("saveBtn").disabled=!dirty;$("discardBtn").disabled=!dirty;document.body.classList.toggle("editing",editing);

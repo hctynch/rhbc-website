@@ -37,7 +37,7 @@ assert src.rstrip().endswith('})();\n})();\n</script>') or src.rstrip().endswith
 i = src.rstrip().rfind('})();')
 src = src[:i] + '};' + src[i + 5:]
 rep('const SAVED=readJSON("rhbc-data")||{events:[],notice:null};',
-    'let SAVED=window.__RHBC_DATA||{events:[]};\n'
+    'let SAVED=window.__RHBC_DATA||{events:[],specials:[],staff:[],weekly:[],photos:[]};\n'
     'const GH=window.__RHBC_GH;\n'
     'const fileUrl=id=>!id?"":(GH&&GH.local[id])?GH.local[id]:id.indexOf("/")>=0?id.split("/").map(encodeURIComponent).join("/"):"/_blob/"+id;')
 
@@ -182,7 +182,29 @@ GH.commit=async body=>{
   return files.length;
 };
 window.__RHBC_GH=GH;
-const start=d=>{window.__RHBC_DATA=d;const go=()=>window.__rhbcMain();document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go()};
+const LOG=window.__RHBC_LOG=window.__RHBC_LOG||[],RELOAD="rhbc-reloaded";
+const ss={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(e){}},del(k){try{sessionStorage.removeItem(k)}catch(e){}}};
+const showFail=msg=>{if(document.getElementById("loadFail"))return;const d=document.createElement("div");d.id="loadFail";d.setAttribute("role","alert");
+  d.style.cssText="background:#8C1007;color:#fff;padding:12px 16px;text-align:center;font:600 15px/1.4 system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center";
+  const t=document.createElement("span");t.textContent=msg;const r=document.createElement("button");r.type="button";r.textContent="Refresh Page";
+  r.style.cssText="background:#fff;color:#8C1007;border:0;border-radius:6px;padding:6px 14px;font:700 14px system-ui,sans-serif;cursor:pointer";r.onclick=()=>location.reload();
+  d.append(t,r);document.body.prepend(d)};
+const start=d=>{window.__RHBC_DATA=d;const go=()=>{
+  try{window.__rhbcMain()}
+  catch(e){console.error("[RHBC] start-up failed:",e);LOG.push("Start-up failed: "+e.message);
+    if(ss.get(RELOAD)!=="1"){ss.set(RELOAD,"1");ss.set("rhbc-log",JSON.stringify(LOG));try{localStorage.removeItem("rhbc-calview")}catch(x){}location.reload();return}
+    ss.del(RELOAD);LOG.push("Still failing after a fresh reload; showing the “couldn’t load” notice");showFail("Part of this page couldn’t load. Please refresh the page, or check back soon.");return}
+  if(ss.get(RELOAD)==="1"){ss.del(RELOAD);LOG.push("Page reloaded with remembered choices cleared, and loaded normally")}
+  if(!d){LOG.push("Showing the “couldn’t load” notice at the top; no old or sample events shown");showFail("We couldn’t load the latest church information. Please check your connection and refresh the page.")}
+  else if(!LOG.length)LOG.push("Everything loaded normally");
+  window.dispatchEvent(new Event("rhbc-loaded"))};
+  document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go()};
+{const old=ss.get("rhbc-log");if(old){ss.del("rhbc-log");try{LOG.push(...JSON.parse(old))}catch(e){}}}
+const load=async()=>{
+  const tries=[["data/site.json?v="+Date.now(),{cache:"no-store"}],["data/site.json?r="+Date.now(),{cache:"reload"}]];
+  for(let i=0;i<tries.length;i++){try{const r=await fetch(tries[i][0],tries[i][1]);if(r.ok){const j=await r.json();if(i)LOG.push("Data loaded on the second try");return j}throw new Error("status "+r.status)}
+    catch(e){LOG.push("Data download "+(i?"second":"first")+" try failed: "+e.message)}}
+  return null};
 (async()=>{
   if(token){
     try{
@@ -196,8 +218,7 @@ const start=d=>{window.__RHBC_DATA=d;const go=()=>window.__rhbcMain();document.r
       else GH.notice="Couldn’t reach GitHub for editing, so you’re seeing the public view.";
     }
   }
-  try{const r=await fetch("data/site.json?v="+Date.now(),{cache:"no-store"});start(await r.json())}
-  catch(e){start(null)}
+  start(await load());
 })();
 })();
 </script>
