@@ -504,6 +504,10 @@ a.card:hover{border-color:var(--muted)}
 .next-card h3{font-size:1.1rem;font-family:var(--body);font-weight:600;line-height:1.3}
 .meta{color:var(--muted);font-size:.88rem;line-height:1.45}
 .empty-note{color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:10px;grid-column:1/-1}
+.load-staff{grid-column:1/-1;display:grid;gap:6px;margin-top:10px;padding:14px 16px;border:2px solid #8C1007;border-radius:10px;background:color-mix(in srgb,#8C1007 8%,var(--surface));color:var(--ink);font-size:.93rem}
+.load-staff b{color:#8C1007;font-size:1rem}
+@media (prefers-color-scheme:dark){.load-staff b{color:#ff8a80}}
+.load-staff code{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
 
 /* schedule */
 .week{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
@@ -885,16 +889,17 @@ textarea{min-height:84px;resize:vertical}
 <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
 <button type="button" data-demo="agenda">1. Tonight’s Bug (Agenda View)</button>
 <button type="button" data-demo="section">2. One Section Broken</button>
+<button type="button" data-demo="section-staff">2b. Same, as Staff See It</button>
 <button type="button" data-demo="data">3. Data Can’t Load</button>
 <button type="button" data-demo="">Turn Off Demo</button></div>
 <div id="demoNow" style="text-align:center;font-weight:700"></div>
 <ol id="demoLog" style="margin:0 auto;padding-left:22px;max-width:760px"></ol></div>
 <style>#testBanner button{background:#1d1b1f;color:#fff;border:0;border-radius:6px;padding:7px 12px;font:600 13px system-ui,sans-serif;cursor:pointer}#testBanner button.on{outline:3px solid #8C1007;outline-offset:1px}@media print{#testBanner{display:none!important}}</style>
 <script>(function(){
-var N={agenda:"Demo 1 is on: a visitor who chose Agenda view, with tonight’s bug put back on purpose.",section:"Demo 2 is on: the Special Events code is broken on purpose.",data:"Demo 3 is on: the site’s data is blocked on purpose.","":"No demo is on. This is the normal site."};
+var N={agenda:"Demo 1 is on: a visitor who chose Agenda view, with tonight’s bug put back on purpose.",section:"Demo 2 is on: the Special Events code is broken on purpose (visitor view).","section-staff":"Demo 2b is on: the same broken section, shown the way signed-in staff see it.",data:"Demo 3 is on: the site’s data is blocked on purpose.","":"No demo is on. This is the normal site."};
 var cur="";try{cur=sessionStorage.getItem("rhbc-demo")||""}catch(e){}
 document.querySelectorAll("#testBanner [data-demo]").forEach(function(b){if(b.dataset.demo===cur)b.classList.add("on");b.onclick=function(){var d=b.dataset.demo;try{if(d)sessionStorage.setItem("rhbc-demo",d);else sessionStorage.removeItem("rhbc-demo");if(d==="agenda")localStorage.setItem("rhbc-calview","agenda")}catch(e){}
-  location.hash=d==="agenda"?"#calendar":"#special-events";location.reload()}});
+  if(d==="agenda")location.hash="#calendar";else if(d)location.hash="#special-events";location.reload()}});
 document.getElementById("demoNow").textContent=N[cur]+" What happened as the page loaded:";
 function show(){var ol=document.getElementById("demoLog");ol.replaceChildren();(window.__RHBC_LOG||[]).forEach(function(t){var li=document.createElement("li");li.textContent=t;ol.append(li)})}
 addEventListener("rhbc-loaded",function(){setTimeout(show,50)});setTimeout(show,2500);
@@ -2214,6 +2219,7 @@ const SECTIONS={
 function el(tag,props,...kids){const n=document.createElement(tag);if(props)for(const k in props){if(k==="style")n.setAttribute("style",props[k]);else n[k]=props[k]}for(const c of kids){if(c==null)continue;n.append(c)}return n}
 /* each section loads on its own: if one fails, clear the visitor's remembered choices and try once more; if it still fails, only that section shows a message */
 var RLOG=window.__RHBC_LOG=window.__RHBC_LOG||[],PREF_RESET=false;
+var STAFF_VIEW=()=>{if((function(){try{return sessionStorage.getItem("rhbc-demo")||""}catch(e){return""}})()==="section-staff")return true;try{return canEditFlag===true}catch(x){return false}};
 function safe(name,fn,boxId){
   try{fn();return true}catch(e){
     console.error("[RHBC] "+name+" failed:",e);RLOG.push(name+" failed: "+e.message);
@@ -2222,7 +2228,8 @@ function safe(name,fn,boxId){
       if(had){RLOG.push("Cleared the visitor’s remembered choices (Calendar view) and tried again");
         try{if(typeof calMode!=="undefined"&&calMode!=="month"){calMode="month";$("vMonth").setAttribute("aria-pressed","true");$("vAgenda").setAttribute("aria-pressed","false");document.querySelector(".cal").classList.remove("agmode");$("agView").hidden=true;try{localStorage.removeItem("rhbc-calview")}catch(x){}}
           fn();RLOG.push(name+" loaded on the second try");return true}catch(e2){console.error("[RHBC] "+name+" failed again:",e2);RLOG.push(name+" failed again: "+e2.message)}}}
-    const b=boxId&&$(boxId);if(b)b.replaceChildren(el("p",{className:"empty-note load-err",textContent:"This section couldn’t load right now. Please refresh the page, or check back soon."}));
+    const b=boxId&&$(boxId);if(b){b.replaceChildren(el("p",{className:"empty-note load-err",textContent:"This section couldn’t load right now. Please refresh the page, or check back soon."}));
+      if(STAFF_VIEW()){b.append(el("div",{className:"load-staff",role:"alert"},el("b",{textContent:"Staff Only: "+name+" Has an Error"}),el("span",{textContent:"Visitors see the “couldn’t load” message above instead of this section. The rest of the site is working. Please let Sam know, and include the details below."}),el("code",{textContent:e.message+" · "+new Date().toLocaleString("en-US")})));RLOG.push("Signed-in staff see a red Staff Only note on "+name)}}
     RLOG.push(b?name+" shows “couldn’t load” in its spot; the rest of the page is unaffected":name+" was skipped; the rest of the page is unaffected");
     return false}
 }
@@ -3482,7 +3489,7 @@ async function passage(ref){
 /* special events */
 const linkHref=u=>{if(!u)return"";if(/^#[a-z0-9-]+$/i.test(u))return u;return safeUrl(u)};
 const linkOf=l=>l.a?fileUrl(l.a):linkHref(l.url);
-function renderSpecials(){if((function(){try{return sessionStorage.getItem("rhbc-demo")||""}catch(e){return""}})()==="section")throw new Error("Demo: broken Special Events code");
+function renderSpecials(){if(/^section/.test((function(){try{return sessionStorage.getItem("rhbc-demo")||""}catch(e){return""}})()))throw new Error("Demo: broken Special Events code");
   const box=$("specialList");box.replaceChildren();const L=state.specials||[];
   const vis=[],hid=[];L.forEach((ev,i)=>(ev.hidden?hid:vis).push(i));
   if(!vis.length)box.append(el("p",{className:"empty-note",textContent:"No special events are listed right now. Check the church calendar."}));
