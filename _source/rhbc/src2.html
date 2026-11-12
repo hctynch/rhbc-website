@@ -2298,6 +2298,7 @@ const evBarStyle=e=>{const c=evCats(e);let st="--cat:"+evColor(e);
 let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(), activeAud=new Set(), showWeekly=true, showMonthly=true, showOther=true;
 /* recurring (monthly) events: {mode:"nth",n:1-5|-1,dow} or {mode:"day",day:1-31}; skips months without that day */
 const ORD=["","1st","2nd","3rd","4th","5th"];
+var DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const ordDay=d=>d+(d%100>=11&&d%100<=13?"th":["th","st","nd","rd"][d%10]||"th");
 const moRule=m=>m.mode==="day"?ordDay(+m.day)+" of every month":(m.n==-1?"Last":ORD[m.n])+" "+DAYNAMES[m.dow]+" of every month";
 function moMatches(m,k){
@@ -2797,7 +2798,6 @@ $("jForm").addEventListener("submit",async ev=>{
 });
 
 /* weekly schedule */
-const DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const fmtSpan=w=>{if(!w.end)return fmtTime(w.start);const a=fmtTime(w.start),b=fmtTime(w.end);return a.slice(-2)===b.slice(-2)?a.slice(0,-3)+" – "+b:a+" – "+b};
 var WK_PIN='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
 var WK_PPL='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 4 6"/></svg>';
