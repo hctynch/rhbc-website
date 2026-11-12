@@ -498,6 +498,17 @@ a.card:hover{border-color:var(--muted)}
 .next-card h3{font-size:1.1rem;font-family:var(--body);font-weight:600;line-height:1.3}
 .meta{color:var(--muted);font-size:.88rem;line-height:1.45}
 .empty-note{color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:10px;grid-column:1/-1}
+.staff-err{background:#1d1b1f;color:#fff;padding:12px 0;font-size:.95rem;border-left:8px solid #E53935;border-bottom:3px solid #E53935}
+.staff-err b{color:#ff8a80;font-size:1.02rem}
+.staff-err b::before{content:"⚠ "}
+.staff-err .wrap{display:grid;gap:4px}
+.staff-err ul{margin:0;padding-left:20px}
+.staff-err p{margin:0}
+.staff-err a{color:#fff;font-weight:700;text-decoration:underline;white-space:nowrap}
+.load-staff{grid-column:1/-1;display:grid;gap:6px;margin-top:10px;padding:14px 16px;border:2px solid #8C1007;border-radius:10px;background:color-mix(in srgb,#8C1007 8%,var(--surface));color:var(--ink);font-size:.93rem}
+.load-staff b{color:#8C1007;font-size:1rem}
+@media (prefers-color-scheme:dark){.load-staff b{color:#ff8a80}}
+.load-staff code{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
 
 /* schedule */
 .week{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
@@ -2169,6 +2180,38 @@ const SECTIONS={
   give:{label:"Giving",items:[["give","Give Online"],["contact","Contact Us"]]}
 };
 function el(tag,props,...kids){const n=document.createElement(tag);if(props)for(const k in props){if(k==="style")n.setAttribute("style",props[k]);else n[k]=props[k]}for(const c of kids){if(c==null)continue;n.append(c)}return n}
+/* each section loads on its own: if one fails, clear the visitor's remembered choices and try once more; if it still fails, only that section shows a message */
+var RLOG=window.__RHBC_LOG=window.__RHBC_LOG||[],PREF_RESET=false;
+var STAFF_VIEW=()=>{try{return canEditFlag===true}catch(x){return false}};
+var RFAILS=window.__RHBC_FAILS=window.__RHBC_FAILS||[],RFIXED=window.__RHBC_FIXED=window.__RHBC_FIXED||[];
+function pageOf(box,route){
+  const v=(box&&box.closest(".view"))||(route!=null&&document.querySelector('.view[data-route="'+route+'"]'));
+  const r=v?(v.dataset.route||""):(route||"");return{route:r,page:r?((v&&v.dataset.title)||r):"Home"};
+}
+function paintStaffAlert(){
+  let bar=$("staffErr");
+  if(!STAFF_VIEW()||!RFAILS.length){if(bar)bar.remove();return}
+  if(!bar){bar=el("div",{id:"staffErr",className:"staff-err",role:"alert"});document.querySelector("header.top").after(bar)}
+  const list=el("ul");RFAILS.forEach(f=>list.append(el("li",{},el("span",{textContent:"The "+f.page+" page: the "+f.section+" section can’t load, so visitors see a “couldn’t load” message there. "}),el("a",{href:"#"+f.route,textContent:"Go to Page →"}))));
+  bar.replaceChildren(el("div",{className:"wrap"},el("b",{textContent:"Staff Only: Website Error"}),list,el("p",{textContent:"Please notify the site administrator."})));
+}
+
+function safe(name,fn,boxId,route){
+  try{fn();return true}catch(e){
+    console.error("[RHBC] "+name+" failed:",e);RLOG.push(name+" failed: "+e.message);
+    if(!PREF_RESET){PREF_RESET=true;let had=false;
+      try{had=localStorage.getItem("rhbc-calview")!==null;localStorage.removeItem("rhbc-calview")}catch(x){}
+      if(had){RLOG.push("Cleared the visitor’s remembered choices (Calendar view) and tried again");
+        try{if(typeof calMode!=="undefined"&&calMode!=="month"){calMode="month";$("vMonth").setAttribute("aria-pressed","true");$("vAgenda").setAttribute("aria-pressed","false");document.querySelector(".cal").classList.remove("agmode");$("agView").hidden=true;try{localStorage.removeItem("rhbc-calview")}catch(x){}}
+          fn();RLOG.push(name+" loaded on the second try");{const pg=pageOf(boxId&&$(boxId),route);RFIXED.push({section:name,page:pg.page,route:pg.route,error:e.message})}return true}catch(e2){console.error("[RHBC] "+name+" failed again:",e2);RLOG.push(name+" failed again: "+e2.message)}}}
+    const b=boxId&&$(boxId),pg=pageOf(b,route);
+    if(!RFAILS.some(f=>f.section===name))RFAILS.push({section:name,page:pg.page,route:pg.route,error:e.message});
+    try{paintStaffAlert()}catch(x){}
+    if(b){b.replaceChildren(el("p",{className:"empty-note load-err",textContent:"This section couldn’t load right now. Please refresh the page, or check back soon."}));
+      if(STAFF_VIEW()){b.append(el("div",{className:"load-staff",role:"alert"},el("b",{textContent:"Staff Only: "+name+" Has an Error"}),el("span",{textContent:"Visitors see the “couldn’t load” message above instead of this section. The rest of the site is working. Please notify the site administrator, and include the details below."}),el("code",{textContent:e.message+" · "+new Date().toLocaleString("en-US")})));RLOG.push("Signed-in staff see a red Staff Only note on "+name)}}
+    RLOG.push(b?name+" shows “couldn’t load” in its spot; the rest of the page is unaffected":name+" was skipped; the rest of the page is unaffected");
+    return false}
+}
 document.querySelectorAll(".view[data-sec] .side").forEach(side=>{
   const v=side.closest(".view"),sec=SECTIONS[v.dataset.sec],route=v.dataset.parent||v.dataset.route;if(!sec)return;
   const nav=el("nav",{className:"side-nav"},el("p",{className:"eyebrow",textContent:sec.label}));
@@ -2427,7 +2470,7 @@ function renderFilters(){
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
-  if(typeof renderAgenda==="function"&&$("agView"))renderAgenda();
+  if(typeof renderAgenda==="function"&&$("agView"))safe("Calendar Agenda View",renderAgenda,"agView");
   const g=$("grid");g.replaceChildren();
   const first=new Date(view);first.setDate(1-first.getDay());
   for(let i=0;i<42;i++){
@@ -2449,7 +2492,7 @@ function renderGrid(){
 var calMode="month";try{if(localStorage.getItem("rhbc-calview")==="agenda")calMode="agenda"}catch(e){}
 function setCalMode(m){calMode=m;try{localStorage.setItem("rhbc-calview",m)}catch(e){}
   document.querySelector(".cal").classList.toggle("agmode",m==="agenda");$("agView").hidden=m!=="agenda";
-  $("vMonth").setAttribute("aria-pressed",String(m==="month"));$("vAgenda").setAttribute("aria-pressed",String(m==="agenda"));renderAgenda()}
+  $("vMonth").setAttribute("aria-pressed",String(m==="month"));$("vAgenda").setAttribute("aria-pressed",String(m==="agenda"));safe("Calendar Agenda View",renderAgenda,"agView")}
 function renderAgenda(){
   const box=$("agView");if(calMode!=="agenda"){box.replaceChildren();return}
   box.replaceChildren();const y=view.getFullYear(),m=view.getMonth(),days=new Date(y,m+1,0).getDate();let any=false;
@@ -2531,7 +2574,7 @@ function renderUp(){
   if(!evs.length)ul.append(el("li",{className:"meta",style:"padding-top:8px",textContent:"Nothing in the next eight weeks with the filters you’ve chosen."}));
   for(const e of evs)ul.append(evRow(e,true));
 }
-function renderAll(){renderWeekly();renderLive();renderStaff();renderSpecials();renderPhotos();renderNotice();renderNext();renderDocs();renderJobs();renderFilters();renderGrid();renderDay();renderUp();if(typeof renderServices==="function")renderServices();
+function renderAll(){safe("Weekly Schedule",renderWeekly,null,"schedule");safe("Live Stream",renderLive,null,"worship");safe("Staff",renderStaff,"staffList");safe("Special Events",renderSpecials,"specialList");safe("Photos",renderPhotos,"gallery");safe("Notices",renderNotice,null,"");safe("Coming Up",renderNext,"nextUp");safe("Bulletins and Newsletters",renderDocs,null,"bulletins");safe("Job Openings",renderJobs,"jobList");safe("Calendar Filters",renderFilters,"filters");safe("Calendar",renderGrid,"grid");safe("Selected Day",renderDay,"dayList");safe("Upcoming Events",renderUp,"upList");if(typeof renderServices==="function")safe("Worship Services",renderServices,"svcList");
   $("savebar").hidden=!editing;$("saveMsg").textContent=dirty?"You have unsaved changes":"Editing is on";
   toggles.forEach(t=>t.textContent=editing?"Editing…":t.dataset.label);
   $("saveBtn").disabled=!dirty;$("discardBtn").disabled=!dirty;document.body.classList.toggle("editing",editing);
