@@ -1,0 +1,67 @@
+name: Website Check
+
+# Loads the website the way visitors do (Full Calendar and Agenda views) and emails the
+# site administrator (through a GitHub issue that @mentions them) if any page has an error.
+# The issue closes itself, with another email, when the check passes again.
+# For now this runs only by hand. After approval, add the push and schedule triggers below.
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: "Demo: send a sample error email using the test page's broken Special Events section"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: website-check
+  cancel-in-progress: false
+
+env:
+  ADMIN: hctynch            # GitHub username of the site administrator (gets the emails)
+  LABEL: website-error
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /index.html
+            /startup-test.html
+            /data/
+            /_source/tests/site_check.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install a browser
+        run: pip install playwright==1.48.0 && python -m playwright install --with-deps chromium
+      - name: Check the website
+        run: python3 _source/tests/site_check.py --root . --out result.json --body body.md ${{ inputs.demo && '--demo' || '' }}
+      - name: Email the site administrator (open, update or close the issue)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEMO: ${{ inputs.demo && '1' || '' }}
+        run: |
+          gh label create "$LABEL" --color B60205 --description "Found by the Website Check" 2>/dev/null || true
+          FAILED=$(jq -r .failed result.json); TITLE=$(jq -r .title result.json); SIG=$(jq -r .sig result.json)
+          OPEN=$(gh issue list --label "$LABEL" --state open --json number,title -q '.[] | select((.title|startswith("[Demo]")) == ('"$([ -n "$DEMO" ] && echo true || echo false)"')) | .number' | head -1)
+          if [ "$FAILED" -gt 0 ]; then
+            if [ -z "$OPEN" ]; then
+              gh issue create --title "$TITLE" --body-file body.md --label "$LABEL"
+            elif ! gh issue view "$OPEN" --json body,comments -q '[.body]+[.comments[].body]|join("\n")' | grep -qF "$SIG"; then
+              gh issue edit "$OPEN" --title "$TITLE"
+              gh issue comment "$OPEN" --body-file body.md
+            else
+              echo "Same problem as issue #$OPEN; no new email."
+            fi
+          elif [ -n "$OPEN" ]; then
+            gh issue close "$OPEN" --comment "✅ The Website Check passed: every page loads normally again. Closing this automatically. @$ADMIN"
+          else
+            echo "Every page loads normally."
+          fi
