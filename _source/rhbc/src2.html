@@ -2193,7 +2193,7 @@ function paintStaffAlert(){
   if(!STAFF_VIEW()||!RFAILS.length){if(bar)bar.remove();return}
   if(!bar){bar=el("div",{id:"staffErr",className:"staff-err",role:"alert"});document.querySelector("header.top").after(bar)}
   const list=el("ul");RFAILS.forEach(f=>list.append(el("li",{},el("span",{textContent:"The "+f.page+" page: the "+f.section+" section can’t load, so visitors see a “couldn’t load” message there. "}),el("a",{href:"#"+f.route,textContent:"Go to Page →"}))));
-  bar.replaceChildren(el("div",{className:"wrap"},el("b",{textContent:"Staff Only: Website Error"}),list,el("p",{textContent:"Please notify the site administrator. The Website Check also emails them automatically."})));
+  bar.replaceChildren(el("div",{className:"wrap"},el("b",{textContent:"Staff Only: Website Error"}),list,el("p",{textContent:"Please notify the site administrator."})));
 }
 
 function safe(name,fn,boxId,route){
@@ -2208,7 +2208,7 @@ function safe(name,fn,boxId,route){
     if(!RFAILS.some(f=>f.section===name))RFAILS.push({section:name,page:pg.page,route:pg.route,error:e.message});
     try{paintStaffAlert()}catch(x){}
     if(b){b.replaceChildren(el("p",{className:"empty-note load-err",textContent:"This section couldn’t load right now. Please refresh the page, or check back soon."}));
-      if(STAFF_VIEW()){b.append(el("div",{className:"load-staff",role:"alert"},el("b",{textContent:"Staff Only: "+name+" Has an Error"}),el("span",{textContent:"Visitors see the “couldn’t load” message above instead of this section. The rest of the site is working. Please notify the site administrator, and include the details below. The Website Check also emails them automatically."}),el("code",{textContent:e.message+" · "+new Date().toLocaleString("en-US")})));RLOG.push("Signed-in staff see a red Staff Only note on "+name)}}
+      if(STAFF_VIEW()){b.append(el("div",{className:"load-staff",role:"alert"},el("b",{textContent:"Staff Only: "+name+" Has an Error"}),el("span",{textContent:"Visitors see the “couldn’t load” message above instead of this section. The rest of the site is working. Please notify the site administrator, and include the details below."}),el("code",{textContent:e.message+" · "+new Date().toLocaleString("en-US")})));RLOG.push("Signed-in staff see a red Staff Only note on "+name)}}
     RLOG.push(b?name+" shows “couldn’t load” in its spot; the rest of the page is unaffected":name+" was skipped; the rest of the page is unaffected");
     return false}
 }
