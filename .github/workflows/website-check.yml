@@ -3,14 +3,19 @@ name: Website Check
 # Loads the website the way visitors do (Full Calendar and Agenda views) and emails the
 # site administrator (through a GitHub issue that @mentions them) if any page has an error.
 # The issue closes itself, with another email, when the check passes again.
-# For now this runs only by hand. After approval, add the push and schedule triggers below.
+# Runs after every Save Changes or publish, every 6 hours, and by hand (Actions → Website Check → Run workflow).
 on:
+  push:
+    branches: [main]
+    paths: [index.html, data/site.json]
+  schedule:
+    - cron: "23 */6 * * *"
   workflow_dispatch:
     inputs:
       demo:
         description: "Demo: send a sample error email using the test page's broken Special Events section"
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
@@ -60,6 +65,9 @@ jobs:
             else
               echo "Same problem as issue #$OPEN; no new email."
             fi
+          elif [ -z "$DEMO" ] && DEMO_OPEN=$(gh issue list --label "$LABEL" --state open --json number,title -q '.[] | select(.title|startswith("[Demo]")) | .number') && [ -n "$DEMO_OPEN" ]; then
+            for n in $DEMO_OPEN; do gh issue close "$n" --comment "✅ Demo finished: this is what the “fixed” email looks like. The real Website Check passed and every page loads normally. @$ADMIN"; done
+            [ -n "$OPEN" ] && gh issue close "$OPEN" --comment "✅ The Website Check passed: every page loads normally again. Closing this automatically. @$ADMIN" || true
           elif [ -n "$OPEN" ]; then
             gh issue close "$OPEN" --comment "✅ The Website Check passed: every page loads normally again. Closing this automatically. @$ADMIN"
           else

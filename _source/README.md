@@ -35,3 +35,12 @@ Test pages for Sam to review are published as an unlinked file (for example `pri
 ## Security
 
 Never put a staff sign-in key, the Vimeo token or any other key in these files. Keys live only in each person's browser or in the repository's GitHub **Secrets**.
+
+## When something breaks (self-correcting start-up and the Website Check)
+
+- Each section of the page loads on its own through `safe()` in `src2.html`. Wrap any new render call in `safe("Section Name",renderX,"containerId")`.
+- If a section fails, the page clears the visitor's remembered choices (Calendar view) and tries again. If it still fails, only that section shows "This section couldn't load right now", and signed-in staff see a **Staff Only: Website Error** bar on every page naming the page, plus a red note on the section.
+- If start-up itself fails, the page reloads once with remembered choices cleared, then shows a red "Part of this page couldn't load" bar. If the data can't download after two tries, a red "We couldn't load the latest church information" bar shows. The built-in sample content is never shown.
+- `.github/workflows/website-check.yml` runs `tests/site_check.py` after every change to `index.html` or `data/site.json`, every 6 hours, and by hand. If a page has an error (or an error that fixed itself), it opens a GitHub issue labeled `website-error` that @mentions the site administrator (`ADMIN` in the workflow), so GitHub emails them. It closes the issue when the check passes.
+- Tests: `tests/tstartup.py` (demos; needs a test page made by `tests/make_startup_test.py out/index.html out/startup-test.html`) and `tests/tstartup.py --net` (reload safety net).
+

@@ -66,7 +66,7 @@ async def main():
 
 - **Found:** {now}
 - **The rest of the site is working.** Only the section(s) above are affected; visitors never see old or hidden events. A section that “fixed itself” still has a bug that needs fixing.
-- Signed-in staff see a red **Staff Only: Website Error** bar on every page until this is fixed.
+- Signed-in staff see a **Staff Only: Website Error** bar on every page until this is fixed.
 - This issue **closes itself** (and emails you) when the Website Check passes again.
 
 @{ADMIN} (site administrator)
