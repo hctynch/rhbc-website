@@ -583,6 +583,27 @@ a.card:hover{border-color:var(--muted)}
 .fsw[aria-pressed="true"]{color:var(--ink)}
 .fsw[aria-pressed="true"] .fsw-track{background:var(--brand-hi)}
 .fsw[aria-pressed="true"] .fsw-track::after{left:14px}
+.frow-dd{gap:8px 10px}
+.fdd{position:relative}
+.fdd-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .85rem/1 var(--body);cursor:pointer;white-space:nowrap}
+.fdd-btn::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);margin-left:4px;opacity:.6}
+.fdd-btn[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(-1px)}
+.fdd-lab{color:var(--muted);font-weight:600}
+.fdd-btn:hover{border-color:var(--muted)}
+.fdd-btn.on{border-color:color-mix(in srgb,var(--brand-hi) 55%,var(--line));background:color-mix(in srgb,var(--brand-hi) 8%,var(--surface))}
+.fdd-btn.on .fdd-val{color:var(--brand-hi)}
+.fdd-menu{position:fixed;z-index:40;width:min(270px,calc(100vw - 32px));max-height:calc(100vh - 24px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px;text-align:left}
+.fdd-menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.fdd-opt{display:flex;align-items:center;gap:9px;width:100%;border:0;background:none;color:var(--ink);padding:8px 10px;border-radius:6px;font:600 .9rem var(--body);cursor:pointer;text-align:left}
+.fdd-opt:hover,.fdd-opt:focus-visible{background:var(--wash)}
+.fdd-box{width:17px;height:17px;flex:none;border:1.5px solid var(--muted);border-radius:4px;display:grid;place-items:center}
+.fdd-opt[aria-pressed="true"] .fdd-box{background:var(--brand-hi);border-color:var(--brand-hi)}
+.fdd-opt[aria-pressed="true"] .fdd-box::after{content:"";width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.fdd-opt .cat-ic{color:var(--dot)}.fdd-opt .aud-ic{display:inline-flex;color:var(--brand-hi)}
+.fdd-foot{display:flex;justify-content:flex-end;padding:4px 4px 2px}
+.fclear{border:0;background:none;color:var(--brand-hi);font:600 .82rem var(--body);cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
+.fsw-row{gap:6px 14px}
+.fdd-btn:focus-visible,.fdd-opt:focus-visible,.fclear:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .fsw:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
 .dow{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;padding:8px 0;border-bottom:1px solid var(--line)}
@@ -2341,6 +2362,7 @@ const evBarStyle=e=>{const c=evCats(e);let st="--cat:"+evColor(e);
 let view=new Date(now.getFullYear(),now.getMonth(),1), selected=TODAY, active=new Set(), activeAud=new Set(), showWeekly=true, showMonthly=true, showOther=true;
 /* recurring (monthly) events: {mode:"nth",n:1-5|-1,dow} or {mode:"day",day:1-31}; skips months without that day */
 const ORD=["","1st","2nd","3rd","4th","5th"];
+var fOpen="";
 var DAYNAMES=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const ordDay=d=>d+(d%100>=11&&d%100<=13?"th":["th","st","nd","rd"][d%10]||"th");
 const moRule=m=>m.mode==="day"?ordDay(+m.day)+" of every month":(m.n==-1?"Last":ORD[m.n])+" "+DAYNAMES[m.dow]+" of every month";
@@ -2456,6 +2478,12 @@ function renderNext(){
     box.append(el("article",{className:"next-card"},chip,body));
   }
 }
+/* the calendar box clips anything that hangs outside it, so the open filter menu is placed on the screen under its button */
+function placeFdd(b,m,fit){if(!b.isConnected||!m.isConnected)return;if(fit){const need=b.getBoundingClientRect().bottom+6+m.offsetHeight-(innerHeight-12);if(need>0)scrollBy(0,need)}const r=b.getBoundingClientRect(),vw=document.documentElement.clientWidth;m.style.left=Math.max(16,Math.min(r.left,vw-16-m.offsetWidth))+"px";m.style.top=(r.bottom+6)+"px"}
+addEventListener("scroll",()=>{const m=document.querySelector(".fdd-menu");if(m)placeFdd(m.previousSibling,m)},{passive:true});
+addEventListener("resize",()=>{const m=document.querySelector(".fdd-menu");if(m)placeFdd(m.previousSibling,m)});
+document.addEventListener("click",()=>{if(fOpen){fOpen="";renderFilters()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&fOpen){const id=fOpen;fOpen="";renderFilters();const b=document.querySelector('[data-fdd="'+id+'"]');if(b)b.focus()}});
 function renderFilters(){
   const f=$("filters");f.replaceChildren();
   const redraw=()=>{renderFilters();renderGrid();renderDay();renderUp()};
@@ -2464,9 +2492,24 @@ function renderFilters(){
     for(const k of keys){const b=el("button",{type:"button",className:"chip"+cls,style:dot?"--dot:"+dot(k):""},dot?catIco(k):audIco(k),label(k));b.setAttribute("aria-pressed",String(set.has(k)));
       b.onclick=()=>{set.has(k)?set.delete(k):set.add(k);if(set.size===keys.length)set.clear();redraw()};r.append(b)}
     return r};
-  f.append(row("Ministry",active,Object.keys(CATS),k=>CATS[k].label,"",catVar),row("Who It\u2019s For",activeAud,Object.keys(AUDS),k=>AUDS[k]," chip-aud",null));
+  /* Ministry and Who It's For as dropdowns; each lets you pick more than one */
+  const dd=(id,lab,set,keys,label,ico,dot)=>{const n=set.size,w=el("div",{className:"fdd"});
+    const b=el("button",{type:"button",className:"fdd-btn"+(n?" on":"")},el("span",{className:"fdd-lab",textContent:lab+":"}),el("span",{className:"fdd-val",textContent:!n?"All":n===1?label([...set][0]):n+" Selected"}));
+    b.setAttribute("aria-haspopup","true");b.setAttribute("aria-expanded",String(fOpen===id));b.dataset.fdd=id;
+    b.onclick=e=>{e.stopPropagation();fOpen=fOpen===id?"":id;renderFilters();const nb=f.querySelector('[data-fdd="'+id+'"]');if(nb)nb.focus()};w.append(b);
+    if(fOpen===id){const m=el("div",{className:"fdd-menu",role:"group"});m.setAttribute("aria-label",lab);m.onclick=e=>e.stopPropagation();
+      const opt=(k,text,icon,on,fn)=>{const o=el("button",{type:"button",className:"fdd-opt",style:dot&&k?"--dot:"+dot(k):""},el("span",{className:"fdd-box"}),icon||"",text);o.dataset.k=k||"_all";o.setAttribute("aria-pressed",String(on));
+        o.onclick=()=>{fn();redraw();const x=f.querySelector('.fdd-opt[data-k="'+(k||"_all")+'"]');if(x)x.focus()};return o};
+      m.append(opt("","All",null,!n,()=>set.clear()),el("hr"));
+      keys.forEach(k=>m.append(opt(k,label(k),ico(k),set.has(k),()=>{set.has(k)?set.delete(k):set.add(k);if(set.size===keys.length)set.clear()})));
+      const done=el("button",{type:"button",className:"btn primary small",textContent:"Done"});done.onclick=()=>{fOpen="";renderFilters();const nb=f.querySelector('[data-fdd="'+id+'"]');if(nb)nb.focus()};
+      m.append(el("hr"),el("div",{className:"fdd-foot"},done));w.append(m);requestAnimationFrame(()=>placeFdd(b,m,true))}
+    return w};
+  const top=el("div",{className:"frow frow-dd"},dd("min","Ministry",active,Object.keys(CATS),k=>CATS[k].label,catIco,catVar),dd("aud","Who It\u2019s For",activeAud,Object.keys(AUDS),k=>AUDS[k],audIco,null));
+  if(active.size||activeAud.size){const c=el("button",{type:"button",className:"fclear",textContent:"Clear Filters"});c.onclick=()=>{active.clear();activeAud.clear();fOpen="";redraw()};top.append(c)}
+  f.append(top);
   const sw=(label,on,fn)=>{const b=el("button",{type:"button",className:"fsw"},el("span",{className:"fsw-track"}),label);b.setAttribute("aria-pressed",String(on));b.onclick=fn;return b};
-  f.append(el("div",{className:"frow"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Monthly Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()}),sw("One-Time Events",showOther,()=>{showOther=!showOther;redraw()})));
+  f.append(el("div",{className:"frow fsw-row"},sw("Weekly Services",showWeekly,()=>{showWeekly=!showWeekly;redraw()}),sw("Monthly Events",showMonthly,()=>{showMonthly=!showMonthly;redraw()}),sw("One-Time Events",showOther,()=>{showOther=!showOther;redraw()})));
 }
 function renderGrid(){
   $("monthLabel").textContent=MONTHS[view.getMonth()]+" "+view.getFullYear();
