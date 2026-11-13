@@ -837,6 +837,17 @@ textarea{min-height:84px;resize:vertical}
 .pr-ch label:has(input:checked){border-color:var(--brand-hi);background:var(--wash)}
 .pr-ch input{margin-top:3px;accent-color:var(--brand-hi)}
 .pr-btn{white-space:nowrap}
+.sub-wrap{position:relative;display:inline-flex}
+.sub-btn{white-space:nowrap}
+.sub-btn::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);margin-left:8px;opacity:.7}
+.sub-menu{position:fixed;z-index:40;max-height:calc(100vh - 24px);overflow:auto;width:min(310px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px;text-align:left}
+.sub-menu .h{font:700 .95rem var(--body);color:var(--ink);padding:8px 10px 2px}
+.sub-menu .h small{display:block;font-weight:500;font-size:.82rem;color:var(--muted);margin-top:2px}
+.sub-menu a{display:block;color:var(--ink);text-decoration:none;padding:9px 10px;border-radius:6px;font:600 .95rem var(--body)}
+.sub-menu a small{display:block;font-weight:500;font-size:.8rem;color:var(--muted)}
+.sub-menu a:hover,.sub-menu a:focus-visible{background:var(--wash);color:var(--brand-hi)}
+.sub-menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.sub-menu .ft{font-size:.78rem;color:var(--muted);padding:6px 10px 6px}
 @media print{
   body.pr-on>*:not(#printView){display:none!important}
   body.pr-on #printView{position:static;background:none;overflow:visible}
@@ -1000,7 +1011,7 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- ============ CALENDAR ============ -->
 <div class="view" data-route="calendar" data-title="Calendar" hidden>
-  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost pr-btn" type="button">Print Schedule</button><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button><button class="btn primary hero-add" type="button" hidden>+ Add</button></div></div></section>
+  <section class="phero"><div class="wrap"><p class="eyebrow">Events</p><h1>Church Calendar</h1><p class="lede">Special services, fellowship meals, missions projects and more. Tap any day to see what’s happening.</p><div class="linkrow"><button class="btn ghost pr-btn" type="button">Print Schedule</button><span class="sub-wrap"><button class="btn ghost sub-btn" type="button" aria-haspopup="menu" aria-expanded="false">Subscribe to Calendar</button></span><button class="btn ghost edit-toggle" type="button" data-label="Edit Calendar" hidden>Edit Calendar</button><button class="btn ghost ms-edit" type="button" hidden>Manage Schedule</button><button class="btn primary hero-add" type="button" hidden>+ Add</button></div></div></section>
   <section class="band" style="padding-top:40px"><div class="wrap">
     <div id="restoreSlot"></div>
     <div class="cal">
@@ -3352,6 +3363,26 @@ function openPrint(){dlgRet=null;const o=prOpt||prDefaults();
   f.addEventListener("change",sync);sync();
   gOpen("Print Schedule","Choose what to print. You’ll see a preview first.",[f])}
 document.querySelectorAll(".pr-btn").forEach(b=>b.onclick=openPrint);
+/* Subscribe to Calendar: calendar.ics sits next to the page and is rebuilt by .github/workflows/calendar-feed.yml */
+function subLinks(){const feed=new URL("calendar.ics",location.href.split("#")[0]).href,web=feed.replace(/^https?:/,"webcal:"),nm=encodeURIComponent("Rocky Hock Baptist Church");
+  return [["Google Calendar","Best done on a computer; it then shows in the Google Calendar app too.","https://calendar.google.com/calendar/r?cid="+encodeURIComponent(web),1],
+    ["Apple Calendar","iPhone, iPad and Mac",web,0],
+    ["Outlook 365","Work or school accounts","https://outlook.office.com/calendar/0/addfromweb?url="+encodeURIComponent(feed)+"&name="+nm,1],
+    ["Outlook Live","Outlook.com, Hotmail and Live accounts","https://outlook.live.com/calendar/0/addfromweb?url="+encodeURIComponent(feed)+"&name="+nm,1]]}
+var subOpen=null;
+/* the hero section clips anything that hangs below it, so the menu is placed on the screen next to the button */
+function placeSub(){if(!subOpen)return;const {m,b}=subOpen,r=b.getBoundingClientRect(),vw=document.documentElement.clientWidth,mw=m.offsetWidth,mh=m.offsetHeight;
+  m.style.left=Math.max(16,Math.min(r.left,vw-16-mw))+"px";m.style.top=(r.bottom+6)+"px"}
+addEventListener("scroll",placeSub,{passive:true});addEventListener("resize",placeSub);
+function closeSub(){if(subOpen){subOpen.m.remove();subOpen.b.setAttribute("aria-expanded","false");subOpen=null}}
+document.addEventListener("click",e=>{if(subOpen&&!subOpen.wrap.contains(e.target))closeSub()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&subOpen){const b=subOpen.b;closeSub();b.focus()}});
+document.querySelectorAll(".sub-btn").forEach(b=>b.onclick=ev=>{ev.stopPropagation();const wrap=b.parentNode;if(subOpen&&subOpen.wrap===wrap){closeSub();return}closeSub();
+  const m=el("div",{className:"sub-menu",role:"menu"});
+  m.append(el("div",{className:"h"},"Subscribe to the Church Calendar",el("small",{textContent:"Church events appear in your own calendar and update on their own."})),el("hr"));
+  subLinks().forEach(([t,s,u,nw])=>{const a=el("a",{href:u,role:"menuitem"},t,el("small",{textContent:s}));if(nw){a.target="_blank";a.rel="noopener"}a.onclick=()=>setTimeout(closeSub,0);m.append(a)});
+  m.append(el("hr"),el("p",{className:"ft",textContent:"Changes on the website can take up to a day to show in your calendar."}));
+  wrap.append(m);subOpen={wrap,m,b};const need=b.getBoundingClientRect().bottom+6+m.offsetHeight-(innerHeight-12);if(need>0)scrollBy(0,need);placeSub();b.setAttribute("aria-expanded","true");const f=m.querySelector("a");if(f&&ev.detail===0)f.focus()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.body.classList.contains("pr-on"))prClose()});
 
 /* staff */
